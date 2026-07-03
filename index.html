@@ -1699,64 +1699,6 @@ a {
       </div>
 
       <!-- VISAO GESTOR -->
-      <div id="sec-gestor" style="display:none;padding:16px 16px 0">
-
-        <div style="background:#0A0A0A;border-radius:14px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden">
-          <div style="position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:#E87722;opacity:.06;filter:blur(30px)"></div>
-          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#E87722;margin-bottom:4px">Visao gerencial</div>
-          <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;color:#F2F2F2">Painel do Gestor</div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-          <div style="background:#FFFFFF;border:1px solid #E2E2E8;border-radius:12px;padding:16px">
-            <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:8px">Vendas do time</div>
-            <div style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#E87722;line-height:1;margin-bottom:3px" id="g-total-vendas">carregando</div>
-            <div style="font-size:10px;color:#999">este mes</div>
-          </div>
-          <div style="background:#FFFFFF;border:1px solid #E2E2E8;border-radius:12px;padding:16px">
-            <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:8px">Cotacoes abertas</div>
-            <div style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#4F46E5;line-height:1;margin-bottom:3px" id="g-cotacoes">-</div>
-            <div style="font-size:10px;color:#999">aguardando resposta</div>
-          </div>
-          <div style="background:#FFFFFF;border:1px solid #E2E2E8;border-radius:12px;padding:16px">
-            <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:8px">Visitas no mes</div>
-            <div style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#059669;line-height:1;margin-bottom:3px" id="g-visitas">-</div>
-            <div style="font-size:10px;color:#999">toda a equipe</div>
-          </div>
-          <div style="background:#FFFFFF;border:1px solid #E2E2E8;border-radius:12px;padding:16px">
-            <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:8px">Taxa de conversao</div>
-            <div style="font-size:28px;font-weight:800;letter-spacing:-1px;color:#D97706;line-height:1;margin-bottom:3px" id="g-conv">-</div>
-            <div style="font-size:10px;color:#999">cotacoes para vendas</div>
-          </div>
-        </div>
-
-        <div style="background:#FFFFFF;border:1px solid #E2E2E8;border-radius:12px;overflow:hidden;margin-bottom:12px">
-          <div style="padding:14px 16px;border-bottom:1px solid #E2E2E8;display:flex;align-items:center;justify-content:space-between">
-            <div style="font-size:11px;font-weight:700;color:#0A0A0A">Ranking do mes</div>
-            <div style="font-size:10px;color:#999" id="g-periodo"></div>
-          </div>
-          <div id="g-ranking"><div style="padding:20px;text-align:center;font-size:12px;color:#999">Carregando...</div></div>
-        </div>
-
-        <div style="background:#0A0A0A;border:1px solid #1E1E1E;border-radius:12px;overflow:hidden;margin-bottom:12px">
-          <div style="padding:14px 16px;border-bottom:1px solid #1E1E1E">
-            <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7)">Vendedores sem visita hoje</div>
-          </div>
-          <div id="g-alerta"><div style="padding:20px;text-align:center;font-size:12px;color:rgba(255,255,255,.3)">Carregando...</div></div>
-        </div>
-
-        <a href="https://gestao-three-virid.vercel.app" target="_blank" style="display:flex;align-items:center;gap:14px;background:#0A0A0A;border:1px solid #1E1E1E;border-radius:12px;padding:18px 16px;text-decoration:none;color:#fff;margin-bottom:20px">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="18" height="18" fill="none" stroke="#6366F1" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-          </div>
-          <div style="flex:1">
-            <div style="font-size:14px;font-weight:700;margin-bottom:2px">Abrir App Gestao</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.4)">Dashboard completo, produtos, equipe e configuracoes</div>
-          </div>
-          <svg width="14" height="14" fill="none" stroke="#E87722" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-
-      </div>
 </main>
   </div>
 </section>
@@ -2035,8 +1977,12 @@ function showPortal() {
 
   const isGestor = ['gestor', 'gestor_comercial', 'admin'].includes(role)
 
-  const secGestor = document.getElementById('sec-gestor')
-  if (secGestor) secGestor.style.display = isGestor ? 'block' : 'none'
+  const secGestor  = document.getElementById('sec-gestor')
+  const secVendedor = document.getElementById('sec-vendedor-wrap')
+
+  // Mostrar apenas a seção correta
+  if (secGestor)   secGestor.style.display   = isGestor ? 'block' : 'none'
+  if (secVendedor) secVendedor.style.display = isGestor ? 'none'  : 'block'
 
   const cardGestao = document.getElementById('card-gestao')
   const navGestao  = document.getElementById('nav-gestao')

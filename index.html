@@ -2340,6 +2340,48 @@ function goAgenda() {
 }
 
 init()
+
+async function loadGestorData() {
+  const now = new Date()
+  const mesAtual = now.toISOString().slice(0,7) + '-01'
+  const hoje = now.toISOString().split('T')[0]
+  const fmtK = n => { n=Number(n||0); if(n>=1e6) return 'R$'+(n/1e6).toFixed(1)+'M'; if(n>=1e3) return 'R$'+(n/1e3).toFixed(0)+'k'; return 'R$'+n.toLocaleString('pt-BR',{minimumFractionDigits:0}) }
+  const el = id => document.getElementById(id)
+  const [rV,rQ,rVis,rProf] = await Promise.all([
+    sb.from('sales').select('total,seller_id').gte('sale_date',mesAtual),
+    sb.from('quotes').select('status,seller_id').neq('status','cancelada'),
+    sb.from('visits').select('seller_id,visit_date').gte('visit_date',mesAtual),
+    sb.from('profiles').select('id,name,role,active').eq('active',true)
+  ])
+  const vendas=rV.data||[], cots=rQ.data||[], vis=rVis.data||[]
+  const profs=(rProf.data||[]).filter(p=>['vendedor','gestor_comercial'].includes(p.role))
+  const totalVendas=vendas.reduce((a,s)=>a+Number(s.total||0),0)
+  const cotAbertas=cots.filter(q=>q.status==='rascunho'||q.status==='enviada').length
+  const conv=cots.filter(q=>q.status==='convertida').length
+  const txConv=cots.length>0?Math.round(conv/cots.length*100):0
+  if(el('g-total-vendas')) el('g-total-vendas').textContent=fmtK(totalVendas)
+  if(el('g-cotacoes'))     el('g-cotacoes').textContent=cotAbertas
+  if(el('g-visitas'))      el('g-visitas').textContent=vis.length
+  if(el('g-conv'))         el('g-conv').textContent=txConv+'%'
+  if(el('g-periodo'))      el('g-periodo').textContent=now.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})
+  const rankData=profs.map(p=>({...p,
+    vTotal:vendas.filter(s=>s.seller_id===p.id).reduce((a,s)=>a+Number(s.total||0),0),
+    vCount:vendas.filter(s=>s.seller_id===p.id).length,
+    vVis:vis.filter(v=>v.seller_id===p.id).length,
+    vCot:cots.filter(q=>q.seller_id===p.id).length
+  })).sort((a,b)=>b.vTotal-a.vTotal)
+  const rankEl=el('g-ranking')
+  if(rankEl) rankEl.innerHTML=rankData.length===0
+    ?'<div style="padding:20px;text-align:center;font-size:12px;color:#999">Nenhum vendedor cadastrado</div>'
+    :rankData.map((p,i)=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #E2E2E8"><div style="width:24px;height:24px;border-radius:6px;background:${i===0?'#E87722':i===1?'#D97706':'#F4F4F6'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:${i<2?'#fff':'#999'};flex-shrink:0">${i+1}</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:#0A0A0A">${p.name}</div><div style="font-size:10px;color:#999">${p.vVis} visitas · ${p.vCot} cotacoes</div></div><div style="text-align:right"><div style="font-size:14px;font-weight:800;color:${p.vTotal>0?'#E87722':'#999'}">${fmtK(p.vTotal)}</div><div style="font-size:10px;color:#999">${p.vCount} pedidos</div></div></div>`).join('')
+  const visitaramHoje=new Set(vis.filter(v=>v.visit_date===hoje).map(v=>v.seller_id))
+  const semVisita=profs.filter(p=>!visitaramHoje.has(p.id))
+  const alertEl=el('g-alerta')
+  if(alertEl) alertEl.innerHTML=semVisita.length===0
+    ?'<div style="padding:16px 20px;font-size:12px;color:#10B981">Todos registraram visita hoje</div>'
+    :semVisita.map(p=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #1E1E1E"><div style="width:6px;height:6px;border-radius:50%;background:#F59E0B;flex-shrink:0"></div><div style="font-size:13px;color:rgba(255,255,255,.6)">${p.name}</div></div>`).join('')
+}
+
 </script>
 
 </body>

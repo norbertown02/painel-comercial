@@ -627,9 +627,9 @@ a {
 }
 
 .content {
-  padding: 28px 38px 48px;
-  max-width: 1480px;
-  width: 100%;
+  width: min(1280px, calc(100% - 72px));
+  margin: 0 auto;
+  padding: 32px 0 56px;
 }
 
 /* HERO */
@@ -1195,19 +1195,17 @@ a {
 }
 
 .topbar {
-  height: 78px;
-  background:
-    radial-gradient(circle at 86% 0%, rgba(232,119,34,.16), transparent 260px),
-    #050505;
-  backdrop-filter: none;
-  border-bottom: 1px solid rgba(255,255,255,.09);
-  padding: 0 38px;
+  height: 76px;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(20,20,20,.08);
+  display: flex;
+  align-items: center;
+  padding: 0 max(36px, calc((100vw - 1280px) / 2));
   gap: 18px;
   position: sticky;
   top: 0;
   z-index: 20;
-  color: #fff;
-  justify-content: space-between;
 }
 
 .panel-brand {
@@ -1578,6 +1576,72 @@ body.role-gestao #sec-gestor {
 
   .panel-user-meta {
     display: none;
+  }
+}
+
+
+/* =========================================================
+   V6 — CONTAINER REAL DO PAINEL COMERCIAL
+   Esta regra trabalha junto com o JS abaixo, que cria wrappers reais.
+========================================================= */
+
+.portal-frame,
+.gestor-frame,
+.seller-frame {
+  width: min(1120px, calc(100vw - 180px)) !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#portal-screen .content {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 34px 0 64px !important;
+  margin: 0 !important;
+}
+
+#portal-screen #sec-gestor,
+#portal-screen #sec-vendedor-wrap {
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+#portal-screen .topbar {
+  padding-left: max(60px, calc((100vw - 1120px) / 2)) !important;
+  padding-right: max(60px, calc((100vw - 1120px) / 2)) !important;
+}
+
+#portal-screen .topbar {
+  background: #050505 !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+
+@media (max-width: 1180px) {
+  .portal-frame,
+  .gestor-frame,
+  .seller-frame {
+    width: calc(100vw - 80px) !important;
+  }
+
+  #portal-screen .topbar {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .portal-frame,
+  .gestor-frame,
+  .seller-frame {
+    width: calc(100vw - 32px) !important;
+  }
+
+  #portal-screen .topbar {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
   }
 }
 
@@ -3038,6 +3102,64 @@ async function loadGestorData() {
     :semVisita.map(p=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #1E1E1E"><div style="width:6px;height:6px;border-radius:50%;background:#F59E0B;flex-shrink:0"></div><div style="font-size:13px;color:rgba(255,255,255,.6)">${p.name}</div></div>`).join('')
 }
 
+
+
+
+/* =========================================================
+   V6 — cria containers reais para a margem funcionar
+========================================================= */
+function aplicarContainerPainelComercial() {
+  const content = document.querySelector('#portal-screen .content')
+  const secGestor = document.getElementById('sec-gestor')
+  const secVendedor = document.getElementById('sec-vendedor-wrap')
+
+  if (!content) return
+
+  // Envelopa os blocos principais do vendedor que ficam soltos dentro de .content
+  if (!document.querySelector('.portal-frame')) {
+    const frame = document.createElement('div')
+    frame.className = 'portal-frame'
+
+    const primeiros = []
+    Array.from(content.children).forEach(el => {
+      if (
+        el.classList?.contains('hero') ||
+        el.classList?.contains('kpi-grid') ||
+        (el.classList?.contains('grid-main') && el.classList?.contains('seller-only'))
+      ) {
+        primeiros.push(el)
+      }
+    })
+
+    if (primeiros.length) {
+      content.insertBefore(frame, primeiros[0])
+      primeiros.forEach(el => frame.appendChild(el))
+    }
+  }
+
+  // Envelopa toda a visão do vendedor
+  if (secVendedor && !secVendedor.querySelector(':scope > .seller-frame')) {
+    const frame = document.createElement('div')
+    frame.className = 'seller-frame'
+
+    Array.from(secVendedor.childNodes).forEach(node => frame.appendChild(node))
+    secVendedor.appendChild(frame)
+  }
+
+  // Envelopa toda a visão do gestor
+  if (secGestor && !secGestor.querySelector(':scope > .gestor-frame')) {
+    const frame = document.createElement('div')
+    frame.className = 'gestor-frame'
+
+    Array.from(secGestor.childNodes).forEach(node => frame.appendChild(node))
+    secGestor.appendChild(frame)
+  }
+}
+
+document.addEventListener('DOMContentLoaded', aplicarContainerPainelComercial)
+setTimeout(aplicarContainerPainelComercial, 100)
+setTimeout(aplicarContainerPainelComercial, 700)
+setTimeout(aplicarContainerPainelComercial, 1600)
 
 </script>
 

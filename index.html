@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nutrialle · Portal Comercial</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  --orange: #E87722;
+  --orange-2: #F3922E;
+  --orange-dark: #C65300;
+
+  --black: #050505;
+  --black-2: #0B0B0B;
+  --black-3: #121212;
+  --black-4: #1A1A1A;
+
+  --paper: #F6F3EF;
+  --paper-2: #EFEAE3;
+  --white: #FFFFFF;
+
+  --text: #141414;
+  --muted: #6F6860;
+  --faint: #A29B93;
+
+  --line: rgba(20,20,20,.09);
+  --line-dark: rgba(255,255,255,.09);
+
+  --green: #16A34A;
+  --red: #DC2626;
+  --amber: #D97706;
+  --purple: #7C3AED;
+
+  --shadow: 0 20px 52px rgba(28,22,16,.09);
+  --shadow-dark: 0 24px 62px rgba(0,0,0,.32);
+}
+
+html,
+body {
+  min-height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: var(--paper);
+  color: var(--text);
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.official-logo {
+  display: block;
+  object-fit: contain;
+  mix-blend-mode: normal;
+}
+
+.loading-official-logo {
+  width: 220px;
+  height: auto;
+  margin: 0 auto 30px;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,.28));
+}
+
+.login-official-logo {
+  width: 250px;
+  height: auto;
+}
+
+.sidebar-official-logo {
+  width: 210px;
+  height: auto;
+  margin-bottom: 26px;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.28));
+}
+
+.mobile-official-logo {
+  width: 220px;
+  height: auto;
+  margin: 0 auto 18px;
+}
+
+/* LOADING */
+
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background:
+    radial-gradient(circle at 70% 45%, rgba(232,119,34,.16), transparent 360px),
+    #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-card {
+  text-align: center;
+}
+
+.loading-line {
+  width: 180px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.loading-line span {
+  display: block;
+  height: 100%;
+  width: 46%;
+  background: var(--orange);
+  border-radius: 999px;
+  animation: loading 1.15s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(230%); }
+}
+
+/* MOBILE BLOCK */
+
+.mobile-block {
+  min-height: 100vh;
+  padding: 28px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top right, rgba(232,119,34,.16), transparent 280px),
+    #050505;
+  color: #fff;
+}
+
+.mobile-block-card {
+  max-width: 420px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  border-radius: 26px;
+  padding: 30px;
+  text-align: center;
+}
+
+.mobile-block-card h1 {
+  font-size: 25px;
+  letter-spacing: -.7px;
+  margin: 18px 0 10px;
+}
+
+.mobile-block-card p {
+  color: rgba(255,255,255,.62);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* LOGIN */
+
+#login-screen {
+  display: none;
+  min-height: 100vh;
+}
+
+.login-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+}
+
+.login-left {
+  position: relative;
+  overflow: hidden;
+  padding: 58px 68px;
+  background:
+    radial-gradient(circle at 78% 52%, rgba(232,119,34,.18), transparent 380px),
+    linear-gradient(145deg, #050505 0%, #090909 55%, #14100D 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-left::after {
+  content: '';
+  position: absolute;
+  right: -130px;
+  bottom: -110px;
+  width: 420px;
+  height: 420px;
+  border-radius: 999px;
+  border: 1px solid rgba(232,119,34,.22);
+}
+
+.login-brand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.login-copy {
+  position: relative;
+  z-index: 2;
+  margin: auto 0;
+  max-width: 560px;
+}
+
+.login-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--orange);
+  border: 1px solid rgba(232,119,34,.28);
+  background: rgba(232,119,34,.08);
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 26px;
+}
+
+.login-copy h1 {
+  font-size: 56px;
+  line-height: .95;
+  letter-spacing: -3.1px;
+  font-weight: 900;
+}
+
+.login-copy h1 span {
+  color: var(--orange);
+}
+
+.login-copy p {
+  margin-top: 22px;
+  max-width: 430px;
+  color: rgba(255,255,255,.56);
+  line-height: 1.72;
+  font-size: 14px;
+}
+
+.login-stats {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.login-stat {
+  padding: 20px;
+  background: rgba(255,255,255,.035);
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+
+.login-stat:last-child {
+  border-right: none;
+}
+
+.login-stat strong {
+  display: block;
+  color: #fff;
+  font-size: 23px;
+  letter-spacing: -1px;
+}
+
+.login-stat strong span {
+  color: var(--orange);
+}
+
+.login-stat small {
+  display: block;
+  color: rgba(255,255,255,.38);
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+.login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top right, rgba(232,119,34,.08), transparent 320px),
+    #fff;
+  padding: 60px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-form h2 {
+  font-size: 29px;
+  letter-spacing: -1.2px;
+  font-weight: 900;
+}
+
+.login-form p {
+  color: var(--muted);
+  margin: 9px 0 32px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.field input {
+  width: 100%;
+  height: 50px;
+  border-radius: 15px;
+  border: 1px solid #E7E2DC;
+  background: #F8F6F3;
+  padding: 0 16px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: .18s;
+}
+
+.field input:focus {
+  background: #fff;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(232,119,34,.12);
+}
+
+.login-btn {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #080808, #171717);
+  margin-top: 8px;
+  transition: .18s;
+}
+
+.login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 32px rgba(0,0,0,.18);
+}
+
+.login-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-error {
+  min-height: 18px;
+  margin-top: 12px;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.login-foot {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid #E7E2DC;
+  color: var(--faint);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* PORTAL */
+
+#portal-screen {
+  display: none;
+}
+
+.portal {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 282px 1fr;
+  background: var(--paper);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 80% 4%, rgba(232,119,34,.14), transparent 190px),
+    linear-gradient(180deg, #050505 0%, #090909 55%, #050505 100%);
+  color: #fff;
+  padding: 26px 20px;
+  border-right: 1px solid rgba(255,255,255,.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.side-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+
+.side-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px;
+  margin-bottom: 26px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 900;
+  font-size: 14px;
+}
+
+.side-user strong {
+  display: block;
+  font-size: 13px;
+}
+
+.side-user span {
+  display: block;
+  color: var(--orange);
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-section {
+  margin: 19px 0 8px;
+  padding-left: 8px;
+  color: rgba(255,255,255,.28);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,.58);
+  min-height: 43px;
+  border-radius: 14px;
+  padding: 0 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 750;
+  transition: .16s;
+}
+
+.nav-item svg {
+  color: rgba(255,255,255,.42);
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.065);
+  color: #fff;
+}
+
+.nav-item:hover svg {
+  color: var(--orange);
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, var(--orange), #F27600);
+  color: #fff;
+  box-shadow: 0 16px 35px rgba(232,119,34,.24);
+}
+
+.nav-item.active svg {
+  color: #fff;
+}
+
+.side-bottom {
+  margin-top: auto;
+}
+
+.logout {
+  width: 100%;
+  height: 47px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.035);
+  color: rgba(255,255,255,.68);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 13px;
+  transition: .16s;
+}
+
+.logout:hover {
+  color: #fff;
+  border-color: rgba(220,38,38,.35);
+  background: rgba(220,38,38,.12);
+}
+
+.copyright {
+  margin-top: 22px;
+  color: rgba(255,255,255,.28);
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+/* MAIN */
+
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 76px;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(20,20,20,.08);
+  display: flex;
+  align-items: center;
+  padding: 0 38px;
+  gap: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.top-greeting {
+  flex: 1;
+}
+
+.top-greeting strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.top-greeting strong span {
+  color: var(--orange);
+}
+
+.top-greeting small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(22,163,74,.18);
+  background: rgba(22,163,74,.07);
+  color: #0F8A3C;
+  border-radius: 999px;
+  padding: 8px 15px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--green);
+}
+
+.content {
+  padding: 28px 38px 48px;
+  max-width: 1480px;
+  width: 100%;
+}
+
+/* HERO */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 198px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 78% 48%, rgba(232,119,34,.24), transparent 250px),
+    linear-gradient(135deg, #050505 0%, #0B0B0B 54%, #17110D 100%);
+  color: #fff;
+  padding: 32px 36px;
+  box-shadow: var(--shadow-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.10), transparent 70%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.02) 0, rgba(255,255,255,.02) 1px, transparent 1px, transparent 12px);
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+}
+
+.eyebrow {
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.hero h1 {
+  font-size: 34px;
+  line-height: 1.04;
+  letter-spacing: -1.5px;
+  font-weight: 900;
+  margin-bottom: 11px;
+}
+
+.hero p {
+  color: rgba(255,255,255,.66);
+  font-size: 16px;
+  line-height: 1.56;
+}
+
+.hero-art {
+  position: absolute;
+  right: 20px;
+  top: -18px;
+  width: 520px;
+  height: 260px;
+  color: rgba(232,119,34,.55);
+}
+
+.hero-art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-badge {
+  position: relative;
+  z-index: 2;
+  min-width: 172px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--orange), #F27600);
+  padding: 20px 22px;
+  text-align: center;
+  box-shadow: 0 22px 45px rgba(232,119,34,.25);
+}
+
+.hero-badge strong {
+  display: block;
+  font-size: 29px;
+  letter-spacing: -1.2px;
+  color: #fff;
+}
+
+.hero-badge span {
+  display: block;
+  margin-top: 5px;
+  color: rgba(255,255,255,.78);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+/* KPI */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.kpi {
+  min-height: 126px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(232,119,34,.12), transparent 110px),
+    linear-gradient(145deg, #141414, #080808);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 18px 42px rgba(0,0,0,.13);
+  padding: 18px;
+}
+
+.kpi-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.kpi-icon {
+  width: 41px;
+  height: 41px;
+  border-radius: 15px;
+  background: rgba(232,119,34,.13);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi small {
+  color: rgba(255,255,255,.58);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.kpi strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 22px;
+  letter-spacing: -.7px;
+  font-weight: 900;
+}
+
+.kpi em {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255,255,255,.46);
+  font-size: 11.5px;
+  font-style: normal;
+}
+
+.up {
+  color: #4ADE80 !important;
+}
+
+.down {
+  color: #F87171 !important;
+}
+
+/* GRID */
+
+.grid-main {
+  display: grid;
+  grid-template-columns: 1.35fr .95fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card {
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(20,20,20,.08);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.card.dark {
+  background:
+    radial-gradient(circle at top right, rgba(232,119,34,.13), transparent 170px),
+    linear-gradient(145deg, #121212, #080808);
+  color: #fff;
+  border-color: rgba(255,255,255,.1);
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.card-head h2 {
+  font-size: 17px;
+  letter-spacing: -.4px;
+  font-weight: 900;
+}
+
+.card-head p {
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 12.5px;
+}
+
+.card.dark .card-head p {
+  color: rgba(255,255,255,.46);
+}
+
+.mini-btn {
+  height: 35px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.055);
+  color: rgba(255,255,255,.78);
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.card:not(.dark) .mini-btn {
+  background: #fff;
+  border-color: #E8E2DA;
+  color: var(--muted);
+}
+
+/* CHART */
+
+.chart-wrap {
+  height: 250px;
+  position: relative;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.grid-line {
+  stroke: rgba(255,255,255,.08);
+  stroke-width: 1;
+}
+
+.chart-line {
+  stroke: var(--orange);
+  stroke-width: 4;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-area {
+  fill: url(#orangeArea);
+  opacity: .48;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  color: rgba(255,255,255,.45);
+  font-size: 11.5px;
+}
+
+/* ACTIVITY */
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(20,20,20,.07);
+}
+
+.card.dark .activity-row {
+  border-bottom-color: rgba(255,255,255,.08);
+}
+
+.activity-row:last-child {
+  border-bottom: none;
+}
+
+.activity-icon {
+  width: 39px;
+  height: 39px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-icon.orange {
+  background: rgba(232,119,34,.13);
+  color: var(--orange);
+}
+
+.activity-icon.green {
+  background: rgba(22,163,74,.12);
+  color: var(--green);
+}
+
+.activity-icon.purple {
+  background: rgba(124,58,237,.12);
+  color: var(--purple);
+}
+
+.activity-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.activity-main strong {
+  display: block;
+  font-size: 13.5px;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-main span {
+  display: block;
+  color: var(--muted);
+  margin-top: 2px;
+  font-size: 12.5px;
+}
+
+.card.dark .activity-main span {
+  color: rgba(255,255,255,.46);
+}
+
+.activity-date {
+  color: var(--faint);
+  font-size: 11.5px;
+  font-weight: 750;
+}
+
+/* APPS */
+
+.section-title {
+  margin: 22px 0 12px;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -.4px;
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.app-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 178px;
+  border-radius: 24px;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 88% 70%, rgba(232,119,34,.28), transparent 160px),
+    linear-gradient(145deg, #141414, #060606);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow-dark);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  transition: .18s;
+}
+
+.app-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(232,119,34,.5);
+}
+
+.app-icon {
+  width: 61px;
+  height: 61px;
+  border-radius: 21px;
+  background: linear-gradient(135deg, var(--orange), #F27600);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 18px 36px rgba(232,119,34,.26);
+}
+
+.app-info {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.app-info h3 {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -.6px;
+  margin-bottom: 8px;
+}
+
+.app-info p {
+  color: rgba(255,255,255,.58);
+  line-height: 1.55;
+  font-size: 13.5px;
+  max-width: 420px;
+}
+
+.app-link {
+  margin-top: 17px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--orange);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.app-arrow {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.app-card::after {
+  content: '';
+  position: absolute;
+  right: -70px;
+  bottom: -95px;
+  width: 260px;
+  height: 260px;
+  border-radius: 999px;
+  border: 1px solid rgba(232,119,34,.28);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.summary-item {
+  border-left: 1px solid rgba(255,255,255,.1);
+  padding-left: 18px;
+}
+
+.summary-item:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.summary-icon {
+  width: 37px;
+  height: 37px;
+  border-radius: 14px;
+  background: rgba(232,119,34,.13);
+  color: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.summary-item span {
+  display: block;
+  color: rgba(255,255,255,.5);
+  font-size: 12.5px;
+  margin-bottom: 5px;
+}
+
+.summary-item strong {
+  display: block;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -.5px;
+}
+
+.summary-item em {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255,255,255,.38);
+  font-style: normal;
+  font-size: 11.5px;
+}
+
+@media (max-width: 1180px) {
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-main,
+  .apps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  #portal-screen,
+  #login-screen,
+  #loading {
+    display: none !important;
+  }
+
+  .mobile-block {
+    display: flex;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loading">
+  <div class="loading-card">
+    <img
+      class="official-logo loading-official-logo"
+      src="./logo-nutrialle.png"
+      alt="Nutrialle"
+    />
+    <div class="loading-line"><span></span></div>
+  </div>
+</div>
+
+<div class="mobile-block">
+  <div class="mobile-block-card">
+    <img
+      class="official-logo mobile-official-logo"
+      src="./logo-nutrialle.png"
+      alt="Nutrialle"
+    />
+    <h1>Portal disponível apenas no desktop</h1>
+    <p>Para uma melhor experiência, acesse o Portal Nutrialle pelo computador. O App Campo segue disponível para uso no celular.</p>
+  </div>
+</div>
+
+<section id="login-screen">
+  <div class="login-layout">
+    <div class="login-left">
+      <div class="login-brand">
+        <img
+          class="official-logo login-official-logo"
+          src="./logo-nutrialle.png"
+          alt="Nutrialle"
+        />
+      </div>
+
+      <div class="login-copy">
+        <div class="login-eyebrow">
+          <span>●</span>
+          Portal Comercial
+        </div>
+        <h1>Gestão comercial <span>mais inteligente.</span></h1>
+        <p>Acesse seus indicadores, acompanhe sua carteira e entre rapidamente nas ferramentas de campo e plano nutricional.</p>
+      </div>
+
+      <div class="login-stats">
+        <div class="login-stat">
+          <strong>Campo<span>.</span></strong>
+          <small>clientes, visitas e vendas</small>
+        </div>
+        <div class="login-stat">
+          <strong>Plano<span>.</span></strong>
+          <small>diagnóstico técnico</small>
+        </div>
+        <div class="login-stat">
+          <strong>Dados<span>.</span></strong>
+          <small>decisão comercial</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-right">
+      <form class="login-form" id="login-form">
+        <h2>Entrar no portal</h2>
+        <p>Use seu acesso Nutrialle para continuar.</p>
+
+        <div class="field">
+          <label>E-mail</label>
+          <input id="email" type="email" autocomplete="email" placeholder="seuemail@nutrialle.com.br" required />
+        </div>
+
+        <div class="field">
+          <label>Senha</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required />
+        </div>
+
+        <button class="login-btn" id="login-btn" type="submit">Entrar</button>
+        <div class="login-error" id="login-error"></div>
+
+        <div class="login-foot">
+          Nutrialle Nutrição Animal · Portal Comercial
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="portal-screen">
+  <div class="portal">
+    <aside class="sidebar">
+      <div class="side-logo">
+        <img
+          class="official-logo sidebar-official-logo"
+          src="./logo-nutrialle.png"
+          alt="Nutrialle"
+        />
+      </div>
+
+      <div class="side-user">
+        <div class="avatar" id="avatar">N</div>
+        <div>
+          <strong id="side-name">Usuário</strong>
+          <span id="side-role">vendedor</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-section">Visão Geral</div>
+
+        <button class="nav-item active" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          Dashboard
+        </button>
+
+        <button class="nav-item" type="button" onclick="goDashboardVendas()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15L11 11L14 13L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Indicadores
+        </button>
+
+        <div class="nav-section">Aplicativos</div>
+
+        <button class="nav-item" type="button" onclick="goCampo()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 3L10 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3L14 21L10 14L3 10L21 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          Nutrialle Campo
+        </button>
+
+        <button class="nav-item" type="button" onclick="goPlano()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 4H7A2 2 0 0 0 5 6V20A2 2 0 0 0 7 22H17A2 2 0 0 0 19 20V6A2 2 0 0 0 17 4H16" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" stroke="currentColor" stroke-width="2"/><path d="M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Planos Nutricionais
+        </button>
+
+        <div class="nav-section">Gestão</div>
+
+        <button class="nav-item" type="button" onclick="goClientes()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 21C5.5 16.5 18.5 16.5 20 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Clientes
+        </button>
+
+        <button class="nav-item" type="button" onclick="goAgenda()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M4 10H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Agenda
+        </button>
+      </nav>
+
+      <div class="side-bottom">
+        <button class="logout" type="button" onclick="logout()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 8V6A2 2 0 0 0 13 4H6A2 2 0 0 0 4 6V18A2 2 0 0 0 6 20H13A2 2 0 0 0 15 18V16" stroke="currentColor" stroke-width="2"/><path d="M10 12H21M21 12L18 9M21 12L18 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Sair do portal
+        </button>
+
+        <div class="copyright">
+          Nutrialle Nutrição Animal<br>
+          © 2026. Todos os direitos reservados.
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="top-greeting">
+          <strong>Bom dia, <span id="top-name">Usuário</span> 👋</strong>
+          <small id="top-date">sexta-feira, 3 de julho de 2026</small>
+        </div>
+
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          Online
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">Portal Nutrialle</div>
+            <h1>Central Comercial Nutrialle</h1>
+            <p>Acompanhe seus indicadores e acesse rapidamente suas ferramentas de trabalho.</p>
+          </div>
+
+          <div class="hero-art" aria-hidden="true">
+            <svg viewBox="0 0 640 320" fill="none">
+              <path d="M70 220C150 105 265 92 365 156C448 209 510 158 594 54" stroke="currentColor" stroke-width="2" opacity=".55"/>
+              <path d="M82 255C194 124 304 142 404 202C489 253 548 175 616 91" stroke="currentColor" stroke-width="1.5" opacity=".32"/>
+              <circle cx="432" cy="110" r="28" fill="#E87722" opacity=".85"/>
+              <circle cx="506" cy="190" r="34" fill="#E87722" opacity=".75"/>
+              <circle cx="370" cy="205" r="28" fill="#F3922E" opacity=".82"/>
+              <path d="M397 187L420 134M454 130L488 166" stroke="#E87722" stroke-width="10" stroke-linecap="round" opacity=".78"/>
+              <path d="M545 94C576 124 595 158 594 207C556 194 532 162 532 117C532 105 537 98 545 94Z" stroke="#E87722" stroke-width="2" opacity=".48"/>
+              <path d="M548 101C556 139 567 169 589 199" stroke="#E87722" stroke-width="1.6" opacity=".38"/>
+              <circle cx="568" cy="67" r="8" fill="#E87722" opacity=".6"/>
+              <circle cx="604" cy="34" r="5" fill="#E87722" opacity=".38"/>
+              <path d="M574 63L600 38" stroke="#E87722" stroke-width="2" opacity=".32"/>
+            </svg>
+          </div>
+
+          <div class="hero-badge">
+            <strong id="hero-sales">R$ 0</strong>
+            <span>Vendas no mês</span>
+          </div>
+        </section>
+
+        <section class="kpi-grid">
+          <article class="kpi">
+            <div class="kpi-top">
+              <div>
+                <small>Vendas do mês</small>
+                <strong id="kpi-sales">R$ 0,00</strong>
+              </div>
+              <span class="kpi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7.5C16.3 6.4 14.7 5.5 12.5 5.5C9.8 5.5 8 6.8 8 8.8C8 12.5 17 10.5 17 15.3C17 17.3 15.2 18.5 12.3 18.5C10 18.5 8.3 17.6 7.4 16.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <em id="kpi-sales-var">— 0% vs mês anterior</em>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-top">
+              <div>
+                <small>Cotações emitidas</small>
+                <strong id="kpi-quotes">0</strong>
+              </div>
+              <span class="kpi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 3H14L19 8V21H7V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3V8H19M10 13H16M10 17H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <em id="kpi-quotes-var">— 0% vs mês anterior</em>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-top">
+              <div>
+                <small>Taxa de conversão</small>
+                <strong id="kpi-conversion">0%</strong>
+              </div>
+              <span class="kpi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 17L9 12L13 15L20 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+            <em id="kpi-conversion-var">— 0 p.p. vs mês anterior</em>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-top">
+              <div>
+                <small>Clientes ativos</small>
+                <strong id="kpi-clients">0</strong>
+              </div>
+              <span class="kpi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="2"/><path d="M3 20C4.1 16.5 13.9 16.5 15 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="9" r="2" stroke="currentColor" stroke-width="2"/><path d="M16 15C18.5 15.3 20.3 16.5 21 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <em id="kpi-clients-sub">fazendas ativas</em>
+          </article>
+
+          <article class="kpi">
+            <div class="kpi-top">
+              <div>
+                <small>Meta mensal</small>
+                <strong id="kpi-goal">R$ 0,00</strong>
+              </div>
+              <span class="kpi-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19 5L21 3M21 3V7M21 3H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+            </div>
+            <em id="kpi-goal-sub">— 0% realizado</em>
+          </article>
+        </section>
+
+        <section class="grid-main">
+          <div class="card dark">
+            <div class="card-head">
+              <div>
+                <h2>Evolução de vendas</h2>
+                <p>Últimos 6 meses</p>
+              </div>
+              <button class="mini-btn" type="button">6 meses</button>
+            </div>
+
+            <div class="chart-wrap">
+              <svg class="chart-svg" viewBox="0 0 760 260" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="orangeArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#E87722" stop-opacity=".55"/>
+                    <stop offset="100%" stop-color="#E87722" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <g id="chart-grid"></g>
+                <path id="chart-area" class="chart-area" d=""></path>
+                <polyline id="chart-line" class="chart-line" points=""></polyline>
+              </svg>
+
+              <div class="chart-labels" id="chart-labels">
+                <span>fev.</span><span>mar.</span><span>abr.</span><span>mai.</span><span>jun.</span><span>jul.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card dark">
+            <div class="card-head">
+              <div>
+                <h2>Atividades recentes</h2>
+                <p>Agenda, cotações e vendas</p>
+              </div>
+              <button class="mini-btn" type="button" onclick="goAgenda()">Ver agenda</button>
+            </div>
+
+            <div class="activity-list">
+              <div class="activity-row">
+                <div class="activity-icon orange">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M4 10H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="activity-main">
+                  <strong>Próxima visita</strong>
+                  <span id="next-visit">Nenhuma visita agendada</span>
+                </div>
+              </div>
+
+              <div class="activity-row">
+                <div class="activity-icon purple">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M4 10H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="activity-main">
+                  <strong>Próximo compromisso</strong>
+                  <span id="next-appointment">Nenhum compromisso agendado</span>
+                </div>
+              </div>
+
+              <div class="activity-row">
+                <div class="activity-icon orange">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 3H14L19 8V21H7V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3V8H19M10 13H16M10 17H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="activity-main">
+                  <strong>Última cotação</strong>
+                  <span id="last-quote">Nenhuma cotação registrada</span>
+                </div>
+                <div class="activity-date" id="last-quote-date">—</div>
+              </div>
+
+              <div class="activity-row">
+                <div class="activity-icon green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7.5C16.3 6.4 14.7 5.5 12.5 5.5C9.8 5.5 8 6.8 8 8.8C8 12.5 17 10.5 17 15.3C17 17.3 15.2 18.5 12.3 18.5C10 18.5 8.3 17.6 7.4 16.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div class="activity-main">
+                  <strong>Última venda</strong>
+                  <span id="last-sale">Nenhuma venda registrada</span>
+                </div>
+                <div class="activity-date" id="last-sale-date">—</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <h2 class="section-title">Acesse seus aplicativos</h2>
+
+        <section class="apps-grid">
+          <a class="app-card" href="javascript:void(0)" onclick="goCampo()">
+            <div class="app-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M21 3L10 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M21 3L14 21L10 14L3 10L21 3Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="app-info">
+              <h3>Nutrialle Campo</h3>
+              <p>Gestão comercial completa para o campo. Clientes, visitas, cotações, vendas e indicadores na palma da sua mão.</p>
+              <span class="app-link">Acessar aplicativo →</span>
+            </div>
+            <div class="app-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="app-card" href="javascript:void(0)" onclick="goPlano()">
+            <div class="app-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" stroke-width="2.3"/><path d="M9 3V7M15 3V7M8 11H16M8 15H13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="app-info">
+              <h3>Planos Nutricionais</h3>
+              <p>Ferramenta técnica para criação de planos nutricionais, simulações e relatórios personalizados para seus clientes.</p>
+              <span class="app-link">Acessar aplicativo →</span>
+            </div>
+            <div class="app-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+        </section>
+
+        <section class="grid-main" style="margin-top:16px;">
+          <div class="card dark">
+            <div class="card-head">
+              <div>
+                <h2>Resumo comercial</h2>
+                <p>Indicadores complementares do período</p>
+              </div>
+              <button class="mini-btn" type="button" onclick="goDashboardVendas()">Ver indicadores</button>
+            </div>
+
+            <div class="summary-grid">
+              <div class="summary-item">
+                <div class="summary-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7.5C16.3 6.4 14.7 5.5 12.5 5.5C9.8 5.5 8 6.8 8 8.8C8 12.5 17 10.5 17 15.3C17 17.3 15.2 18.5 12.3 18.5C10 18.5 8.3 17.6 7.4 16.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <span>Ticket médio</span>
+                <strong id="summary-ticket">R$ 0,00</strong>
+                <em id="summary-ticket-sub">— 0% vs mês anterior</em>
+              </div>
+
+              <div class="summary-item">
+                <div class="summary-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15L11 11L14 13L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <span>Frequência de compra</span>
+                <strong id="summary-frequency">0,0</strong>
+                <em>vendas por cliente ativo</em>
+              </div>
+
+              <div class="summary-item">
+                <div class="summary-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 3H14L19 8V21H7V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3V8H19M10 13H16M10 17H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <span>Cotações abertas</span>
+                <strong id="summary-open-quotes">0</strong>
+                <em>aguardando resposta</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="card dark">
+            <div class="card-head">
+              <div>
+                <h2>Prioridades</h2>
+                <p>Sugestões rápidas para ação comercial</p>
+              </div>
+            </div>
+
+            <div class="activity-list">
+              <div class="activity-row">
+                <div class="activity-icon orange">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 8.5L21 9L16 13.5L17.5 20L12 16.5L6.5 20L8 13.5L3 9L9.5 8.5L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="activity-main">
+                  <strong id="priority-1">Acompanhe suas cotações abertas</strong>
+                  <span id="priority-1-sub">Nenhuma ação crítica encontrada.</span>
+                </div>
+              </div>
+
+              <div class="activity-row">
+                <div class="activity-icon green">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 17L9 12L13 15L20 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="activity-main">
+                  <strong id="priority-2">Mantenha sua rotina de visitas</strong>
+                  <span id="priority-2-sub">Agenda sem compromissos para hoje.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</section>
+
+<script>
+const SUPABASE_URL = 'https://kruldbtjyhfiswmwmoyz.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_VcS5TqxQ6FFXN9kwkdnuoA_wSHQ5j2d'
+
+const APP_CAMPO_URL = 'https://nutrialle-campo.vercel.app'
+const APP_PLANO_URL = 'https://nutrialle-planos.vercel.app'
+const APP_DASHBOARD_VENDAS_URL = 'https://nutrialle-campo.vercel.app/dashboard-vendas'
+const APP_CLIENTES_URL = 'https://nutrialle-campo.vercel.app/clientes'
+const APP_AGENDA_URL = 'https://nutrialle-campo.vercel.app/agenda'
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+let currentUser = null
+let currentProfile = null
+
+const $ = id => document.getElementById(id)
+
+function moeda(n) {
+  return Number(n || 0).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
+}
+
+function numero(n) {
+  return Number(n || 0).toLocaleString('pt-BR')
+}
+
+function pct(n) {
+  return `${Number(n || 0).toLocaleString('pt-BR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1
+  })}%`
+}
+
+function dataISO(date) {
+  return date.toISOString().slice(0, 10)
+}
+
+function inicioMes(date = new Date()) {
+  return new Date(date.getFullYear(), date.getMonth(), 1)
+}
+
+function fimMes(date = new Date()) {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+}
+
+function inicioMesAnterior(date = new Date()) {
+  return new Date(date.getFullYear(), date.getMonth() - 1, 1)
+}
+
+function fimMesAnterior(date = new Date()) {
+  return new Date(date.getFullYear(), date.getMonth(), 0)
+}
+
+function formatDateBR(date) {
+  if (!date) return '—'
+
+  try {
+    return new Date(date).toLocaleDateString('pt-BR')
+  } catch {
+    return '—'
+  }
+}
+
+function formatarNome(nome) {
+  if (!nome) return 'Usuário'
+
+  return String(nome)
+    .split('@')[0]
+    .replace(/[._-]+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean)
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
+    .join(' ')
+}
+
+function iniciais(nome) {
+  const partes = formatarNome(nome).split(' ').filter(Boolean)
+  if (!partes.length) return 'N'
+  if (partes.length === 1) return partes[0].charAt(0).toUpperCase()
+  return (partes[0].charAt(0) + partes[partes.length - 1].charAt(0)).toUpperCase()
+}
+
+function variacao(atual, anterior) {
+  const a = Number(atual || 0)
+  const b = Number(anterior || 0)
+
+  if (a === 0 && b === 0) return 0
+  if (b === 0) return 100
+
+  return ((a - b) / b) * 100
+}
+
+function statusQuote(status) {
+  return String(status || '').toLowerCase()
+}
+
+function getSaleDate(sale) {
+  return sale.sale_date || sale.saleDate || sale.created_at?.slice(0, 10)
+}
+
+function getQuoteDate(quote) {
+  return quote.created_at?.slice(0, 10) || quote.quote_date || quote.date
+}
+
+function getTotal(row) {
+  return Number(row?.total || row?.amount || row?.value || 0)
+}
+
+function getGoalSellerId(goal) {
+  return goal?.seller_id || goal?.user_id || goal?.profile_id || goal?.vendedor_id || goal?.responsible_id || null
+}
+
+function getGoalAmount(goal) {
+  return Number(
+    goal?.target_amount ??
+    goal?.amount ??
+    goal?.value ??
+    goal?.goal ??
+    goal?.meta ??
+    goal?.meta_vendas ??
+    goal?.target ??
+    0
+  )
+}
+
+function getGoalYear(goal) {
+  return Number(goal?.year ?? goal?.ano ?? goal?.goal_year ?? goal?.target_year ?? 0)
+}
+
+function getGoalMonth(goal) {
+  return Number(goal?.month ?? goal?.mes ?? goal?.goal_month ?? goal?.target_month ?? 0)
+}
+
+function getGoalDate(goal) {
+  return goal?.date || goal?.goal_date || goal?.reference_date || goal?.competence_date || goal?.created_at?.slice(0, 10) || null
+}
+
+function goalDoMes(goals, userId, date = new Date()) {
+  const ano = date.getFullYear()
+  const mes = date.getMonth() + 1
+
+  const goal = goals.find(g => {
+    const sellerId = getGoalSellerId(g)
+
+    if (sellerId && userId && String(sellerId) !== String(userId)) {
+      return false
+    }
+
+    const y = getGoalYear(g)
+    const m = getGoalMonth(g)
+
+    if (y && m) {
+      return y === ano && m === mes
+    }
+
+    const d = getGoalDate(g)
+
+    if (d) {
+      const dt = new Date(d + 'T12:00:00')
+      return dt.getFullYear() === ano && dt.getMonth() + 1 === mes
+    }
+
+    return false
+  })
+
+  return getGoalAmount(goal)
+}
+
+function belongsToSeller(row, farmsById, userId) {
+  if (!userId) return true
+
+  if (row?.seller_id) {
+    return String(row.seller_id) === String(userId)
+  }
+
+  if (row?.sellerId) {
+    return String(row.sellerId) === String(userId)
+  }
+
+  const farm = farmsById[row?.farm_id] || farmsById[row?.farmId]
+
+  if (farm?.seller_id) {
+    return String(farm.seller_id) === String(userId)
+  }
+
+  if (farm?.sellerId) {
+    return String(farm.sellerId) === String(userId)
+  }
+
+  return true
+}
+
+async function safeSelect(table, select = '*', orderColumn = null) {
+  try {
+    let query = supabaseClient.from(table).select(select)
+
+    if (orderColumn) {
+      query = query.order(orderColumn, { ascending: true })
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.warn(`Erro ao buscar ${table}:`, error.message)
+      return []
+    }
+
+    return data || []
+  } catch (e) {
+    console.warn(`Tabela ${table} indisponível:`, e)
+    return []
+  }
+}
+
+async function getProfile(user) {
+  try {
+    const { data } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    return data || null
+  } catch {
+    return null
+  }
+}
+
+async function init() {
+  const { data: { session } } = await supabaseClient.auth.getSession()
+
+  $('loading').style.display = 'none'
+
+  if (!session?.user) {
+    showLogin()
+    return
+  }
+
+  currentUser = session.user
+  currentProfile = await getProfile(currentUser)
+
+  showPortal()
+  await loadPortalData()
+}
+
+function showLogin() {
+  $('login-screen').style.display = 'block'
+  $('portal-screen').style.display = 'none'
+}
+
+function showPortal() {
+  $('login-screen').style.display = 'none'
+  $('portal-screen').style.display = 'block'
+
+  const nome = currentProfile?.name ||
+    currentProfile?.full_name ||
+    currentProfile?.display_name ||
+    currentProfile?.nome ||
+    currentUser?.user_metadata?.name ||
+    currentUser?.user_metadata?.full_name ||
+    currentUser?.email
+
+  const nomeFormatado = formatarNome(nome)
+  const role = currentProfile?.role || currentProfile?.cargo || currentUser?.user_metadata?.role || 'vendedor'
+
+  $('side-name').textContent = nomeFormatado
+  $('side-role').textContent = role
+  $('top-name').textContent = nomeFormatado
+  $('avatar').textContent = iniciais(nomeFormatado)
+
+  const hoje = new Date()
+  $('top-date').textContent = hoje.toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  })
+}
+
+async function loadPortalData() {
+  const hoje = new Date()
+
+  const iniAtual = inicioMes(hoje)
+  const fimAtual = fimMes(hoje)
+  const iniAnt = inicioMesAnterior(hoje)
+  const fimAnt = fimMesAnterior(hoje)
+
+  const [
+    sales,
+    quotes,
+    farms,
+    goals,
+    appointments,
+    visits
+  ] = await Promise.all([
+    safeSelect('sales', '*', 'sale_date'),
+    safeSelect('quotes', '*', 'created_at'),
+    safeSelect('farms', '*', 'name'),
+    safeSelect('goals', '*'),
+    safeSelect('appointments', '*', 'date'),
+    safeSelect('visits', '*', 'date')
+  ])
+
+  const farmsById = Object.fromEntries(farms.map(f => [f.id, f]))
+
+  const sellerSales = sales.filter(s => belongsToSeller(s, farmsById, currentUser?.id))
+  const sellerQuotes = quotes.filter(q => belongsToSeller(q, farmsById, currentUser?.id))
+  const sellerFarms = farms.filter(f => {
+    if (!currentUser?.id) return true
+    if (!f.seller_id && !f.sellerId) return true
+    return String(f.seller_id || f.sellerId) === String(currentUser.id)
+  })
+
+  const inPeriod = (dateStr, start, end) => {
+    if (!dateStr) return false
+    return dateStr >= dataISO(start) && dateStr <= dataISO(end)
+  }
+
+  const salesAtual = sellerSales.filter(s => inPeriod(getSaleDate(s), iniAtual, fimAtual))
+  const salesAnt = sellerSales.filter(s => inPeriod(getSaleDate(s), iniAnt, fimAnt))
+
+  const quotesAtual = sellerQuotes.filter(q => inPeriod(getQuoteDate(q), iniAtual, fimAtual))
+  const quotesAnt = sellerQuotes.filter(q => inPeriod(getQuoteDate(q), iniAnt, fimAnt))
+
+  const vendasMes = salesAtual.reduce((acc, s) => acc + getTotal(s), 0)
+  const vendasMesAnt = salesAnt.reduce((acc, s) => acc + getTotal(s), 0)
+
+  const cotacoesMes = quotesAtual.length
+  const cotacoesMesAnt = quotesAnt.length
+
+  const cotacoesConvertidas = quotesAtual.filter(q => statusQuote(q.status) === 'convertida').length
+  const cotacoesConvertidasAnt = quotesAnt.filter(q => statusQuote(q.status) === 'convertida').length
+
+  const taxaConversao = cotacoesMes > 0 ? cotacoesConvertidas / cotacoesMes * 100 : 0
+  const taxaConversaoAnt = cotacoesMesAnt > 0 ? cotacoesConvertidasAnt / cotacoesMesAnt * 100 : 0
+
+  const clientesAtivos = sellerFarms.filter(f => {
+    const status = String(f.status || '').toLowerCase()
+    const prospect = Boolean(f.prospect)
+    return !prospect && (!status || status === 'ativo' || status === 'active')
+  }).length
+
+  const metaMes = goalDoMes(goals, currentUser?.id, hoje)
+  const progressoMeta = metaMes > 0 ? vendasMes / metaMes * 100 : 0
+
+  const cotaAbertas = quotesAtual.filter(q => {
+    const s = statusQuote(q.status)
+    return s === 'rascunho' || s === 'enviada' || s === 'aberta' || s === 'pendente'
+  }).length
+
+  const ticketMedio = salesAtual.length ? vendasMes / salesAtual.length : 0
+  const ticketMedioAnt = salesAnt.length ? vendasMesAnt / salesAnt.length : 0
+
+  const frequenciaCompra = clientesAtivos > 0 ? salesAtual.length / clientesAtivos : 0
+
+  updateKPIs({
+    vendasMes,
+    vendasMesAnt,
+    cotacoesMes,
+    cotacoesMesAnt,
+    taxaConversao,
+    taxaConversaoAnt,
+    clientesAtivos,
+    metaMes,
+    progressoMeta,
+    cotaAbertas,
+    ticketMedio,
+    ticketMedioAnt,
+    frequenciaCompra
+  })
+
+  updateActivities({
+    appointments,
+    visits,
+    quotes: sellerQuotes,
+    sales: sellerSales
+  })
+
+  updatePriorities({
+    cotaAbertas,
+    appointments,
+    visits,
+    taxaConversao,
+    vendasMes,
+    metaMes
+  })
+
+  updateChart(sellerSales)
+}
+
+function updateKPIs(d) {
+  $('hero-sales').textContent = moeda(d.vendasMes).replace(',00', '')
+  $('kpi-sales').textContent = moeda(d.vendasMes)
+
+  const varVendas = variacao(d.vendasMes, d.vendasMesAnt)
+  $('kpi-sales-var').textContent = `${varVendas >= 0 ? '↑' : '↓'} ${pct(Math.abs(varVendas))} vs mês anterior`
+  $('kpi-sales-var').className = varVendas >= 0 ? 'up' : 'down'
+
+  $('kpi-quotes').textContent = numero(d.cotacoesMes)
+  const varCot = variacao(d.cotacoesMes, d.cotacoesMesAnt)
+  $('kpi-quotes-var').textContent = `${varCot >= 0 ? '↑' : '↓'} ${pct(Math.abs(varCot))} vs mês anterior`
+  $('kpi-quotes-var').className = varCot >= 0 ? 'up' : 'down'
+
+  $('kpi-conversion').textContent = pct(d.taxaConversao)
+  const varConv = d.taxaConversao - d.taxaConversaoAnt
+  $('kpi-conversion-var').textContent = `${varConv >= 0 ? '↑' : '↓'} ${Math.abs(varConv).toFixed(1).replace('.', ',')} p.p. vs mês anterior`
+  $('kpi-conversion-var').className = varConv >= 0 ? 'up' : 'down'
+
+  $('kpi-clients').textContent = numero(d.clientesAtivos)
+  $('kpi-clients-sub').textContent = 'fazendas ativas'
+
+  $('kpi-goal').textContent = d.metaMes > 0 ? moeda(d.metaMes) : 'Sem meta'
+  $('kpi-goal-sub').textContent = d.metaMes > 0 ? `${pct(d.progressoMeta)} realizado` : 'meta não cadastrada'
+
+  $('summary-ticket').textContent = moeda(d.ticketMedio)
+  const varTicket = variacao(d.ticketMedio, d.ticketMedioAnt)
+  $('summary-ticket-sub').textContent = `${varTicket >= 0 ? '↑' : '↓'} ${pct(Math.abs(varTicket))} vs mês anterior`
+
+  $('summary-frequency').textContent = d.frequenciaCompra.toLocaleString('pt-BR', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  })
+
+  $('summary-open-quotes').textContent = numero(d.cotaAbertas)
+}
+
+function updateActivities({ appointments, visits, quotes, sales }) {
+  const today = dataISO(new Date())
+
+  const futureAppointments = appointments
+    .filter(a => (a.date || a.start_date || a.start_at?.slice(0, 10)) >= today)
+    .sort((a, b) => String(a.date || a.start_date || a.start_at).localeCompare(String(b.date || b.start_date || b.start_at)))
+
+  const futureVisits = visits
+    .filter(v => (v.date || v.visit_date || v.created_at?.slice(0, 10)) >= today)
+    .sort((a, b) => String(a.date || a.visit_date || a.created_at).localeCompare(String(b.date || b.visit_date || b.created_at)))
+
+  const nextVisit = futureVisits[0]
+  $('next-visit').textContent = nextVisit
+    ? `${nextVisit.title || nextVisit.farm_name || 'Visita agendada'} · ${formatDateBR(nextVisit.date || nextVisit.visit_date || nextVisit.created_at)}`
+    : 'Nenhuma visita agendada'
+
+  const nextAppointment = futureAppointments[0]
+  $('next-appointment').textContent = nextAppointment
+    ? `${nextAppointment.title || nextAppointment.name || 'Compromisso'} · ${formatDateBR(nextAppointment.date || nextAppointment.start_date || nextAppointment.start_at)}`
+    : 'Nenhum compromisso agendado'
+
+  const lastQuote = [...quotes].sort((a, b) => String(getQuoteDate(b)).localeCompare(String(getQuoteDate(a))))[0]
+  $('last-quote').textContent = lastQuote?.farm_name || lastQuote?.client_name || lastQuote?.customer_name || lastQuote?.name || 'Cotação registrada'
+  $('last-quote-date').textContent = lastQuote ? formatDateBR(getQuoteDate(lastQuote)) : '—'
+
+  const lastSale = [...sales].sort((a, b) => String(getSaleDate(b)).localeCompare(String(getSaleDate(a))))[0]
+  $('last-sale').textContent = lastSale?.farm_name || lastSale?.client_name || lastSale?.customer_name || lastSale?.name || 'Venda registrada'
+  $('last-sale-date').textContent = lastSale ? formatDateBR(getSaleDate(lastSale)) : '—'
+}
+
+function updatePriorities({ cotaAbertas, appointments, visits, taxaConversao, vendasMes, metaMes }) {
+  if (cotaAbertas > 0) {
+    $('priority-1').textContent = `${cotaAbertas} cotação(ões) aberta(s)`
+    $('priority-1-sub').textContent = 'Priorize follow-up para aumentar a conversão.'
+  } else {
+    $('priority-1').textContent = 'Carteira comercial organizada'
+    $('priority-1-sub').textContent = 'Nenhuma cotação aberta no mês.'
+  }
+
+  const totalAgenda = appointments.length + visits.length
+
+  if (totalAgenda === 0) {
+    $('priority-2').textContent = 'Agenda sem atividades'
+    $('priority-2-sub').textContent = 'Inclua visitas e compromissos para manter a rotina comercial ativa.'
+  } else if (metaMes > 0 && vendasMes < metaMes * .75) {
+    $('priority-2').textContent = 'Acelerar execução da meta'
+    $('priority-2-sub').textContent = 'Use o App Campo para cadastrar novas oportunidades.'
+  } else if (taxaConversao < 30) {
+    $('priority-2').textContent = 'Conversão abaixo do ideal'
+    $('priority-2-sub').textContent = 'Reavalie cotações em negociação e próximos passos com clientes.'
+  } else {
+    $('priority-2').textContent = 'Boa evolução comercial'
+    $('priority-2-sub').textContent = 'Mantenha o ritmo de visitas, cotações e acompanhamento.'
+  }
+}
+
+function updateChart(sales) {
+  const now = new Date()
+  const meses = []
+
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    meses.push({
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      label: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')
+    })
+  }
+
+  const valores = meses.map(m => {
+    return sales
+      .filter(s => {
+        const dStr = getSaleDate(s)
+        if (!dStr) return false
+        const d = new Date(dStr + 'T12:00:00')
+        return d.getFullYear() === m.year && d.getMonth() === m.month
+      })
+      .reduce((acc, s) => acc + getTotal(s), 0)
+  })
+
+  const W = 760
+  const H = 260
+  const P = 36
+  const max = Math.max(...valores, 1)
+
+  const points = valores.map((v, i) => {
+    const x = P + (i / Math.max(1, valores.length - 1)) * (W - P * 2)
+    const y = H - P - (v / max) * (H - P * 2)
+    return [x, y]
+  })
+
+  const polyline = points.map(p => p.join(',')).join(' ')
+  const area = points.length
+    ? `M ${points[0][0]} ${H - P} L ${points.map(p => p.join(' ')).join(' L ')} L ${points[points.length - 1][0]} ${H - P} Z`
+    : ''
+
+  $('chart-line').setAttribute('points', polyline)
+  $('chart-area').setAttribute('d', area)
+
+  $('chart-labels').innerHTML = meses.map(m => `<span>${m.label}</span>`).join('')
+
+  const grid = $('chart-grid')
+  grid.innerHTML = ''
+
+  for (let i = 0; i < 5; i++) {
+    const y = P + i * ((H - P * 2) / 4)
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+    line.setAttribute('x1', P)
+    line.setAttribute('x2', W - P)
+    line.setAttribute('y1', y)
+    line.setAttribute('y2', y)
+    line.setAttribute('class', 'grid-line')
+    grid.appendChild(line)
+  }
+}
+
+$('login-form').addEventListener('submit', async e => {
+  e.preventDefault()
+
+  const email = $('email').value.trim()
+  const password = $('password').value
+
+  $('login-btn').disabled = true
+  $('login-btn').textContent = 'Entrando...'
+  $('login-error').textContent = ''
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (error) {
+    $('login-error').textContent = 'E-mail ou senha incorretos.'
+    $('login-btn').disabled = false
+    $('login-btn').textContent = 'Entrar'
+    return
+  }
+
+  currentUser = data.user
+  currentProfile = await getProfile(currentUser)
+
+  $('login-btn').disabled = false
+  $('login-btn').textContent = 'Entrar'
+
+  showPortal()
+  await loadPortalData()
+})
+
+async function logout() {
+  await supabaseClient.auth.signOut()
+  currentUser = null
+  currentProfile = null
+  showLogin()
+}
+
+function goCampo() {
+  window.location.href = APP_CAMPO_URL
+}
+
+function goPlano() {
+  window.location.href = APP_PLANO_URL
+}
+
+function goDashboardVendas() {
+  window.location.href = APP_DASHBOARD_VENDAS_URL
+}
+
+function goClientes() {
+  window.location.href = APP_CLIENTES_URL
+}
+
+function goAgenda() {
+  window.location.href = APP_AGENDA_URL
+}
+
+init()
+</script>
+
+</body>
+</html>

@@ -2047,12 +2047,6 @@ function showPortal() {
 
 
 
-  const secGestor = document.getElementById('sec-gestor')
-  if (secGestor) secGestor.style.display = isGestor ? 'block' : 'none'
-
-  const cardGestao = document.getElementById('card-gestao')
-  const navGestao  = document.getElementById('nav-gestao')
-  if (cardGestao) cardGestao.style.display = isGestor ? '' : 'none'
   if (navGestao)  navGestao.style.display  = isGestor ? '' : 'none'
 
   if (isGestor) loadGestorData()

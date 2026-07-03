@@ -1298,6 +1298,10 @@ a {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 4H7A2 2 0 0 0 5 6V20A2 2 0 0 0 7 22H17A2 2 0 0 0 19 20V6A2 2 0 0 0 17 4H16" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" stroke="currentColor" stroke-width="2"/><path d="M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           Planos Nutricionais
         </button>
+        <button class="nav-item" type="button" onclick="goGestao()" id="nav-gestao" style="display:none">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Gestão
+        </button>
 
         <div class="nav-section">Gestão</div>
 
@@ -1536,7 +1540,7 @@ a {
             </div>
           </a>
 
-          <a class="app-card" href="javascript:void(0)" onclick="goPlano()">
+          <a class="app-card" href="javascript:void(0)" onclick="goPlano()" id="card-planos">
             <div class="app-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" stroke-width="2.3"/><path d="M9 3V7M15 3V7M8 11H16M8 15H13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
             </div>
@@ -1547,6 +1551,15 @@ a {
             </div>
             <div class="app-arrow">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+          <a class="app-card" href="javascript:void(0)" onclick="goGestao()" id="card-gestao" style="display:none">
+            <div class="app-card-icon" style="background:rgba(99,102,241,.1)">
+              <svg width="24" height="24" fill="none" stroke="#6366F1" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            </div>
+            <div class="app-card-content">
+              <h3>Gestão</h3>
+              <p>Dashboard gerencial, produtos, equipe e configurações do sistema.</p>
             </div>
           </a>
         </section>
@@ -1633,6 +1646,7 @@ const SUPABASE_URL = 'https://kruldbtjyhfiswmwmoyz.supabase.co'
 const SUPABASE_ANON_KEY = 'sb_publishable_VcS5TqxQ6FFXN9kwkdnuoA_wSHQ5j2d'
 
 const APP_CAMPO_URL = 'https://nutrialle-campo.vercel.app'
+const APP_GESTAO_URL = 'https://gestao-three-virid.vercel.app'
 const APP_PLANO_URL = 'https://nutrialle-planos.vercel.app'
 const APP_DASHBOARD_VENDAS_URL = 'https://nutrialle-campo.vercel.app/dashboard-vendas'
 const APP_CLIENTES_URL = 'https://nutrialle-campo.vercel.app/clientes'
@@ -1898,6 +1912,13 @@ function showPortal() {
 
   $('side-name').textContent = nomeFormatado
   $('side-role').textContent = role
+
+  // Mostrar gestão apenas para gestores e admin
+  const isGestor = ['gestor', 'gestor_comercial', 'admin'].includes(role)
+  const cardGestao = document.getElementById('card-gestao')
+  const navGestao = document.getElementById('nav-gestao')
+  if (cardGestao) cardGestao.style.display = isGestor ? '' : 'none'
+  if (navGestao) navGestao.style.display = isGestor ? '' : 'none'
   $('top-name').textContent = nomeFormatado
   $('avatar').textContent = iniciais(nomeFormatado)
 
@@ -2210,6 +2231,10 @@ async function logout() {
   currentUser = null
   currentProfile = null
   showLogin()
+}
+
+function goGestao() {
+  window.location.href = APP_GESTAO_URL
 }
 
 function goCampo() {

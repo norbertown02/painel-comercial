@@ -1975,21 +1975,32 @@ function showPortal() {
   $('side-name').textContent = nomeFormatado
   $('side-role').textContent = role
 
-  const isGestor = ['gestor', 'gestor_comercial', 'admin'].includes(role)
+  // ── VISÕES POR ROLE ──────────────────────────────────
+  // vendedor         → Campo + Planos + dashboard próprio
+  // gestor_comercial → tudo acima + painel do time + botão Gestão
+  // gestor / admin   → só painel do time + botão Gestão
 
-  const secGestor  = document.getElementById('sec-gestor')
+  const soGestor  = ['gestor', 'admin'].includes(role)
+  const temGestao = ['gestor', 'gestor_comercial', 'admin'].includes(role)
+  const verTime   = ['gestor', 'gestor_comercial', 'admin'].includes(role)
+
+  const secGestor   = document.getElementById('sec-gestor')
   const secVendedor = document.getElementById('sec-vendedor-wrap')
+  const cardGestao  = document.getElementById('card-gestao')
+  const navGestao   = document.getElementById('nav-gestao')
 
-  // Mostrar apenas a seção correta
-  if (secGestor)   secGestor.style.display   = isGestor ? 'block' : 'none'
-  if (secVendedor) secVendedor.style.display = isGestor ? 'none'  : 'block'
+  // vendedor e gestor_comercial veem a seção de vendedor
+  if (secVendedor) secVendedor.style.display = soGestor ? 'none' : 'block'
 
-  const cardGestao = document.getElementById('card-gestao')
-  const navGestao  = document.getElementById('nav-gestao')
-  if (cardGestao) cardGestao.style.display = isGestor ? '' : 'none'
-  if (navGestao)  navGestao.style.display  = isGestor ? '' : 'none'
+  // gestor_comercial, gestor e admin veem o painel do time
+  if (secGestor) secGestor.style.display = verTime ? 'block' : 'none'
 
-  if (isGestor) loadGestorData()
+  // botão Gestão apenas para quem tem acesso
+  if (cardGestao) cardGestao.style.display = temGestao ? '' : 'none'
+  if (navGestao)  navGestao.style.display  = temGestao ? '' : 'none'
+
+  // Carregar dados do time
+  if (verTime) loadGestorData()
   $('top-name').textContent = nomeFormatado
   $('avatar').textContent = iniciais(nomeFormatado)
 

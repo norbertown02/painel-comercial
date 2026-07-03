@@ -2060,11 +2060,7 @@ function showPortal() {
 
 
   // Mostrar gestão apenas para gestores e admin
-  const isGestor = ['gestor', 'gestor_comercial', 'admin'].includes(role)
-  const cardGestao = document.getElementById('card-gestao')
-  const navGestao = document.getElementById('nav-gestao')
-  if (cardGestao) cardGestao.style.display = isGestor ? '' : 'none'
-  if (navGestao) navGestao.style.display = isGestor ? '' : 'none'
+
   $('top-name').textContent = nomeFormatado
   $('avatar').textContent = iniciais(nomeFormatado)
 

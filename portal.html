@@ -186,19 +186,27 @@ a {
 .login-layout {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 1.08fr .92fr;
+  grid-template-columns: 1.05fr .95fr;
 }
 
 .login-left {
   position: relative;
   overflow: hidden;
-  padding: 58px 68px;
+  padding: 64px 72px;
   background:
-    radial-gradient(circle at 78% 52%, rgba(232,119,34,.18), transparent 380px),
+    radial-gradient(circle at 78% 52%, rgba(232,119,34,.20), transparent 380px),
     linear-gradient(145deg, #050505 0%, #090909 55%, #14100D 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
+}
+
+.login-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0, rgba(255,255,255,.018) 1px, transparent 1px, transparent 14px);
+  pointer-events: none;
 }
 
 .login-left::after {
@@ -210,6 +218,18 @@ a {
   height: 420px;
   border-radius: 999px;
   border: 1px solid rgba(232,119,34,.22);
+  pointer-events: none;
+}
+
+.login-ring-2 {
+  position: absolute;
+  right: -58px;
+  bottom: -38px;
+  width: 258px;
+  height: 258px;
+  border-radius: 999px;
+  border: 1px solid rgba(232,119,34,.14);
+  pointer-events: none;
 }
 
 .login-brand {
@@ -217,6 +237,8 @@ a {
   z-index: 2;
   display: flex;
   align-items: center;
+  opacity: 0;
+  animation: loginFadeUp .6s ease forwards;
 }
 
 .login-copy {
@@ -234,19 +256,23 @@ a {
   border: 1px solid rgba(232,119,34,.28);
   background: rgba(232,119,34,.08);
   border-radius: 999px;
-  padding: 8px 13px;
+  padding: 8px 14px;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 26px;
+  opacity: 0;
+  animation: loginFadeUp .6s ease .08s forwards;
 }
 
 .login-copy h1 {
-  font-size: 56px;
-  line-height: .95;
-  letter-spacing: -3.1px;
+  font-size: 58px;
+  line-height: .96;
+  letter-spacing: -3.2px;
   font-weight: 900;
+  opacity: 0;
+  animation: loginFadeUp .6s ease .16s forwards;
 }
 
 .login-copy h1 span {
@@ -257,8 +283,10 @@ a {
   margin-top: 22px;
   max-width: 430px;
   color: rgba(255,255,255,.56);
-  line-height: 1.72;
+  line-height: 1.75;
   font-size: 14px;
+  opacity: 0;
+  animation: loginFadeUp .6s ease .24s forwards;
 }
 
 .login-stats {
@@ -269,6 +297,8 @@ a {
   border: 1px solid rgba(255,255,255,.09);
   border-radius: 18px;
   overflow: hidden;
+  opacity: 0;
+  animation: loginFadeUp .6s ease .32s forwards;
 }
 
 .login-stat {
@@ -279,6 +309,13 @@ a {
 
 .login-stat:last-child {
   border-right: none;
+}
+
+.login-stat svg {
+  color: var(--orange);
+  margin-bottom: 10px;
+  opacity: .9;
+  display: block;
 }
 
 .login-stat strong {
@@ -312,6 +349,20 @@ a {
 .login-form {
   width: 100%;
   max-width: 380px;
+  opacity: 0;
+  animation: loginFadeUp .6s ease .18s forwards;
+}
+
+.login-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
 .login-form h2 {
@@ -341,13 +392,26 @@ a {
   text-transform: uppercase;
 }
 
+.field-input-wrap {
+  position: relative;
+}
+
+.field-input-wrap svg {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--faint);
+  pointer-events: none;
+}
+
 .field input {
   width: 100%;
-  height: 50px;
+  height: 52px;
   border-radius: 15px;
   border: 1px solid #E7E2DC;
   background: #F8F6F3;
-  padding: 0 16px;
+  padding: 0 16px 0 44px;
   color: var(--text);
   font-size: 14px;
   outline: none;
@@ -360,9 +424,32 @@ a {
   box-shadow: 0 0 0 4px rgba(232,119,34,.12);
 }
 
+.field-pass-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: .15s;
+}
+
+.field-pass-toggle:hover {
+  background: #F1ECE6;
+  color: var(--text);
+}
+
 .login-btn {
   width: 100%;
-  height: 52px;
+  height: 54px;
   border: none;
   border-radius: 16px;
   cursor: pointer;
@@ -370,8 +457,20 @@ a {
   font-size: 14px;
   font-weight: 900;
   background: linear-gradient(135deg, #080808, #171717);
-  margin-top: 8px;
+  margin-top: 10px;
   transition: .18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-btn svg {
+  transition: transform .18s;
+}
+
+.login-btn:hover svg {
+  transform: translateX(3px);
 }
 
 .login-btn:hover {
@@ -386,6 +485,9 @@ a {
 }
 
 .login-error {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   min-height: 18px;
   margin-top: 12px;
   color: var(--red);
@@ -400,6 +502,23 @@ a {
   color: var(--faint);
   font-size: 12px;
   text-align: center;
+}
+
+@keyframes loginFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+  }
+  .login-left {
+    display: none;
+  }
+  .login-right {
+    padding: 40px 24px;
+  }
 }
 
 /* PORTAL */
@@ -1693,6 +1812,7 @@ body.role-gestao #sec-gestor {
 <section id="login-screen">
   <div class="login-layout">
     <div class="login-left">
+      <div class="login-ring-2"></div>
       <div class="login-brand">
         <img
           class="official-logo login-official-logo"
@@ -1712,14 +1832,17 @@ body.role-gestao #sec-gestor {
 
       <div class="login-stats">
         <div class="login-stat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21v-13l9 -4l9 4v13"></path><path d="M13 13h4v8h-10v-6h6"></path></svg>
           <strong>Campo<span>.</span></strong>
           <small>clientes, visitas e vendas</small>
         </div>
         <div class="login-stat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path><path d="M9 12l.01 0"></path><path d="M13 12l2 0"></path><path d="M9 16l.01 0"></path><path d="M13 16l2 0"></path></svg>
           <strong>Plano<span>.</span></strong>
           <small>diagnóstico técnico</small>
         </div>
         <div class="login-stat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a8 3 0 1 0 16 0a8 3 0 1 0 -16 0"></path><path d="M4 6v6a8 3 0 0 0 16 0v-6"></path><path d="M4 12v6a8 3 0 0 0 16 0v-6"></path></svg>
           <strong>Dados<span>.</span></strong>
           <small>decisão comercial</small>
         </div>
@@ -1728,20 +1851,34 @@ body.role-gestao #sec-gestor {
 
     <div class="login-right">
       <form class="login-form" id="login-form">
+        <div class="login-kicker">Bem-vindo de volta</div>
         <h2>Entrar no portal</h2>
         <p>Use seu acesso Nutrialle para continuar.</p>
 
         <div class="field">
           <label>E-mail</label>
-          <input id="email" type="email" autocomplete="email" placeholder="seuemail@nutrialle.com.br" required />
+          <div class="field-input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path><path d="M3 7l9 6l9 -6"></path></svg>
+            <input id="email" type="email" autocomplete="email" placeholder="seuemail@nutrialle.com.br" required />
+          </div>
         </div>
 
         <div class="field">
           <label>Senha</label>
-          <input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required />
+          <div class="field-input-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"></path><path d="M8 11v-4a4 4 0 1 1 8 0v4"></path></svg>
+            <input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required style="padding-right:44px" />
+            <button type="button" class="field-pass-toggle" id="password-toggle" aria-label="Mostrar senha">
+              <svg id="password-eye-on" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"></path></svg>
+              <svg id="password-eye-off" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828"></path><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87"></path><path d="M3 3l18 18"></path></svg>
+            </button>
+          </div>
         </div>
 
-        <button class="login-btn" id="login-btn" type="submit">Entrar</button>
+        <button class="login-btn" id="login-btn" type="submit">
+          <span id="login-btn-text">Entrar</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l14 0"></path><path d="M13 18l6 -6"></path><path d="M13 6l6 6"></path></svg>
+        </button>
         <div class="login-error" id="login-error"></div>
 
         <div class="login-foot">
@@ -2970,7 +3107,7 @@ $('login-form').addEventListener('submit', async e => {
   const password = $('password').value
 
   $('login-btn').disabled = true
-  $('login-btn').textContent = 'Entrando...'
+  $('login-btn-text').textContent = 'Entrando...'
   $('login-error').textContent = ''
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -2981,7 +3118,7 @@ $('login-form').addEventListener('submit', async e => {
   if (error) {
     $('login-error').textContent = 'E-mail ou senha incorretos.'
     $('login-btn').disabled = false
-    $('login-btn').textContent = 'Entrar'
+    $('login-btn-text').textContent = 'Entrar'
     return
   }
 
@@ -2989,7 +3126,7 @@ $('login-form').addEventListener('submit', async e => {
   currentProfile = await getProfile(currentUser)
 
   $('login-btn').disabled = false
-  $('login-btn').textContent = 'Entrar'
+  $('login-btn-text').textContent = 'Entrar'
 
   $('loading').style.display = 'flex'
   showPortal()
@@ -3000,6 +3137,15 @@ $('login-form').addEventListener('submit', async e => {
   }
 
   $('loading').style.display = 'none'
+})
+
+$('password-toggle').addEventListener('click', () => {
+  const input = $('password')
+  const showing = input.type === 'text'
+  input.type = showing ? 'password' : 'text'
+  $('password-eye-on').style.display = showing ? '' : 'none'
+  $('password-eye-off').style.display = showing ? 'none' : ''
+  $('password-toggle').setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha')
 })
 
 async function logout() {

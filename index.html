@@ -1058,8 +1058,13 @@ a {
 }
 
 .grid-line {
-  stroke: rgba(255,255,255,.08);
+  stroke: rgba(20,20,20,.08);
   stroke-width: 1;
+}
+
+.card.dark .grid-line,
+.gestor-chart-card .grid-line {
+  stroke: rgba(255,255,255,.08);
 }
 
 .chart-line {
@@ -1088,8 +1093,13 @@ a {
   display: flex;
   justify-content: space-between;
   margin-top: 4px;
-  color: rgba(255,255,255,.45);
+  color: var(--muted);
   font-size: 11.5px;
+}
+
+.card.dark .chart-labels,
+.gestor-chart-card .chart-labels {
+  color: rgba(255,255,255,.45);
 }
 
 /* ACTIVITY */
@@ -1285,8 +1295,12 @@ a {
 }
 
 .summary-item {
-  border-left: 1px solid rgba(255,255,255,.1);
+  border-left: 1px solid rgba(20,20,20,.1);
   padding-left: 18px;
+}
+
+.card.dark .summary-item {
+  border-left-color: rgba(255,255,255,.1);
 }
 
 .summary-item:first-child {
@@ -1308,9 +1322,13 @@ a {
 
 .summary-item span {
   display: block;
-  color: rgba(255,255,255,.5);
+  color: var(--muted);
   font-size: 12.5px;
   margin-bottom: 5px;
+}
+
+.card.dark .summary-item span {
+  color: rgba(255,255,255,.5);
 }
 
 .summary-item strong {
@@ -1323,9 +1341,13 @@ a {
 .summary-item em {
   display: block;
   margin-top: 6px;
-  color: rgba(255,255,255,.38);
+  color: var(--faint);
   font-style: normal;
   font-size: 11.5px;
+}
+
+.card.dark .summary-item em {
+  color: rgba(255,255,255,.38);
 }
 
 @media (max-width: 1180px) {
@@ -2141,7 +2163,7 @@ body.role-gestao #sec-gestor {
         </section>
 
         <section class="grid-main seller-only">
-          <div class="card dark">
+          <div class="card">
             <div class="card-head">
               <div>
                 <h2>Evolução de vendas</h2>
@@ -2174,7 +2196,7 @@ body.role-gestao #sec-gestor {
             </div>
           </div>
 
-          <div class="card dark">
+          <div class="card">
             <div class="card-head">
               <div>
                 <h2>Atividades recentes</h2>
@@ -2281,7 +2303,7 @@ body.role-gestao #sec-gestor {
         </section>
 
         <section class="grid-main" style="margin-top:16px;">
-          <div class="card dark">
+          <div class="card">
             <div class="card-head">
               <div>
                 <h2>Resumo comercial</h2>
@@ -2320,7 +2342,7 @@ body.role-gestao #sec-gestor {
             </div>
           </div>
 
-          <div class="card dark">
+          <div class="card">
             <div class="card-head">
               <div>
                 <h2>Prioridades</h2>

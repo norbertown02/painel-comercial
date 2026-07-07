@@ -871,7 +871,7 @@ a {
 
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
   margin-top: 18px;
 }
@@ -885,6 +885,7 @@ a {
   border: 1px solid rgba(230,223,215,.86);
   box-shadow: var(--shadow-soft);
   padding: 18px;
+  overflow: hidden;
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
@@ -900,6 +901,10 @@ a {
   justify-content: space-between;
   margin-bottom: 14px;
   gap: 12px;
+}
+
+.kpi-top > div:first-child {
+  min-width: 0;
 }
 
 .kpi-icon {
@@ -929,6 +934,9 @@ a {
   letter-spacing: -.045em;
   font-weight: 800;
   color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kpi em {
@@ -1100,6 +1108,354 @@ a {
 .card.dark .chart-labels,
 .gestor-chart-card .chart-labels {
   color: rgba(255,255,255,.45);
+}
+
+.chart-line-quotes {
+  stroke: #8A8178;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-area-quotes {
+  fill: url(#grayArea);
+}
+
+.chart-hover-line {
+  stroke: rgba(20,20,20,.14);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .1s ease;
+}
+
+.chart-hover-line.visible {
+  opacity: 1;
+}
+
+.chart-hit-zone {
+  fill: transparent;
+  cursor: pointer;
+}
+
+.chart-tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -108%);
+  min-width: 152px;
+  background: rgba(255,255,255,.97);
+  border: 1px solid rgba(230,223,215,.9);
+  border-radius: 14px;
+  box-shadow: 0 16px 34px rgba(35,25,15,.12);
+  padding: 10px 13px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .12s ease;
+  z-index: 5;
+}
+
+.chart-tooltip.visible {
+  opacity: 1;
+}
+
+.chart-tooltip strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: capitalize;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.chart-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chart-tooltip-row + .chart-tooltip-row {
+  margin-top: 4px;
+}
+
+.chart-tooltip-row b {
+  margin-left: auto;
+  padding-left: 10px;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.chart-tooltip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.chart-tooltip-dot.orange { background: var(--orange); }
+.chart-tooltip-dot.gray { background: #8A8178; }
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.chart-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.chart-legend-dot.orange { background: var(--orange); }
+.chart-legend-dot.gray { background: #8A8178; }
+
+/* INDICADORES */
+
+.page-title {
+  font-size: 23px;
+  font-weight: 780;
+  letter-spacing: -.035em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.page-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.page-title-block {
+  margin-bottom: 20px;
+}
+
+.funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+.funnel-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 70px;
+  align-items: center;
+  gap: 12px;
+}
+
+.funnel-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.funnel-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(20,20,20,.06);
+  overflow: hidden;
+}
+
+.funnel-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #8A8178;
+  transition: width .5s ease;
+}
+
+.funnel-fill.orange {
+  background: linear-gradient(90deg, #C8500F, #FF8A3D);
+}
+
+.funnel-value {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: right;
+}
+
+.funnel-rate {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.funnel-rate strong {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--orange);
+}
+
+.funnel-rate span {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.goal-card {
+  position: relative;
+  background:
+    radial-gradient(circle at top right, rgba(232,119,34,.22), transparent 220px),
+    linear-gradient(135deg, var(--black) 0%, var(--black-3) 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-lg);
+  color: #fff;
+  padding: 22px;
+  box-shadow: 0 18px 42px rgba(0,0,0,.16);
+}
+
+.goal-card .card-head {
+  border-bottom: none;
+  padding: 0 0 16px;
+  margin-bottom: 0;
+}
+
+.goal-card .card-head h2 {
+  color: #fff;
+}
+
+.goal-card .card-head p {
+  color: rgba(255,255,255,.5);
+}
+
+.goal-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.goal-amount strong {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+
+.goal-amount span {
+  font-size: 12.5px;
+  color: rgba(255,255,255,.5);
+  font-weight: 600;
+}
+
+.goal-progress-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #C8500F, var(--orange), #FF8A3D);
+  transition: width .5s ease;
+}
+
+.goal-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255,255,255,.58);
+  font-weight: 700;
+}
+
+.goal-progress-label b {
+  color: #fff;
+}
+
+.rank-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rank-row:last-child {
+  border-bottom: none;
+}
+
+.rank-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+  background: rgba(20,20,20,.06);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.rank-row:nth-child(1) .rank-badge {
+  background: var(--orange);
+  color: #fff;
+}
+
+.rank-row:nth-child(2) .rank-badge {
+  background: #D97706;
+  color: #fff;
+}
+
+.rank-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rank-info strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-info span {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.rank-value {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: right;
+  flex-shrink: 0;
 }
 
 /* ACTIVITY */
@@ -1785,12 +2141,12 @@ body.role-gestao #sec-gestor {
       <nav class="nav">
         <div class="nav-section">Visão Geral</div>
 
-        <button class="nav-item active" type="button">
+        <button class="nav-item active" type="button" id="nav-dashboard" onclick="showDashboard()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
           Dashboard
         </button>
 
-        <button class="nav-item" type="button" onclick="goDashboardVendas()">
+        <button class="nav-item" type="button" id="nav-indicadores" onclick="showIndicadores()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15L11 11L14 13L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Indicadores
         </button>
@@ -1809,18 +2165,6 @@ body.role-gestao #sec-gestor {
         <button class="nav-item" type="button" onclick="goGestao()" id="nav-gestao" style="display:none">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
           Gestão
-        </button>
-
-        <div class="nav-section">Gestão</div>
-
-        <button class="nav-item" type="button" onclick="goClientes()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 21C5.5 16.5 18.5 16.5 20 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Clientes
-        </button>
-
-        <button class="nav-item" type="button" onclick="goAgenda()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M4 10H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Agenda
         </button>
       </nav>
 
@@ -1851,7 +2195,7 @@ body.role-gestao #sec-gestor {
       </header>
 
       <div class="content">
-        <section class="hero seller-only">
+        <section class="hero seller-only seller-dashboard-block">
           <div class="hero-copy">
             <div class="eyebrow">Portal Nutrialle</div>
             <h1 id="seller-hero-title">Olá, Usuário</h1>
@@ -1876,7 +2220,7 @@ body.role-gestao #sec-gestor {
 
         </section>
 
-        <section class="kpi-grid seller-only">
+        <section class="kpi-grid seller-only seller-dashboard-block">
           <article class="kpi">
             <div class="kpi-top">
               <div>
@@ -1943,18 +2287,18 @@ body.role-gestao #sec-gestor {
           </article>
         </section>
 
-        <section class="grid-main seller-only">
+        <section class="grid-main seller-only seller-dashboard-block">
           <div class="card">
             <div class="card-head">
               <div>
                 <h2>Evolução de vendas</h2>
-                <p>Últimos 6 meses</p>
+                <p>Vendas e cotações nos últimos 6 meses</p>
               </div>
               <button class="mini-btn" type="button">6 meses</button>
             </div>
 
             <div class="chart-wrap">
-              <svg class="chart-svg" viewBox="0 0 760 260" preserveAspectRatio="none">
+              <svg class="chart-svg" id="chart-svg" viewBox="0 0 760 260" preserveAspectRatio="none">
                 <defs>
                   <linearGradient id="orangeArea" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stop-color="#E87722" stop-opacity=".28"/>
@@ -1964,16 +2308,35 @@ body.role-gestao #sec-gestor {
                     <stop offset="0%" stop-color="#C8500F"/>
                     <stop offset="100%" stop-color="#FF8A3D"/>
                   </linearGradient>
+                  <linearGradient id="grayArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#8A8178" stop-opacity=".16"/>
+                    <stop offset="100%" stop-color="#8A8178" stop-opacity="0"/>
+                  </linearGradient>
                 </defs>
                 <g id="chart-grid"></g>
+                <path id="chart-area-quotes" class="chart-area-quotes" d=""></path>
+                <path id="chart-line-quotes" class="chart-line-quotes" d=""></path>
                 <path id="chart-area" class="chart-area" d=""></path>
                 <path id="chart-line" class="chart-line" d=""></path>
+                <line id="chart-hover-line" class="chart-hover-line" x1="0" y1="36" x2="0" y2="224"></line>
                 <g id="chart-points"></g>
+                <g id="chart-hit-zones"></g>
               </svg>
+
+              <div class="chart-tooltip" id="chart-tooltip">
+                <strong id="chart-tooltip-month"></strong>
+                <div class="chart-tooltip-row"><span class="chart-tooltip-dot orange"></span>Vendas <b id="chart-tooltip-sales"></b></div>
+                <div class="chart-tooltip-row"><span class="chart-tooltip-dot gray"></span>Cotações <b id="chart-tooltip-quotes"></b></div>
+              </div>
 
               <div class="chart-labels" id="chart-labels">
                 <span>fev.</span><span>mar.</span><span>abr.</span><span>mai.</span><span>jun.</span><span>jul.</span>
               </div>
+            </div>
+
+            <div class="chart-legend">
+              <span class="chart-legend-item"><i class="chart-legend-dot orange"></i>Vendas</span>
+              <span class="chart-legend-item"><i class="chart-legend-dot gray"></i>Cotações</span>
             </div>
           </div>
 
@@ -2032,7 +2395,7 @@ body.role-gestao #sec-gestor {
           </div>
         </section>
 
-        <div id="sec-vendedor-wrap">
+        <div id="sec-vendedor-wrap" class="seller-dashboard-block">
         <h2 class="section-title">Acesse seus aplicativos</h2>
 
         <section class="apps-grid">
@@ -2090,7 +2453,7 @@ body.role-gestao #sec-gestor {
                 <h2>Resumo comercial</h2>
                 <p>Indicadores complementares do período</p>
               </div>
-              <button class="mini-btn" type="button" onclick="goDashboardVendas()">Ver indicadores</button>
+              <button class="mini-btn" type="button" onclick="showIndicadores()">Ver indicadores</button>
             </div>
 
             <div class="summary-grid">
@@ -2156,8 +2519,226 @@ body.role-gestao #sec-gestor {
         </section>
 
       </div>
-    
+
         </div>
+
+        <section id="sec-indicadores" class="seller-only" style="display:none">
+          <div class="page-title-block">
+            <h1 class="page-title">Indicadores</h1>
+            <p class="page-sub">Visão completa da sua performance comercial nos últimos 12 meses</p>
+          </div>
+
+          <section class="kpi-grid">
+            <article class="kpi">
+              <div class="kpi-top">
+                <div>
+                  <small>Vendas (12 meses)</small>
+                  <strong id="ind-kpi-sales">R$ 0,00</strong>
+                </div>
+                <span class="kpi-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3V21M17 7.5C16.3 6.4 14.7 5.5 12.5 5.5C9.8 5.5 8 6.8 8 8.8C8 12.5 17 10.5 17 15.3C17 17.3 15.2 18.5 12.3 18.5C10 18.5 8.3 17.6 7.4 16.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <em id="ind-kpi-sales-sub">— vendas registradas</em>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi-top">
+                <div>
+                  <small>Cotações (12 meses)</small>
+                  <strong id="ind-kpi-quotes">0</strong>
+                </div>
+                <span class="kpi-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 3H14L19 8V21H7V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3V8H19M10 13H16M10 17H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <em id="ind-kpi-quotes-sub">— cotações emitidas</em>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi-top">
+                <div>
+                  <small>Taxa de conversão</small>
+                  <strong id="ind-kpi-conversion">0%</strong>
+                </div>
+                <span class="kpi-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 17L9 12L13 15L20 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+              <em>cotações convertidas em venda</em>
+            </article>
+
+            <article class="kpi">
+              <div class="kpi-top">
+                <div>
+                  <small>Ticket médio</small>
+                  <strong id="ind-kpi-ticket">R$ 0,00</strong>
+                </div>
+                <span class="kpi-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M4 19H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 15L11 11L14 13L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+              <em>por venda no período</em>
+            </article>
+          </section>
+
+          <section class="grid-main" style="margin-top:16px">
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <h2>Evolução — 12 meses</h2>
+                  <p>Vendas e cotações mês a mês</p>
+                </div>
+              </div>
+
+              <div class="chart-wrap">
+                <svg class="chart-svg" id="chart-svg-ind" viewBox="0 0 760 260" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="orangeAreaInd" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#E87722" stop-opacity=".28"/>
+                      <stop offset="100%" stop-color="#E87722" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="chartStrokeGradInd" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#C8500F"/>
+                      <stop offset="100%" stop-color="#FF8A3D"/>
+                    </linearGradient>
+                    <linearGradient id="grayAreaInd" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#8A8178" stop-opacity=".16"/>
+                      <stop offset="100%" stop-color="#8A8178" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <g id="chart-grid-ind"></g>
+                  <path id="chart-area-quotes-ind" class="chart-area-quotes" d="" fill="url(#grayAreaInd)"></path>
+                  <path id="chart-line-quotes-ind" class="chart-line-quotes" d=""></path>
+                  <path id="chart-area-ind" class="chart-area" d="" fill="url(#orangeAreaInd)"></path>
+                  <path id="chart-line-ind" class="chart-line" d="" stroke="url(#chartStrokeGradInd)"></path>
+                  <line id="chart-hover-line-ind" class="chart-hover-line" x1="0" y1="36" x2="0" y2="224"></line>
+                  <g id="chart-points-ind"></g>
+                  <g id="chart-hit-zones-ind"></g>
+                </svg>
+
+                <div class="chart-tooltip" id="chart-tooltip-ind">
+                  <strong id="chart-tooltip-month-ind"></strong>
+                  <div class="chart-tooltip-row"><span class="chart-tooltip-dot orange"></span>Vendas <b id="chart-tooltip-sales-ind"></b></div>
+                  <div class="chart-tooltip-row"><span class="chart-tooltip-dot gray"></span>Cotações <b id="chart-tooltip-quotes-ind"></b></div>
+                </div>
+
+                <div class="chart-labels" id="chart-labels-ind"></div>
+              </div>
+
+              <div class="chart-legend">
+                <span class="chart-legend-item"><i class="chart-legend-dot orange"></i>Vendas</span>
+                <span class="chart-legend-item"><i class="chart-legend-dot gray"></i>Cotações</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <h2>Funil de conversão</h2>
+                  <p>Cotações nos últimos 12 meses</p>
+                </div>
+              </div>
+
+              <div class="funnel">
+                <div class="funnel-row">
+                  <div class="funnel-label">Cotações emitidas</div>
+                  <div class="funnel-bar"><div class="funnel-fill" id="funnel-emitidas" style="width:100%"></div></div>
+                  <div class="funnel-value" id="funnel-emitidas-value">0</div>
+                </div>
+                <div class="funnel-row">
+                  <div class="funnel-label">Convertidas em venda</div>
+                  <div class="funnel-bar"><div class="funnel-fill orange" id="funnel-convertidas" style="width:0%"></div></div>
+                  <div class="funnel-value" id="funnel-convertidas-value">0</div>
+                </div>
+              </div>
+
+              <div class="funnel-rate">
+                <strong id="funnel-rate">0%</strong>
+                <span>taxa de conversão no período</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="grid-main" style="margin-top:16px">
+            <div class="goal-card">
+              <div class="card-head">
+                <div>
+                  <h2>Meta do mês</h2>
+                  <p>Progresso em relação à meta cadastrada</p>
+                </div>
+              </div>
+
+              <div class="goal-amount">
+                <strong id="ind-goal-current">R$ 0,00</strong>
+                <span id="ind-goal-target">de R$ 0,00 (meta do mês)</span>
+              </div>
+
+              <div class="goal-progress-bar">
+                <div class="goal-progress-fill" id="ind-goal-fill" style="width:0%"></div>
+              </div>
+
+              <div class="goal-progress-label">
+                <span>Realizado</span>
+                <b id="ind-goal-pct">0%</b>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <h2>Top clientes</h2>
+                  <p>Maiores compradores nos últimos 12 meses</p>
+                </div>
+              </div>
+
+              <div class="rank-list" id="ind-top-clients">
+                <div style="padding:20px 0;text-align:center;font-size:12px;color:var(--faint)">Nenhuma venda registrada no período.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="grid-main" style="margin-top:16px;grid-template-columns:1fr">
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <h2>Atividade de campo</h2>
+                  <p>Visitas, compromissos e carteira nos últimos 12 meses</p>
+                </div>
+              </div>
+
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <div class="summary-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 3L10 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3L14 21L10 14L3 10L21 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+                  </div>
+                  <span>Visitas registradas</span>
+                  <strong id="ind-visits-count">0</strong>
+                  <em>últimos 12 meses</em>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 3V7M16 3V7M4 10H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </div>
+                  <span>Compromissos</span>
+                  <strong id="ind-appointments-count">0</strong>
+                  <em>últimos 12 meses</em>
+                </div>
+
+                <div class="summary-item">
+                  <div class="summary-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 21C5.5 16.5 18.5 16.5 20 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </div>
+                  <span>Clientes ativos</span>
+                  <strong id="ind-active-clients">0</strong>
+                  <em>fazendas na carteira</em>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
       <!-- VISAO GESTOR -->
       <div id="sec-gestor" style="display:none;padding:16px 16px 0">
 
@@ -2305,6 +2886,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 let currentUser = null
 let currentProfile = null
+let portalDataCache = null
+let indicadoresVisible = false
 
 const $ = id => document.getElementById(id)
 
@@ -2774,7 +3357,15 @@ async function loadPortalData() {
     metaMes
   })
 
-  updateChart(sellerSales)
+  updateChart(sellerSales, sellerQuotes)
+
+  portalDataCache = {
+    sales, quotes, farms, goals, appointments, visits, farmsById,
+    sellerSales, sellerQuotes, sellerFarms,
+    vendasMes, metaMes, progressoMeta, clientesAtivos
+  }
+
+  if (indicadoresVisible) renderIndicadores(portalDataCache)
 }
 
 function updateKPIs(d) {
@@ -2901,16 +3492,28 @@ function renderChartPoints(pointsEl, points, dotClass, dotActiveClass) {
   })
 }
 
-function updateChart(sales) {
+const CHART_IDS_DASHBOARD = {
+  line: 'chart-line', area: 'chart-area', lineQuotes: 'chart-line-quotes', areaQuotes: 'chart-area-quotes',
+  points: 'chart-points', labels: 'chart-labels', grid: 'chart-grid',
+  hitZones: 'chart-hit-zones', tooltip: 'chart-tooltip', tooltipMonth: 'chart-tooltip-month',
+  tooltipSales: 'chart-tooltip-sales', tooltipQuotes: 'chart-tooltip-quotes', hoverLine: 'chart-hover-line'
+}
+
+function updateChart(sales, quotes, months, ids) {
+  quotes = quotes || []
+  months = months || 6
+  ids = ids || CHART_IDS_DASHBOARD
+
   const now = new Date()
   const meses = []
 
-  for (let i = 5; i >= 0; i--) {
+  for (let i = months - 1; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
     meses.push({
       year: d.getFullYear(),
       month: d.getMonth(),
-      label: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '')
+      label: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
+      labelFull: d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
     })
   }
 
@@ -2925,29 +3528,45 @@ function updateChart(sales) {
       .reduce((acc, s) => acc + getTotal(s), 0)
   })
 
+  const valoresCot = meses.map(m => {
+    return quotes
+      .filter(q => {
+        const dStr = getQuoteDate(q)
+        if (!dStr) return false
+        const d = new Date(dStr + 'T12:00:00')
+        return d.getFullYear() === m.year && d.getMonth() === m.month
+      })
+      .reduce((acc, q) => acc + getTotal(q), 0)
+  })
+
   const W = 760
   const H = 260
   const P = 36
-  const max = Math.max(...valores, 1)
+  const max = Math.max(...valores, ...valoresCot, 1)
 
-  const points = valores.map((v, i) => {
-    const x = P + (i / Math.max(1, valores.length - 1)) * (W - P * 2)
+  const toPoints = valoresArr => valoresArr.map((v, i) => {
+    const x = P + (i / Math.max(1, valoresArr.length - 1)) * (W - P * 2)
     const y = H - P - (v / max) * (H - P * 2)
     return [x, y]
   })
 
-  const linePath = smoothChartPath(points)
-  const area = points.length
-    ? `${linePath} L ${points[points.length - 1][0]} ${H - P} L ${points[0][0]} ${H - P} Z`
+  const points = toPoints(valores)
+  const pointsCot = toPoints(valoresCot)
+
+  const buildArea = pts => pts.length
+    ? `${smoothChartPath(pts)} L ${pts[pts.length - 1][0]} ${H - P} L ${pts[0][0]} ${H - P} Z`
     : ''
 
-  $('chart-line').setAttribute('d', linePath)
-  $('chart-area').setAttribute('d', area)
-  renderChartPoints($('chart-points'), points, 'chart-dot', 'chart-dot-active')
+  $(ids.line).setAttribute('d', smoothChartPath(points))
+  $(ids.area).setAttribute('d', buildArea(points))
+  renderChartPoints($(ids.points), points, 'chart-dot', 'chart-dot-active')
 
-  $('chart-labels').innerHTML = meses.map(m => `<span>${m.label}</span>`).join('')
+  $(ids.lineQuotes).setAttribute('d', smoothChartPath(pointsCot))
+  $(ids.areaQuotes).setAttribute('d', buildArea(pointsCot))
 
-  const grid = $('chart-grid')
+  $(ids.labels).innerHTML = meses.map(m => `<span>${m.label}</span>`).join('')
+
+  const grid = $(ids.grid)
   grid.innerHTML = ''
 
   for (let i = 0; i < 5; i++) {
@@ -2960,6 +3579,173 @@ function updateChart(sales) {
     line.setAttribute('class', 'grid-line')
     grid.appendChild(line)
   }
+
+  setupChartHover({ meses, valores, valoresCot, points, W, H, P, ids })
+}
+
+function setupChartHover({ meses, valores, valoresCot, points, W, H, P, ids }) {
+  const hitGroup = $(ids.hitZones)
+  const tooltip = $(ids.tooltip)
+  const hoverLine = $(ids.hoverLine)
+  hitGroup.innerHTML = ''
+
+  const slice = W / meses.length
+
+  meses.forEach((m, i) => {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+    rect.setAttribute('x', i * slice)
+    rect.setAttribute('y', 0)
+    rect.setAttribute('width', slice)
+    rect.setAttribute('height', H)
+    rect.setAttribute('class', 'chart-hit-zone')
+
+    rect.addEventListener('mouseenter', () => {
+      const [x, y] = points[i]
+
+      hoverLine.setAttribute('x1', x)
+      hoverLine.setAttribute('x2', x)
+      hoverLine.classList.add('visible')
+
+      $(ids.tooltipMonth).textContent = m.labelFull
+      $(ids.tooltipSales).textContent = moeda(valores[i])
+      $(ids.tooltipQuotes).textContent = moeda(valoresCot[i])
+
+      tooltip.style.left = `${(x / W) * 100}%`
+      tooltip.style.top = `${Math.max(0, (y / H) * 100 - 4)}%`
+      tooltip.classList.add('visible')
+    })
+
+    rect.addEventListener('mouseleave', () => {
+      hoverLine.classList.remove('visible')
+      tooltip.classList.remove('visible')
+    })
+
+    hitGroup.appendChild(rect)
+  })
+}
+
+const CHART_IDS_INDICADORES = {
+  line: 'chart-line-ind', area: 'chart-area-ind', lineQuotes: 'chart-line-quotes-ind', areaQuotes: 'chart-area-quotes-ind',
+  points: 'chart-points-ind', labels: 'chart-labels-ind', grid: 'chart-grid-ind',
+  hitZones: 'chart-hit-zones-ind', tooltip: 'chart-tooltip-ind', tooltipMonth: 'chart-tooltip-month-ind',
+  tooltipSales: 'chart-tooltip-sales-ind', tooltipQuotes: 'chart-tooltip-quotes-ind', hoverLine: 'chart-hover-line-ind'
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'))
+  const btn = $(id)
+  if (btn) btn.classList.add('active')
+}
+
+function showDashboard() {
+  indicadoresVisible = false
+  document.querySelectorAll('.seller-dashboard-block').forEach(el => { el.style.display = '' })
+  if ($('sec-indicadores')) $('sec-indicadores').style.display = 'none'
+  setActiveNav('nav-dashboard')
+}
+
+function showIndicadores() {
+  indicadoresVisible = true
+  document.querySelectorAll('.seller-dashboard-block').forEach(el => { el.style.display = 'none' })
+  if ($('sec-indicadores')) $('sec-indicadores').style.display = 'block'
+  setActiveNav('nav-indicadores')
+  if (portalDataCache) renderIndicadores(portalDataCache)
+}
+
+function renderIndicadores(data) {
+  const {
+    sellerSales, sellerQuotes, sellerFarms, farmsById,
+    appointments, visits, metaMes, vendasMes, progressoMeta, clientesAtivos
+  } = data
+
+  const now = new Date()
+  const inicioPeriodo = new Date(now.getFullYear(), now.getMonth() - 11, 1)
+  const startISO = dataISO(inicioPeriodo)
+
+  const salesPeriodo = sellerSales.filter(s => {
+    const d = getSaleDate(s)
+    return d && d >= startISO
+  })
+  const quotesPeriodo = sellerQuotes.filter(q => {
+    const d = getQuoteDate(q)
+    return d && d >= startISO
+  })
+
+  const totalVendas = salesPeriodo.reduce((acc, s) => acc + getTotal(s), 0)
+  const totalCotacoes = quotesPeriodo.length
+  const convertidas = quotesPeriodo.filter(q => statusQuote(q.status) === 'convertida').length
+  const taxaConv = totalCotacoes > 0 ? (convertidas / totalCotacoes) * 100 : 0
+  const ticketMedio = salesPeriodo.length ? totalVendas / salesPeriodo.length : 0
+
+  if ($('ind-kpi-sales')) $('ind-kpi-sales').textContent = moeda(totalVendas)
+  if ($('ind-kpi-sales-sub')) $('ind-kpi-sales-sub').textContent = `${numero(salesPeriodo.length)} vendas registradas`
+  if ($('ind-kpi-quotes')) $('ind-kpi-quotes').textContent = numero(totalCotacoes)
+  if ($('ind-kpi-quotes-sub')) $('ind-kpi-quotes-sub').textContent = `${numero(convertidas)} convertidas em venda`
+  if ($('ind-kpi-conversion')) $('ind-kpi-conversion').textContent = pct(taxaConv)
+  if ($('ind-kpi-ticket')) $('ind-kpi-ticket').textContent = moeda(ticketMedio)
+
+  if ($('funnel-emitidas-value')) $('funnel-emitidas-value').textContent = numero(totalCotacoes)
+  if ($('funnel-convertidas-value')) $('funnel-convertidas-value').textContent = numero(convertidas)
+  if ($('funnel-convertidas')) $('funnel-convertidas').style.width = totalCotacoes > 0 ? `${Math.min(100, (convertidas / totalCotacoes) * 100)}%` : '0%'
+  if ($('funnel-rate')) $('funnel-rate').textContent = pct(taxaConv)
+
+  if ($('ind-goal-current')) $('ind-goal-current').textContent = moeda(vendasMes)
+  if ($('ind-goal-target')) $('ind-goal-target').textContent = metaMes > 0 ? `de ${moeda(metaMes)} (meta do mês)` : 'meta do mês não cadastrada'
+  if ($('ind-goal-fill')) $('ind-goal-fill').style.width = `${Math.min(100, progressoMeta)}%`
+  if ($('ind-goal-pct')) $('ind-goal-pct').textContent = pct(progressoMeta)
+
+  const porFazenda = {}
+  salesPeriodo.forEach(s => {
+    const farmId = s.farm_id || s.farmId
+    if (!farmId) return
+    porFazenda[farmId] = (porFazenda[farmId] || 0) + getTotal(s)
+  })
+
+  const topClientes = Object.entries(porFazenda)
+    .map(([farmId, total]) => ({
+      farm: farmsById[farmId],
+      total,
+      count: salesPeriodo.filter(s => (s.farm_id || s.farmId) === farmId).length
+    }))
+    .filter(c => c.farm)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 6)
+
+  const rankEl = $('ind-top-clients')
+  if (rankEl) {
+    rankEl.innerHTML = topClientes.length === 0
+      ? '<div style="padding:20px 0;text-align:center;font-size:12px;color:var(--faint)">Nenhuma venda registrada no período.</div>'
+      : topClientes.map((c, i) => `
+        <div class="rank-row">
+          <div class="rank-badge">${i + 1}</div>
+          <div class="rank-info">
+            <strong>${c.farm.name || 'Cliente'}</strong>
+            <span>${numero(c.count)} venda(s) no período</span>
+          </div>
+          <div class="rank-value">${moeda(c.total)}</div>
+        </div>
+      `).join('')
+  }
+
+  const visitsPeriodo = visits
+    .filter(v => belongsToSeller(v, farmsById, currentUser?.id))
+    .filter(v => {
+      const d = v.date || v.visit_date || v.created_at?.slice(0, 10)
+      return d && d >= startISO
+    })
+
+  const appointmentsPeriodo = appointments
+    .filter(a => belongsToSeller(a, farmsById, currentUser?.id))
+    .filter(a => {
+      const d = a.date || a.start_date || a.start_at?.slice(0, 10)
+      return d && d >= startISO
+    })
+
+  if ($('ind-visits-count')) $('ind-visits-count').textContent = numero(visitsPeriodo.length)
+  if ($('ind-appointments-count')) $('ind-appointments-count').textContent = numero(appointmentsPeriodo.length)
+  if ($('ind-active-clients')) $('ind-active-clients').textContent = numero(clientesAtivos ?? sellerFarms.length)
+
+  updateChart(sellerSales, sellerQuotes, 12, CHART_IDS_INDICADORES)
 }
 
 $('login-form').addEventListener('submit', async e => {

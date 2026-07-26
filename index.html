@@ -3835,14 +3835,18 @@ function goCampo() {
 }
 
 async function goPlano() {
-  // Leva a sessão junto (mesmo esquema de #sso_at/#sso_rt que processarHandoffSSO
-  // lê aqui) — o nutrialle-planos aplica esses tokens antes de checar sessão,
-  // então o consultor não precisa logar de novo do outro lado.
+  // Agora o Planos vive sob o MESMO domínio (painel.nutrialle.com.br/planos,
+  // proxy configurado no vercel.json) — caminho relativo, a URL do
+  // navegador nem muda de domínio. A sessão já é compartilhada sozinha via
+  // localStorage (mesma origem), mas ainda anexamos os tokens como reforço/
+  // fallback (ex: acesso direto em nutrialle-planos.vercel.app, fora do
+  // domínio do painel).
   const { data: { session } } = await supabaseClient.auth.getSession()
+  const destino = '/planos'
   if (session) {
-    window.location.href = APP_PLANO_URL + '/#sso_at=' + encodeURIComponent(session.access_token) + '&sso_rt=' + encodeURIComponent(session.refresh_token)
+    window.location.href = destino + '#sso_at=' + encodeURIComponent(session.access_token) + '&sso_rt=' + encodeURIComponent(session.refresh_token)
   } else {
-    window.location.href = APP_PLANO_URL
+    window.location.href = destino
   }
 }
 

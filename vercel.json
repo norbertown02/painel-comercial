@@ -1,5 +1,9 @@
 {
-  "rewrites": [{ "source": "/", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/planos", "destination": "https://nutrialle-planos.vercel.app/planos" },
+    { "source": "/planos/:path*", "destination": "https://nutrialle-planos.vercel.app/planos/:path*" }
+  ],
   "headers": [
     {
       "source": "/(index.html)?",

@@ -2884,6 +2884,28 @@ const APP_AGENDA_URL = 'https://nutrialle-campo.vercel.app/agenda'
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+// ── SSO entre apps Nutrialle (Painel ↔ Planos) ────────────
+// Cada app roda num domínio Vercel diferente, então a sessão do Supabase não
+// é compartilhada sozinha entre eles. Quando o usuário volta do Planos pro
+// Painel (ver voltarAoPainel() no nutrialle-planos), a sessão já ativa vem
+// anexada no hash da URL (#sso_at=...&sso_rt=...) — aqui a gente aplica esses
+// tokens com setSession() antes de checar a sessão local, e limpa a URL logo
+// em seguida (tokens não podem ficar visíveis nem no histórico).
+async function processarHandoffSSO() {
+  const hash = window.location.hash || ''
+  if (hash.indexOf('sso_at=') === -1) return
+  const params = new URLSearchParams(hash.replace(/^#/, ''))
+  const at = params.get('sso_at'), rt = params.get('sso_rt')
+  history.replaceState(null, '', window.location.pathname + window.location.search)
+  if (!at || !rt) return
+  try {
+    const { error } = await supabaseClient.auth.setSession({ access_token: at, refresh_token: rt })
+    if (error) console.error('Erro ao aplicar sessão vinda do Planos:', error)
+  } catch (e) {
+    console.error('Erro no handoff de sessão vindo do Planos:', e)
+  }
+}
+
 let currentUser = null
 let currentProfile = null
 let portalDataCache = null
@@ -3162,6 +3184,7 @@ function roleAtual() {
 
 async function init() {
   try {
+    await processarHandoffSSO()
     const { data: { session } } = await supabaseClient.auth.getSession()
 
     if (!session?.user) {
@@ -3811,8 +3834,16 @@ function goCampo() {
   window.location.href = APP_CAMPO_URL
 }
 
-function goPlano() {
-  window.location.href = APP_PLANO_URL
+async function goPlano() {
+  // Leva a sessão junto (mesmo esquema de #sso_at/#sso_rt que processarHandoffSSO
+  // lê aqui) — o nutrialle-planos aplica esses tokens antes de checar sessão,
+  // então o consultor não precisa logar de novo do outro lado.
+  const { data: { session } } = await supabaseClient.auth.getSession()
+  if (session) {
+    window.location.href = APP_PLANO_URL + '/#sso_at=' + encodeURIComponent(session.access_token) + '&sso_rt=' + encodeURIComponent(session.refresh_token)
+  } else {
+    window.location.href = APP_PLANO_URL
+  }
 }
 
 function goDashboardVendas() {

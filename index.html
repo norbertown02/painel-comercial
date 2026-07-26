@@ -1773,7 +1773,7 @@ body.role-gestor-comercial #card-gestao {
 
 body.role-gestor-comercial #nav-gestao,
 body.role-gestao #nav-gestao {
-  display: none !important;
+  display: flex !important;
 }
 
 /* Dashboard Comercial fica com o mesmo padrão visual dos cards Campo e Planos */
@@ -2401,69 +2401,6 @@ body.role-gestao #sec-gestor {
         </section>
 
         <div id="sec-vendedor-wrap" class="seller-dashboard-block">
-        <h2 class="section-title">Acesse seus aplicativos</h2>
-
-        <section class="apps-grid">
-          <a class="app-card" href="javascript:void(0)" onclick="goCampo()">
-            <div class="app-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M21 3L10 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M21 3L14 21L10 14L3 10L21 3Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="app-info">
-              <h3>Nutrialle Campo</h3>
-              <p>Gestão comercial completa para o campo. Clientes, visitas, cotações, vendas e indicadores na palma da sua mão.</p>
-              <span class="app-link">Acessar aplicativo →</span>
-            </div>
-            <div class="app-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-          </a>
-
-          <a class="app-card" href="javascript:void(0)" onclick="goPlanoIntroducao()" id="card-plano-introducao">
-            <div class="app-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" stroke-width="2.3"/><path d="M9 3V7M15 3V7M8 11H16M8 15H13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
-            </div>
-            <div class="app-info">
-              <h3>Plano de Introdução</h3>
-              <p>Proposta comercial pra uma fazenda nova: comparativo de mercado, produtos recomendados e ponto de equilíbrio.</p>
-              <span class="app-link">Acessar aplicativo →</span>
-            </div>
-            <div class="app-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-          </a>
-
-          <a class="app-card" href="javascript:void(0)" onclick="goPlanoNutricional()" id="card-plano-nutricional">
-            <div class="app-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 6 8.5 6 14A6 6 0 0 0 18 14C18 8.5 12 2 12 2Z" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><path d="M9.5 15.5C9.5 16.88 10.62 18 12 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
-            </div>
-            <div class="app-info">
-              <h3>Controle Nutricional</h3>
-              <p>Suas fazendas, lotes e dietas técnicas: exigências nutricionais reais comparadas com a dieta montada pra cada cliente.</p>
-              <span class="app-link">Acessar aplicativo →</span>
-            </div>
-            <div class="app-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-          </a>
-          <a class="app-card" href="javascript:void(0)" onclick="goGestao()" id="card-gestao" style="display:none">
-            <div class="app-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-              </svg>
-            </div>
-            <div class="app-info">
-              <h3>Dashboard Comercial</h3>
-              <p>Dashboard gerencial, equipe, produtos, metas e configurações comerciais da Nutrialle.</p>
-              <span class="app-link">Acessar dashboard →</span>
-            </div>
-            <div class="app-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-          </a>
-        </section>
 
         <section class="grid-main" style="margin-top:16px;">
           <div class="card">
@@ -2840,30 +2777,6 @@ body.role-gestao #sec-gestor {
             </svg>
             <div class="gestor-chart-labels" id="g-chart-labels"></div>
           </div>
-        </div>
-
-        <div id="gestao-only-apps">
-          <h2 class="section-title">Acesse o Dashboard Comercial</h2>
-          <section class="apps-grid">
-            <a class="app-card" href="javascript:void(0)" onclick="goGestao()">
-              <div class="app-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                  <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                  <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                  <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                  <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2.3"/>
-                </svg>
-              </div>
-              <div class="app-info">
-                <h3>Dashboard Comercial</h3>
-                <p>Dashboard gerencial, equipe, produtos, metas e configurações comerciais da Nutrialle.</p>
-                <span class="app-link">Acessar dashboard →</span>
-              </div>
-              <div class="app-arrow">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-            </a>
-          </section>
         </div>
 
         <div class="gestor-card">
@@ -3288,7 +3201,7 @@ function showPortal() {
   if (secVendedor) secVendedor.style.display = acessos.vendedor ? 'block' : 'none'
   if (secGestor) secGestor.style.display = acessos.gestor ? 'block' : 'none'
   if (cardGestao) cardGestao.style.display = acessos.gestao && acessos.vendedor ? 'flex' : 'none'
-  if (navGestao) navGestao.style.display = 'none'
+  if (navGestao) navGestao.style.display = acessos.gestao ? 'flex' : 'none'
   if (cardPlanoIntroducao) cardPlanoIntroducao.style.display = acessos.planos ? 'flex' : 'none'
   if (cardPlanoNutricional) cardPlanoNutricional.style.display = acessos.planos ? 'flex' : 'none'
 }

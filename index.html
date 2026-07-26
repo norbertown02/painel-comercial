@@ -3760,8 +3760,17 @@ async function logout() {
   showLogin()
 }
 
-function goGestao() {
-  window.location.href = APP_GESTAO_URL
+// Mesmo esquema do irParaPlanos: leva pro Gestao sob /gestao (mesmo dominio,
+// mesma sessao) e ainda manda a sessao junto no hash como reforco (acesso
+// direto fora do proxy nao perde o login).
+async function goGestao() {
+  const { data: { session } } = await supabaseClient.auth.getSession()
+  const destino = '/gestao'
+  if (session) {
+    window.location.href = destino + '#sso_at=' + encodeURIComponent(session.access_token) + '&sso_rt=' + encodeURIComponent(session.refresh_token)
+  } else {
+    window.location.href = destino
+  }
 }
 
 function goCampo() {

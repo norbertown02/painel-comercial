@@ -2,7 +2,9 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/planos", "destination": "https://nutrialle-planos.vercel.app/planos" },
-    { "source": "/planos/:path*", "destination": "https://nutrialle-planos.vercel.app/planos/:path*" }
+    { "source": "/planos/:path*", "destination": "https://nutrialle-planos.vercel.app/planos/:path*" },
+    { "source": "/gestao", "destination": "https://gestao-three-virid.vercel.app/gestao" },
+    { "source": "/gestao/:path*", "destination": "https://gestao-three-virid.vercel.app/gestao/:path*" }
   ],
   "headers": [
     {

@@ -2158,9 +2158,14 @@ body.role-gestao #sec-gestor {
           Nutrialle Campo
         </button>
 
-        <button class="nav-item" type="button" onclick="goPlano()">
+        <button class="nav-item" type="button" onclick="goPlanoIntroducao()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 4H7A2 2 0 0 0 5 6V20A2 2 0 0 0 7 22H17A2 2 0 0 0 19 20V6A2 2 0 0 0 17 4H16" stroke="currentColor" stroke-width="2"/><rect x="8" y="2" width="8" height="4" rx="1" stroke="currentColor" stroke-width="2"/><path d="M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Planos Nutricionais
+          Plano de Introdução
+        </button>
+
+        <button class="nav-item" type="button" onclick="goPlanoNutricional()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 6 8.5 6 14A6 6 0 0 0 18 14C18 8.5 12 2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 15.5C9.5 16.88 10.62 18 12 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Controle Nutricional
         </button>
         <button class="nav-item" type="button" onclick="goGestao()" id="nav-gestao" style="display:none">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
@@ -2413,13 +2418,27 @@ body.role-gestao #sec-gestor {
             </div>
           </a>
 
-          <a class="app-card" href="javascript:void(0)" onclick="goPlano()" id="card-planos">
+          <a class="app-card" href="javascript:void(0)" onclick="goPlanoIntroducao()" id="card-plano-introducao">
             <div class="app-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" stroke-width="2.3"/><path d="M9 3V7M15 3V7M8 11H16M8 15H13" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
             </div>
             <div class="app-info">
-              <h3>Planos Nutricionais</h3>
-              <p>Ferramenta técnica para criação de planos nutricionais, simulações e relatórios personalizados para seus clientes.</p>
+              <h3>Plano de Introdução</h3>
+              <p>Proposta comercial pra uma fazenda nova: comparativo de mercado, produtos recomendados e ponto de equilíbrio.</p>
+              <span class="app-link">Acessar aplicativo →</span>
+            </div>
+            <div class="app-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+
+          <a class="app-card" href="javascript:void(0)" onclick="goPlanoNutricional()" id="card-plano-nutricional">
+            <div class="app-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 6 8.5 6 14A6 6 0 0 0 18 14C18 8.5 12 2 12 2Z" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><path d="M9.5 15.5C9.5 16.88 10.62 18 12 18" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>
+            </div>
+            <div class="app-info">
+              <h3>Controle Nutricional</h3>
+              <p>Suas fazendas, lotes e dietas técnicas: exigências nutricionais reais comparadas com a dieta montada pra cada cliente.</p>
               <span class="app-link">Acessar aplicativo →</span>
             </div>
             <div class="app-arrow">
@@ -3263,13 +3282,15 @@ function showPortal() {
   const secVendedor = document.getElementById('sec-vendedor-wrap')
   const cardGestao  = document.getElementById('card-gestao')
   const navGestao   = document.getElementById('nav-gestao')
-  const cardPlanos  = document.getElementById('card-planos')
+  const cardPlanoIntroducao  = document.getElementById('card-plano-introducao')
+  const cardPlanoNutricional = document.getElementById('card-plano-nutricional')
 
   if (secVendedor) secVendedor.style.display = acessos.vendedor ? 'block' : 'none'
   if (secGestor) secGestor.style.display = acessos.gestor ? 'block' : 'none'
   if (cardGestao) cardGestao.style.display = acessos.gestao && acessos.vendedor ? 'flex' : 'none'
   if (navGestao) navGestao.style.display = 'none'
-  if (cardPlanos) cardPlanos.style.display = acessos.planos ? 'flex' : 'none'
+  if (cardPlanoIntroducao) cardPlanoIntroducao.style.display = acessos.planos ? 'flex' : 'none'
+  if (cardPlanoNutricional) cardPlanoNutricional.style.display = acessos.planos ? 'flex' : 'none'
 }
 
 async function loadPortalData() {
@@ -3834,21 +3855,22 @@ function goCampo() {
   window.location.href = APP_CAMPO_URL
 }
 
-async function goPlano() {
-  // Agora o Planos vive sob o MESMO domínio (painel.nutrialle.com.br/planos,
-  // proxy configurado no vercel.json) — caminho relativo, a URL do
-  // navegador nem muda de domínio. A sessão já é compartilhada sozinha via
-  // localStorage (mesma origem), mas ainda anexamos os tokens como reforço/
-  // fallback (ex: acesso direto em nutrialle-planos.vercel.app, fora do
-  // domínio do painel).
+// Leva direto pra tela certa dentro do nutrialle-planos (evita cair na tela
+// de escolha "Plano de Introdução vs Plano Nutricional" — o menu do Painel
+// já diz qual é qual, então a navegação tem que ser direta).
+// ?modo=introducao -> abre o wizard comercial direto.
+// ?modo=nutricional -> abre o hub "Minhas Fazendas" (controle nutricional).
+async function irParaPlanos(modo) {
   const { data: { session } } = await supabaseClient.auth.getSession()
-  const destino = '/planos'
+  const destino = '/planos?modo=' + modo
   if (session) {
     window.location.href = destino + '#sso_at=' + encodeURIComponent(session.access_token) + '&sso_rt=' + encodeURIComponent(session.refresh_token)
   } else {
     window.location.href = destino
   }
 }
+function goPlanoIntroducao() { irParaPlanos('introducao') }
+function goPlanoNutricional() { irParaPlanos('nutricional') }
 
 function goDashboardVendas() {
   window.location.href = APP_DASHBOARD_VENDAS_URL

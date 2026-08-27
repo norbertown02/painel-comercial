@@ -9,61 +9,262 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
+  <style id="science-authority-v2">
+    .pillars-grid{grid-template-columns:repeat(4,1fr)!important}
+    .hero-proof{border-radius:13px!important;background:rgba(10,10,10,.58)!important;backdrop-filter:blur(10px)!important}
+    .proof-head small{max-width:165px;text-align:right;line-height:1.35}
+    .science-panel{background:#fff;padding:0 0 112px}
+    .science-shell{border-top:1px solid var(--line);padding-top:48px}
+    .science-head{display:grid;grid-template-columns:.95fr 1.05fr;gap:90px;align-items:end}
+    .science-head h2{font-family:Archivo,Inter,sans-serif;font-size:clamp(32px,3.45vw,48px);line-height:1.03;letter-spacing:-2px;margin:0;max-width:560px}
+    .science-head>p{margin:0 0 3px;max-width:530px;color:var(--muted);font-size:13px;line-height:1.75}
+    .science-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:38px}
+    .science-item{background:#FAF8F5;padding:22px 18px;min-height:164px;display:flex;flex-direction:column}
+    .science-item small{font-size:8px;letter-spacing:.75px;text-transform:uppercase;color:var(--orange);font-weight:700}
+    .science-item strong{font-family:Archivo,Inter,sans-serif;font-size:14px;line-height:1.2;margin:26px 0 10px;color:var(--text)}
+    .science-item p{font-size:9.5px;line-height:1.6;color:var(--muted);margin:auto 0 0}
+    .science-note{display:flex;align-items:flex-start;gap:24px;border-left:2px solid var(--orange);padding:3px 0 3px 18px;margin-top:24px;max-width:860px}
+    .science-note span{flex:0 0 108px;font-size:8px;letter-spacing:.9px;text-transform:uppercase;color:var(--orange);font-weight:700;padding-top:3px}
+    .science-note p{font-size:11px;line-height:1.65;color:var(--muted);margin:0}
+    .science-note strong{color:var(--text);font-weight:600}
+    @media(max-width:1050px){.pillars-grid{grid-template-columns:repeat(2,1fr)!important}.science-head{grid-template-columns:1fr;gap:24px}.science-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.pillars-grid{grid-template-columns:1fr!important}.science-panel{padding-bottom:76px}.science-shell{padding-top:36px}.science-head h2{font-size:34px;letter-spacing:-1.5px}.science-grid{grid-template-columns:1fr 1fr;margin-top:28px}.science-item{min-height:145px}.science-note{display:block}.science-note span{display:block;margin-bottom:8px}}
+  </style>
 </head>
 <body>
   <div class="site-shell">
     <header class="header" data-header>
       <div class="header-inner container">
         <a class="brand" href="#top" aria-label="Nutrialle">
-          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M15 44c-5-10-2-22 8-28 3 11 1 21-8 28Z" fill="currentColor" opacity=".76"/><path d="M17 44c5-11 10-18 18-24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".76"/><circle cx="43" cy="18" r="7" fill="#E8651E"/><circle cx="49" cy="35" r="8" fill="#F38A4D"/><circle cx="37" cy="49" r="7" fill="#C84B08"/><path d="m44 25 4 4M44 41l-4 4" stroke="#E8651E" stroke-width="4" stroke-linecap="round"/></svg></span>
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" role="img"><path d="M15 44c-5-10-2-22 8-28 3 11 1 21-8 28Z" fill="currentColor" opacity=".76"/><path d="M17 44c5-11 10-18 18-24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".76"/><circle cx="43" cy="18" r="7" fill="#E8651E"/><circle cx="49" cy="35" r="8" fill="#F38A4D"/><circle cx="37" cy="49" r="7" fill="#C84B08"/><path d="m44 25 4 4M44 41l-4 4" stroke="#E8651E" stroke-width="4" stroke-linecap="round"/></svg>
+          </span>
           <span class="brand-word">NUTRIALLE</span>
         </a>
-        <nav class="nav" aria-label="Principal"><a href="#solucoes">Soluções</a><a href="#diferencial">Como atuamos</a><a href="#tecnologia">Tecnologia</a><a href="#conhecimento">Conhecimento</a><a href="#empresa">Empresa</a></nav>
-        <div class="header-actions"><a class="link-small" href="https://areadocliente.nutrialle.com.br" target="_blank" rel="noreferrer">Área do cliente</a><a class="btn btn-orange" href="#contato">Fale com um especialista</a></div>
+
+        <nav class="nav" aria-label="Principal">
+          <a href="#solucoes">Soluções</a>
+          <a href="#diferencial">Método técnico</a>
+          <a href="#tecnologia">Tecnologia</a>
+          <a href="#conhecimento">Conhecimento</a>
+          <a href="#empresa">Empresa</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="link-small" href="https://areadocliente.nutrialle.com.br" target="_blank" rel="noreferrer">Área do cliente</a>
+          <a class="btn btn-orange" href="#contato">Fale com um especialista</a>
+        </div>
+
         <button class="menu-toggle" data-menu-toggle aria-label="Abrir menu"><span></span><span></span></button>
       </div>
-      <div class="mobile-nav" data-mobile-nav><a href="#solucoes">Soluções</a><a href="#diferencial">Como atuamos</a><a href="#tecnologia">Tecnologia</a><a href="#conhecimento">Conhecimento</a><a href="#empresa">Empresa</a><a href="#contato">Contato</a></div>
+      <div class="mobile-nav" data-mobile-nav>
+        <a href="#solucoes">Soluções</a><a href="#diferencial">Método técnico</a><a href="#tecnologia">Tecnologia</a><a href="#conhecimento">Conhecimento</a><a href="#empresa">Empresa</a><a href="#contato">Contato</a>
+      </div>
     </header>
 
     <main id="top">
       <section class="hero">
-        <div class="hero-media" aria-hidden="true"></div><div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-media" aria-hidden="true"></div>
+        <div class="hero-overlay" aria-hidden="true"></div>
         <div class="hero-grid container">
-          <div class="hero-copy reveal"><span class="eyebrow eyebrow-light">Nutrição animal aplicada à performance</span><h1>Nutrição de precisão.<br><span>Resultado no campo.</span></h1><p>Soluções nutricionais, acompanhamento técnico e tecnologia aplicada para bovinos e suínos — com foco em eficiência, consistência e resultado econômico.</p><div class="hero-actions-row"><a class="btn btn-orange btn-lg" href="#solucoes">Conheça nossas soluções</a><a class="btn btn-ghost-light btn-lg" href="#diferencial">Como a Nutrialle atua</a></div></div>
-          <div class="hero-proof reveal delay-1"><div class="proof-head"><span>Uma visão integrada</span><small>Produto + técnica + dados</small></div><div class="proof-list"><div><strong>01</strong><span>Entender o sistema produtivo</span></div><div><strong>02</strong><span>Definir a estratégia nutricional</span></div><div><strong>03</strong><span>Acompanhar a resposta no campo</span></div></div></div>
+          <div class="hero-copy reveal">
+            <span class="eyebrow eyebrow-light">Ciência nutricional aplicada à produção animal</span>
+            <h1>Nutrição de precisão.<br><span>Resultado no campo.</span></h1>
+            <p>Soluções nutricionais orientadas pela leitura do sistema produtivo, acompanhamento técnico e dados de campo — para decisões mais precisas em bovinos e suínos.</p>
+            <div class="hero-actions-row">
+              <a class="btn btn-orange btn-lg" href="#solucoes">Conheça nossas soluções</a>
+              <a class="btn btn-ghost-light btn-lg" href="#diferencial">Conheça nosso método</a>
+            </div>
+          </div>
+
+          <div class="hero-proof reveal delay-1">
+            <div class="proof-head"><span>Método técnico Nutrialle</span><small>Diagnóstico → decisão → validação</small></div>
+            <div class="proof-list">
+              <div><strong>01</strong><span>Caracterizar sistema, lote e objetivo produtivo</span></div>
+              <div><strong>02</strong><span>Definir a estratégia nutricional e o protocolo de uso</span></div>
+              <div><strong>03</strong><span>Medir consumo, desempenho e custo da decisão</span></div>
+            </div>
+          </div>
         </div>
-        <div class="hero-strip"><div class="container strip-inner"><span>Bovinos de corte</span><i></i><span>Bovinos de leite</span><i></i><span>Suínos</span><i></i><span>Aditivos</span><i></i><span>Assistência técnica</span></div></div>
+
+        <div class="hero-strip">
+          <div class="container strip-inner">
+            <span>Diagnóstico técnico</span><i></i><span>Formulação</span><i></i><span>Implementação</span><i></i><span>Acompanhamento</span><i></i><span>Dados de campo</span>
+          </div>
+        </div>
       </section>
 
       <section class="section intro" id="diferencial">
-        <div class="container intro-grid"><div class="section-title reveal"><span class="eyebrow">Mais do que suplementação</span><h2>Performance começa antes do cocho.</h2></div><div class="intro-copy reveal delay-1"><p>Uma estratégia nutricional eficiente precisa considerar o sistema de produção, a categoria animal, a disponibilidade de alimento, o objetivo produtivo e o custo da decisão.</p><p class="muted">Por isso, a Nutrialle combina conhecimento técnico, soluções nutricionais e ferramentas de acompanhamento para transformar produto em resultado mensurável.</p></div></div>
-        <div class="container pillars-grid"><article class="pillar reveal"><span>01</span><h3>Diagnóstico</h3><p>Leitura do sistema produtivo, do lote e do objetivo econômico antes de recomendar qualquer solução.</p></article><article class="pillar reveal delay-1"><span>02</span><h3>Estratégia</h3><p>Produtos e programas nutricionais alinhados à realidade da fazenda e à fase produtiva dos animais.</p></article><article class="pillar reveal delay-2"><span>03</span><h3>Acompanhamento</h3><p>Rotina técnica, indicadores e tecnologia para conectar planejamento, execução e resposta no campo.</p></article></div>
-      </section>
+        <div class="container intro-grid">
+          <div class="section-title reveal">
+            <span class="eyebrow">Ciência aplicada à rotina do campo</span>
+            <h2>Performance começa antes do cocho.</h2>
+          </div>
+          <div class="intro-copy reveal delay-1">
+            <p>Uma estratégia nutricional eficiente precisa considerar o sistema de produção, a categoria animal, o consumo, a disponibilidade e composição da dieta, o objetivo produtivo e o custo por resultado.</p>
+            <p class="muted">A recomendação não começa pelo produto. Começa pelo diagnóstico. A partir dele, técnica, nutrição e acompanhamento se conectam para construir uma decisão coerente com a realidade de cada propriedade.</p>
+          </div>
+        </div>
 
-      <section class="section solutions" id="solucoes">
-        <div class="container section-head reveal"><div><span class="eyebrow">Soluções Nutrialle</span><h2>Nutrição pensada para cada sistema.</h2></div><p>Linhas desenvolvidas para responder aos desafios específicos de diferentes fases e modelos de produção.</p></div>
-        <div class="solutions-grid container">
-          <a class="solution-card solution-card-large reveal" href="./produtos.html#corte" style="--img:url('https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images/categories/bovinos-corte.webp')"><div class="solution-content"><span>01</span><h3>Bovinos de corte</h3><p>Cria, recria, terminação, pasto, semiconfinamento e confinamento.</p><b>Explorar linha <em>↗</em></b></div></a>
-          <a class="solution-card reveal delay-1" href="./produtos.html#leite" style="--img:url('https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images/categories/bovinos-leite.webp')"><div class="solution-content"><span>02</span><h3>Bovinos de leite</h3><p>Transição, lactação, saúde ruminal e eficiência produtiva.</p><b>Explorar linha <em>↗</em></b></div></a>
-          <a class="solution-card reveal delay-2" href="./produtos.html#suinos" style="--img:url('https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images/categories/suinos.webp')"><div class="solution-content"><span>03</span><h3>Suínos</h3><p>Nutrição de precisão e ingredientes estratégicos para diferentes fases.</p><b>Explorar linha <em>↗</em></b></div></a>
-          <a class="solution-card solution-card-dark reveal" href="./produtos.html#aditivos"><div class="chemistry" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="solution-content"><span>04</span><h3>Aditivos & tecnologias</h3><p>Soluções funcionais para eficiência digestiva, estabilidade e desempenho.</p><b>Explorar linha <em>↗</em></b></div></a>
+        <div class="container pillars-grid">
+          <article class="pillar reveal"><span>01</span><h3>Diagnóstico técnico</h3><p>Leitura do sistema, categoria, lote, ingredientes disponíveis e objetivo produtivo antes da recomendação.</p></article>
+          <article class="pillar reveal delay-1"><span>02</span><h3>Formulação</h3><p>Estratégia nutricional construída a partir das exigências do animal, consumo esperado, composição da dieta e custo.</p></article>
+          <article class="pillar reveal delay-2"><span>03</span><h3>Implementação</h3><p>Protocolos claros de uso e manejo para que a estratégia formulada chegue ao campo com consistência.</p></article>
+          <article class="pillar reveal delay-2"><span>04</span><h3>Validação</h3><p>Acompanhamento de consumo, desempenho e custo para avaliar a resposta e orientar ajustes quando necessários.</p></article>
         </div>
       </section>
 
-      <section class="section performance"><div class="container performance-grid"><div class="performance-media reveal"></div><div class="performance-copy reveal delay-1"><span class="eyebrow">Do planejamento à execução</span><h2>A decisão nutricional precisa funcionar na rotina.</h2><p>Uma boa formulação só gera resultado quando chega ao cocho com consistência. O trabalho técnico precisa ser simples de executar, claro de acompanhar e conectado aos indicadores da propriedade.</p><ul class="check-list"><li><span></span>Programas ajustados à fase e ao objetivo produtivo</li><li><span></span>Leitura de consumo, desempenho e custo</li><li><span></span>Suporte técnico próximo ao produtor</li><li><span></span>Decisões orientadas por dados da fazenda</li></ul><a class="text-link" href="#contato">Converse com nosso time <span>→</span></a></div></div></section>
+      <section class="science-panel" aria-label="Critérios técnicos da Nutrialle">
+        <div class="container science-shell">
+          <div class="science-head reveal">
+            <div>
+              <span class="eyebrow">Critérios de decisão</span>
+              <h2>A recomendação começa pelos dados do sistema.</h2>
+            </div>
+            <p>Não existe uma única resposta nutricional para propriedades diferentes. A leitura técnica combina variáveis do animal, da dieta, do manejo e da economia antes de definir a estratégia.</p>
+          </div>
+          <div class="science-grid">
+            <article class="science-item reveal"><small>01 · Consumo</small><strong>kg / animal / dia</strong><p>Quanto o animal efetivamente consome e quanto o sistema consegue entregar.</p></article>
+            <article class="science-item reveal delay-1"><small>02 · Dieta</small><strong>Composição</strong><p>Qualidade e disponibilidade dos ingredientes que formam a base da alimentação.</p></article>
+            <article class="science-item reveal delay-2"><small>03 · Exigência</small><strong>Fase + peso + meta</strong><p>Necessidades nutricionais mudam conforme categoria, fase e objetivo produtivo.</p></article>
+            <article class="science-item reveal"><small>04 · Desempenho</small><strong>Resposta animal</strong><p>Indicadores produtivos ajudam a verificar se a estratégia está entregando o esperado.</p></article>
+            <article class="science-item reveal delay-1"><small>05 · Manejo</small><strong>Execução no campo</strong><p>Frequência, fornecimento e rotina precisam sustentar o que foi formulado.</p></article>
+            <article class="science-item reveal delay-2"><small>06 · Economia</small><strong>Custo por resultado</strong><p>O melhor programa é o que equilibra resposta técnica e retorno para a propriedade.</p></article>
+          </div>
+          <div class="science-note reveal"><span>Ciência aplicada</span><p>Produto, recomendação e acompanhamento precisam responder à mesma pergunta: <strong>o que faz sentido para este sistema produtivo?</strong></p></div>
+        </div>
+      </section>
 
-      <section class="section tech" id="tecnologia"><div class="container tech-shell"><div class="tech-copy reveal"><span class="eyebrow eyebrow-light">Tecnologia Nutrialle</span><h2>O campo gera dados.<br>Nós transformamos em decisão.</h2><p>Ferramentas próprias conectam fazendas, lotes, planos nutricionais, acompanhamento técnico e histórico de resultados em uma experiência única.</p><div class="tech-tags"><span>Fazendas</span><span>Lotes</span><span>Planos</span><span>Indicadores</span><span>Relatórios</span></div></div><div class="product-ui reveal delay-1" aria-label="Exemplo da plataforma Nutrialle"><div class="ui-top"><div class="ui-logo">N</div><div class="ui-lines"><span></span><span></span></div><b>Plano ativo</b></div><div class="ui-metrics"><div><small>Fazendas</small><strong>—</strong></div><div><small>Lotes</small><strong>—</strong></div><div><small>Planos</small><strong>—</strong></div></div><div class="ui-chart"><i style="height:32%"></i><i style="height:48%"></i><i style="height:42%"></i><i style="height:65%"></i><i style="height:58%"></i><i style="height:78%"></i><i style="height:88%"></i></div><div class="ui-row"><span></span><span></span><span></span></div></div></div></section>
+      <section class="section solutions" id="solucoes">
+        <div class="container section-head reveal">
+          <div><span class="eyebrow">Soluções Nutrialle</span><h2>Nutrição pensada para cada sistema.</h2></div>
+          <p>Linhas desenvolvidas para responder aos desafios específicos de diferentes fases e modelos de produção.</p>
+        </div>
 
-      <section class="section spotlight"><div class="container spotlight-grid"><div class="spotlight-copy reveal"><span class="eyebrow">Tecnologia em destaque</span><h2>LEV+</h2><p>Uma linha que traduz o posicionamento da Nutrialle: tecnologia aplicada para apoiar saúde, desempenho e produtividade em sistemas de produção animal.</p><a class="btn btn-dark" href="https://www.nutrialle.com.br" target="_blank" rel="noreferrer">Conhecer a linha</a></div><div class="spotlight-visual reveal delay-1"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="spotlight-label"><span>LEV +</span><small>Nutrição funcional</small></div></div></div></section>
+        <div class="solutions-grid container">
+          <a class="solution-card solution-card-large reveal" href="./produtos.html#corte" style="--img:url('https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images/categories/bovinos-corte.webp')">
+            <div class="solution-content"><span>01</span><h3>Bovinos de corte</h3><p>Cria, recria, terminação, pasto, semiconfinamento e confinamento.</p><b>Explorar linha <em>↗</em></b></div>
+          </a>
+          <a class="solution-card reveal delay-1" href="./produtos.html#leite" style="--img:url('https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images/categories/bovinos-leite.webp')">
+            <div class="solution-content"><span>02</span><h3>Bovinos de leite</h3><p>Transição, lactação, saúde ruminal e eficiência produtiva.</p><b>Explorar linha <em>↗</em></b></div>
+          </a>
+          <a class="solution-card reveal delay-2" href="./produtos.html#suinos" style="--img:url('https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images/categories/suinos.webp')">
+            <div class="solution-content"><span>03</span><h3>Suínos</h3><p>Nutrição de precisão e ingredientes estratégicos para diferentes fases.</p><b>Explorar linha <em>↗</em></b></div>
+          </a>
+          <a class="solution-card solution-card-dark reveal" href="./produtos.html#aditivos">
+            <div class="chemistry" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="solution-content"><span>04</span><h3>Aditivos & tecnologias</h3><p>Soluções funcionais para eficiência digestiva, estabilidade e desempenho.</p><b>Explorar linha <em>↗</em></b></div>
+          </a>
+        </div>
+      </section>
 
-      <section class="section knowledge" id="conhecimento"><div class="container section-head reveal"><div><span class="eyebrow">Centro de conhecimento</span><h2>Conteúdo técnico para decisões melhores.</h2></div><a class="text-link" href="https://nutrialle.com.br/blog" target="_blank" rel="noreferrer">Ver todos os conteúdos <span>→</span></a></div><div class="container article-grid"><a class="article-card reveal" href="https://nutrialle.com.br/blog-conteudo.php?slug=guia-nutricao-vacas-leiteiras" target="_blank" rel="noreferrer"><span>Nutrição de bovinos leiteiros</span><h3>Guia completo da nutrição de vacas leiteiras</h3><p>Princípios para produzir mais leite com eficiência, saúde ruminal e equilíbrio.</p><small>10 min de leitura <b>↗</b></small></a><a class="article-card reveal delay-1" href="https://nutrialle.com.br/blog-conteudo.php?slug=fibra-efetiva-bovinos" target="_blank" rel="noreferrer"><span>Saúde ruminal</span><h3>Fibra efetiva: por que ela é essencial para bovinos</h3><p>Como fibra, ruminação e ambiente ruminal influenciam consumo e desempenho.</p><small>3 min de leitura <b>↗</b></small></a><a class="article-card reveal delay-2" href="https://nutrialle.com.br/blog-conteudo.php?slug=como-aumentar-solidos-do-leite" target="_blank" rel="noreferrer"><span>Eficiência produtiva</span><h3>Como aumentar os sólidos do leite e melhorar a rentabilidade</h3><p>Estratégias nutricionais para qualidade de leite e retorno econômico.</p><small>3 min de leitura <b>↗</b></small></a></div></section>
+      <section class="section performance">
+        <div class="container performance-grid">
+          <div class="performance-media reveal"></div>
+          <div class="performance-copy reveal delay-1">
+            <span class="eyebrow">Do planejamento à execução</span>
+            <h2>A decisão nutricional precisa funcionar na rotina.</h2>
+            <p>Uma boa formulação só gera resultado quando chega ao cocho com consistência. O trabalho técnico precisa ser simples de executar, claro de acompanhar e conectado aos indicadores da propriedade.</p>
+            <ul class="check-list">
+              <li><span></span>Programas ajustados à fase e ao objetivo produtivo</li>
+              <li><span></span>Leitura de consumo, desempenho e custo</li>
+              <li><span></span>Suporte técnico próximo ao produtor</li>
+              <li><span></span>Decisões orientadas por dados da fazenda</li>
+            </ul>
+            <a class="text-link" href="#contato">Converse com nosso time <span>→</span></a>
+          </div>
+        </div>
+      </section>
 
-      <section class="section company" id="empresa"><div class="company-media" aria-hidden="true"></div><div class="container company-grid"><div class="company-spacer"></div><div class="company-card reveal"><span class="eyebrow eyebrow-light">Nutrialle</span><h2>Conhecimento técnico. Visão de futuro.</h2><p>A Nutrialle nasceu da convergência entre experiência, propósito e coragem para empreender. Hoje, segue construindo relações de longo prazo com o campo a partir de responsabilidade, proximidade, inovação e foco em resultado.</p><div class="company-values"><span>Excelência</span><span>Responsabilidade</span><span>Proximidade</span><span>Inovação</span></div><a class="text-link light" href="https://www.nutrialle.com.br/sobre-nos" target="_blank" rel="noreferrer">Conheça nossa história <span>→</span></a></div></div></section>
+      <section class="section tech" id="tecnologia">
+        <div class="container tech-shell">
+          <div class="tech-copy reveal">
+            <span class="eyebrow eyebrow-light">Tecnologia Nutrialle</span>
+            <h2>O campo gera dados.<br>Nós transformamos em decisão.</h2>
+            <p>Ferramentas próprias conectam fazendas, lotes, planos nutricionais, acompanhamento técnico e histórico de resultados em uma experiência única.</p>
+            <div class="tech-tags"><span>Fazendas</span><span>Lotes</span><span>Planos</span><span>Indicadores</span><span>Relatórios</span></div>
+          </div>
+          <div class="product-ui reveal delay-1" aria-label="Exemplo da plataforma Nutrialle">
+            <div class="ui-top"><div class="ui-logo">N</div><div class="ui-lines"><span></span><span></span></div><b>Plano ativo</b></div>
+            <div class="ui-metrics"><div><small>Fazendas</small><strong>—</strong></div><div><small>Lotes</small><strong>—</strong></div><div><small>Planos</small><strong>—</strong></div></div>
+            <div class="ui-chart"><i style="height:32%"></i><i style="height:48%"></i><i style="height:42%"></i><i style="height:65%"></i><i style="height:58%"></i><i style="height:78%"></i><i style="height:88%"></i></div>
+            <div class="ui-row"><span></span><span></span><span></span></div>
+          </div>
+        </div>
+      </section>
 
-      <section class="section contact" id="contato"><div class="container contact-grid"><div class="contact-copy reveal"><span class="eyebrow">Fale com a Nutrialle</span><h2>Vamos entender o seu sistema.</h2><p>Conte o que você produz, onde está e qual desafio precisa resolver. Nosso time entra em contato para direcionar a melhor conversa técnica.</p><div class="contact-data"><a href="tel:+5545999021287"><small>Telefone / WhatsApp</small><strong>(45) 99902-1287</strong></a><a href="mailto:contato@nutrialle.com.br"><small>E-mail</small><strong>contato@nutrialle.com.br</strong></a><div><small>Fábrica</small><strong>Rua Carlos Barbosa, 3025 · Galpão 8/H<br>Toledo · PR</strong></div></div></div><form class="contact-form reveal delay-1" onsubmit="return false"><div class="field-row"><label>Nome<input type="text" placeholder="Seu nome" /></label><label>Telefone<input type="tel" placeholder="(00) 00000-0000" /></label></div><label>Você trabalha com<select><option>Selecione</option><option>Bovinos de corte</option><option>Bovinos de leite</option><option>Suínos</option><option>Outro</option></select></label><label>Como podemos ajudar?<textarea rows="5" placeholder="Conte brevemente o que você precisa."></textarea></label><button class="btn btn-orange btn-lg" type="submit">Enviar mensagem</button><small class="form-note">Protótipo visual — o envio será conectado ao canal oficial na versão final.</small></form></div></section>
+      <section class="section spotlight">
+        <div class="container spotlight-grid">
+          <div class="spotlight-copy reveal">
+            <span class="eyebrow">Tecnologia em destaque</span>
+            <h2>LEV+</h2>
+            <p>Uma linha que traduz o posicionamento da Nutrialle: tecnologia aplicada para apoiar saúde, desempenho e produtividade em sistemas de produção animal.</p>
+            <a class="btn btn-dark" href="https://www.nutrialle.com.br" target="_blank" rel="noreferrer">Conhecer a linha</a>
+          </div>
+          <div class="spotlight-visual reveal delay-1">
+            <div class="orb orb-a"></div><div class="orb orb-b"></div><div class="spotlight-label"><span>LEV +</span><small>Nutrição funcional</small></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section knowledge" id="conhecimento">
+        <div class="container section-head reveal">
+          <div><span class="eyebrow">Centro de conhecimento</span><h2>Conteúdo técnico para decisões melhores.</h2></div>
+          <a class="text-link" href="https://nutrialle.com.br/blog" target="_blank" rel="noreferrer">Ver todos os conteúdos <span>→</span></a>
+        </div>
+        <div class="container article-grid">
+          <a class="article-card reveal" href="https://nutrialle.com.br/blog-conteudo.php?slug=guia-nutricao-vacas-leiteiras" target="_blank" rel="noreferrer"><span>Nutrição de bovinos leiteiros</span><h3>Guia completo da nutrição de vacas leiteiras</h3><p>Princípios para produzir mais leite com eficiência, saúde ruminal e equilíbrio.</p><small>10 min de leitura <b>↗</b></small></a>
+          <a class="article-card reveal delay-1" href="https://nutrialle.com.br/blog-conteudo.php?slug=fibra-efetiva-bovinos" target="_blank" rel="noreferrer"><span>Saúde ruminal</span><h3>Fibra efetiva: por que ela é essencial para bovinos</h3><p>Como fibra, ruminação e ambiente ruminal influenciam consumo e desempenho.</p><small>3 min de leitura <b>↗</b></small></a>
+          <a class="article-card reveal delay-2" href="https://nutrialle.com.br/blog-conteudo.php?slug=como-aumentar-solidos-do-leite" target="_blank" rel="noreferrer"><span>Eficiência produtiva</span><h3>Como aumentar os sólidos do leite e melhorar a rentabilidade</h3><p>Estratégias nutricionais para qualidade de leite e retorno econômico.</p><small>3 min de leitura <b>↗</b></small></a>
+        </div>
+      </section>
+
+      <section class="section company" id="empresa">
+        <div class="company-media" aria-hidden="true"></div>
+        <div class="container company-grid">
+          <div class="company-spacer"></div>
+          <div class="company-card reveal">
+            <span class="eyebrow eyebrow-light">Nutrialle</span>
+            <h2>Conhecimento técnico. Visão de futuro.</h2>
+            <p>A Nutrialle nasceu da convergência entre experiência, propósito e coragem para empreender. Hoje, segue construindo relações de longo prazo com o campo a partir de responsabilidade, proximidade, inovação e foco em resultado.</p>
+            <div class="company-values"><span>Rigor técnico</span><span>Responsabilidade</span><span>Proximidade</span><span>Inovação</span></div>
+            <a class="text-link light" href="https://www.nutrialle.com.br/sobre-nos" target="_blank" rel="noreferrer">Conheça nossa história <span>→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact" id="contato">
+        <div class="container contact-grid">
+          <div class="contact-copy reveal">
+            <span class="eyebrow">Fale com a Nutrialle</span>
+            <h2>Vamos entender o seu sistema.</h2>
+            <p>Conte o que você produz, onde está e qual desafio precisa resolver. Nosso time entra em contato para direcionar a melhor conversa técnica.</p>
+            <div class="contact-data">
+              <a href="tel:+5545999021287"><small>Telefone / WhatsApp</small><strong>(45) 99902-1287</strong></a>
+              <a href="mailto:contato@nutrialle.com.br"><small>E-mail</small><strong>contato@nutrialle.com.br</strong></a>
+              <div><small>Fábrica</small><strong>Rua Carlos Barbosa, 3025 · Galpão 8/H<br>Toledo · PR</strong></div>
+            </div>
+          </div>
+          <form class="contact-form reveal delay-1" onsubmit="return false">
+            <div class="field-row"><label>Nome<input type="text" placeholder="Seu nome" /></label><label>Telefone<input type="tel" placeholder="(00) 00000-0000" /></label></div>
+            <label>Você trabalha com<select><option>Selecione</option><option>Bovinos de corte</option><option>Bovinos de leite</option><option>Suínos</option><option>Outro</option></select></label>
+            <label>Como podemos ajudar?<textarea rows="5" placeholder="Conte brevemente o que você precisa."></textarea></label>
+            <button class="btn btn-orange btn-lg" type="submit">Enviar mensagem</button>
+            <small class="form-note">Protótipo visual — o envio será conectado ao canal oficial na versão final.</small>
+          </form>
+        </div>
+      </section>
     </main>
 
-    <footer class="footer"><div class="container footer-grid"><div class="footer-brand"><a class="brand" href="#top"><span class="brand-mark"><svg viewBox="0 0 64 64"><path d="M15 44c-5-10-2-22 8-28 3 11 1 21-8 28Z" fill="currentColor" opacity=".76"/><path d="M17 44c5-11 10-18 18-24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".76"/><circle cx="43" cy="18" r="7" fill="#E8651E"/><circle cx="49" cy="35" r="8" fill="#F38A4D"/><circle cx="37" cy="49" r="7" fill="#C84B08"/></svg></span><span class="brand-word">NUTRIALLE</span></a><p>Tecnologia em nutrição para bovinos e suínos.</p></div><div><small>Soluções</small><a href="#solucoes">Bovinos de corte</a><a href="#solucoes">Bovinos de leite</a><a href="#solucoes">Suínos</a><a href="#solucoes">Aditivos</a></div><div><small>Nutrialle</small><a href="#empresa">Empresa</a><a href="#tecnologia">Tecnologia</a><a href="#conhecimento">Conhecimento</a><a href="#contato">Contato</a></div><div><small>Acesso</small><a href="https://areadocliente.nutrialle.com.br" target="_blank" rel="noreferrer">Área do cliente</a><a href="https://painel.nutrialle.com.br" target="_blank" rel="noreferrer">Time Nutrialle</a></div></div><div class="container footer-bottom"><span>© 2026 Nutrialle. Todos os direitos reservados.</span><span>Toledo · Paraná · Brasil</span></div></footer>
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div class="footer-brand"><a class="brand" href="#top"><span class="brand-mark"><svg viewBox="0 0 64 64"><path d="M15 44c-5-10-2-22 8-28 3 11 1 21-8 28Z" fill="currentColor" opacity=".76"/><path d="M17 44c5-11 10-18 18-24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".76"/><circle cx="43" cy="18" r="7" fill="#E8651E"/><circle cx="49" cy="35" r="8" fill="#F38A4D"/><circle cx="37" cy="49" r="7" fill="#C84B08"/></svg></span><span class="brand-word">NUTRIALLE</span></a><p>Tecnologia em nutrição para bovinos e suínos.</p></div>
+        <div><small>Soluções</small><a href="#solucoes">Bovinos de corte</a><a href="#solucoes">Bovinos de leite</a><a href="#solucoes">Suínos</a><a href="#solucoes">Aditivos</a></div>
+        <div><small>Nutrialle</small><a href="#empresa">Empresa</a><a href="#tecnologia">Tecnologia</a><a href="#conhecimento">Conhecimento</a><a href="#contato">Contato</a></div>
+        <div><small>Acesso</small><a href="https://areadocliente.nutrialle.com.br" target="_blank" rel="noreferrer">Área do cliente</a><a href="https://painel.nutrialle.com.br" target="_blank" rel="noreferrer">Time Nutrialle</a><a href="https://www.instagram.com/nutrialle" target="_blank" rel="noreferrer">Instagram</a></div>
+      </div>
+      <div class="container footer-bottom"><span>© 2026 Nutrialle. Todos os direitos reservados.</span><span>Toledo · Paraná · Brasil</span></div>
+    </footer>
   </div>
   <script src="./script.js"></script>
 </body>

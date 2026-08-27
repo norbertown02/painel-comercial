@@ -63,3 +63,51 @@
     render()
   }
 })()
+
+;(() => {
+  const A='https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images'
+  const logo=`${A}/logo.webp`
+  document.querySelectorAll('.brand').forEach(b=>{
+    b.innerHTML=`<span class="brand-mark"><img src="${logo}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></span><span class="brand-word">NUTRIALLE</span>`
+  })
+  if(!document.querySelector('link[data-nt-favicon]')){const l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.href=`${A}/favicon.svg`;l.dataset.ntFavicon='1';document.head.appendChild(l)}
+
+  const sp=document.querySelector('.spotlight')
+  if(sp){
+    sp.id='lev'
+    sp.innerHTML=`<div class="container spotlight-grid">
+      <div class="spotlight-copy reveal in"><span class="eyebrow">Tecnologia em destaque</span><h2>LEV+</h2>
+      <p>Uma combinação completa de <strong>levedura viva, parede celular de leveduras, probióticos e colina protegida</strong> para apoiar a saúde digestiva, o equilíbrio ruminal e o desempenho do rebanho.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#ddd7d0;border:1px solid #ddd7d0;border-radius:12px;overflow:hidden;margin:24px 0 25px">
+        <span style="background:#fff;padding:13px;font-size:10px">Levedura viva</span><span style="background:#fff;padding:13px;font-size:10px">Parede celular de leveduras</span><span style="background:#fff;padding:13px;font-size:10px">Probióticos</span><span style="background:#fff;padding:13px;font-size:10px">Colina protegida</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:26px"><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Equilíbrio ruminal</span><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Saúde intestinal</span><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Imunidade</span><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Leite e corte</span></div>
+      <a class="btn btn-dark" href="#contato">Fale com um especialista</a></div>
+      <div class="spotlight-visual reveal in" style="background:#ece7e1;display:grid;place-items:center;padding:22px"><img src="${A}/lev/lev-01.webp" alt="Nutrialle LEV+, tecnologia para desempenho, saúde intestinal e imunidade" style="width:100%;height:100%;max-height:430px;object-fit:contain;display:block"></div>
+    </div>`
+  }
+
+  const metrics=document.querySelectorAll('.product-ui .ui-metrics strong')
+  ;['Diagnóstico','Plano','Histórico'].forEach((t,i)=>{if(metrics[i]){metrics[i].textContent=t;metrics[i].style.fontSize='12px'}})
+
+  const form=document.querySelector('.contact-form')
+  if(form){
+    form.removeAttribute('onsubmit')
+    const note=form.querySelector('.form-note'); if(note) note.textContent='Ao enviar, abriremos o WhatsApp oficial da Nutrialle com sua mensagem pronta.'
+    form.addEventListener('submit',e=>{
+      e.preventDefault()
+      const inputs=form.querySelectorAll('input'), sel=form.querySelector('select'), ta=form.querySelector('textarea')
+      const nome=inputs[0]?.value.trim(), telefone=inputs[1]?.value.trim(), interesse=sel?.value, msg=ta?.value.trim()
+      if(!nome||!telefone||!interesse||interesse==='Selecione'||!msg){alert('Preencha os campos para continuar.');return}
+      const text=['Olá, equipe Nutrialle!','',`Meu nome é ${nome}.`,`Telefone: ${telefone}.`,`Tenho interesse em: ${interesse}.`,'','Mensagem:',msg].join('\n')
+      window.open(`https://wa.me/5545999021287?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer')
+    })
+  }
+
+  const patchLev=()=>document.querySelectorAll('.product-card').forEach(c=>{
+    if(!c.querySelector('h3')?.textContent.toUpperCase().includes('LEV'))return
+    const p=c.querySelector('p'); if(p)p.textContent='Levedura viva, parede celular de leveduras, probióticos e colina protegida para apoio à saúde digestiva, equilíbrio ruminal e desempenho.'
+    const a=c.querySelector('a'); if(a){a.href='./index.html#lev';a.removeAttribute('target');a.removeAttribute('rel');a.innerHTML='Conhecer tecnologia <b>→</b>'}
+  })
+  patchLev(); const grid=document.querySelector('[data-product-grid]'); if(grid&&'MutationObserver'in window)new MutationObserver(patchLev).observe(grid,{childList:true})
+})()

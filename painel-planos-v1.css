@@ -1,0 +1,590 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+body.nt-planos-v1 {
+  --nt-black: #0C0B0A;
+  --nt-black-soft: #171513;
+  --nt-orange: #E8651E;
+  --nt-orange-soft: #FFF1E8;
+  --nt-bg: #F4F2EF;
+  --nt-surface: #FFFFFF;
+  --nt-line: #E8E4DF;
+  --nt-line-soft: #F0ECE8;
+  --nt-text: #171513;
+  --nt-muted: #7B756F;
+  --nt-faint: #A19B95;
+  --nt-green: #16834A;
+  --nt-red: #C83B32;
+  --nt-amber: #B7791F;
+  font-family: 'Inter', sans-serif !important;
+  background: var(--nt-bg) !important;
+  color: var(--nt-text) !important;
+}
+
+body.nt-planos-v1 *,
+body.nt-planos-v1 *::before,
+body.nt-planos-v1 *::after {
+  box-sizing: border-box;
+}
+
+body.nt-planos-v1 h1,
+body.nt-planos-v1 h2,
+body.nt-planos-v1 h3,
+body.nt-planos-v1 .kpi strong,
+body.nt-planos-v1 .gestor-kpi strong,
+body.nt-planos-v1 .metric-value,
+body.nt-planos-v1 .big-number {
+  font-family: 'Archivo', 'Inter', sans-serif !important;
+}
+
+/* ---------- APP SHELL ---------- */
+body.nt-planos-v1 #portal-screen,
+body.nt-planos-v1 .portal,
+body.nt-planos-v1 .main {
+  background: var(--nt-bg) !important;
+}
+
+body.nt-planos-v1 .portal {
+  grid-template-columns: 218px minmax(0, 1fr) !important;
+}
+
+body.nt-planos-v1 .sidebar {
+  width: auto !important;
+  background: var(--nt-black) !important;
+  background-image: none !important;
+  border-right: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: none !important;
+  padding: 22px 14px 16px !important;
+}
+
+body.nt-planos-v1 .sidebar::before,
+body.nt-planos-v1 .sidebar::after {
+  display: none !important;
+}
+
+body.nt-planos-v1 .sidebar-official-logo {
+  width: 154px !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+  margin: 2px 8px 24px !important;
+  filter: none !important;
+}
+
+body.nt-planos-v1 .nav {
+  gap: 2px !important;
+}
+
+body.nt-planos-v1 .nav-section {
+  color: rgba(255,255,255,.30) !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.15px !important;
+  text-transform: uppercase !important;
+  padding: 15px 10px 7px !important;
+}
+
+body.nt-planos-v1 .nav-item {
+  position: relative !important;
+  min-height: 38px !important;
+  border-radius: 9px !important;
+  padding: 0 10px !important;
+  gap: 9px !important;
+  color: rgba(255,255,255,.58) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  transition: background .16s ease, color .16s ease !important;
+}
+
+body.nt-planos-v1 .nav-item svg {
+  width: 16px !important;
+  height: 16px !important;
+  opacity: .78 !important;
+}
+
+body.nt-planos-v1 .nav-item:hover {
+  color: rgba(255,255,255,.90) !important;
+  background: rgba(255,255,255,.055) !important;
+  transform: none !important;
+}
+
+body.nt-planos-v1 .nav-item.active {
+  color: #fff !important;
+  background: rgba(232,101,30,.12) !important;
+  box-shadow: inset 2px 0 0 var(--nt-orange) !important;
+}
+
+body.nt-planos-v1 .nav-item.active svg {
+  color: var(--nt-orange) !important;
+  opacity: 1 !important;
+}
+
+body.nt-planos-v1 .sidebar-footer,
+body.nt-planos-v1 .sidebar-bottom {
+  border-color: rgba(255,255,255,.08) !important;
+}
+
+body.nt-planos-v1 .user-card,
+body.nt-planos-v1 .sidebar-user {
+  background: rgba(255,255,255,.035) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+body.nt-planos-v1 .main {
+  min-width: 0 !important;
+}
+
+body.nt-planos-v1 .topbar {
+  height: 64px !important;
+  min-height: 64px !important;
+  padding: 0 28px !important;
+  background: var(--nt-black) !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: none !important;
+  color: #fff !important;
+}
+
+body.nt-planos-v1 .top-greeting strong {
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.1px !important;
+}
+
+body.nt-planos-v1 .top-greeting small {
+  color: rgba(255,255,255,.42) !important;
+  font-size: 10.5px !important;
+  font-weight: 400 !important;
+  margin-top: 2px !important;
+}
+
+body.nt-planos-v1 .topbar button,
+body.nt-planos-v1 .topbar .top-action,
+body.nt-planos-v1 .topbar .top-pill,
+body.nt-planos-v1 .topbar .live-pill {
+  box-shadow: none !important;
+}
+
+body.nt-planos-v1 .topbar .live-pill,
+body.nt-planos-v1 .topbar .top-pill {
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(255,255,255,.05) !important;
+  color: rgba(255,255,255,.72) !important;
+}
+
+/* ---------- PAGE ---------- */
+body.nt-planos-v1 .content {
+  width: min(100%, 1480px) !important;
+  margin: 0 auto !important;
+  padding: 30px 32px 52px !important;
+}
+
+/* Turn the old promotional hero into a clean page header */
+body.nt-planos-v1 .hero {
+  min-height: 0 !important;
+  overflow: visible !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--nt-text) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 2px 0 0 !important;
+  margin: 0 0 23px !important;
+}
+
+body.nt-planos-v1 .hero::before,
+body.nt-planos-v1 .hero::after,
+body.nt-planos-v1 .hero-ring,
+body.nt-planos-v1 .hero-decoration,
+body.nt-planos-v1 .hero-orb {
+  display: none !important;
+}
+
+body.nt-planos-v1 .hero-copy {
+  max-width: 760px !important;
+}
+
+body.nt-planos-v1 .hero .eyebrow {
+  display: block !important;
+  width: auto !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--nt-orange) !important;
+  padding: 0 !important;
+  margin: 0 0 6px !important;
+  font-size: 9.5px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+}
+
+body.nt-planos-v1 .hero h1,
+body.nt-planos-v1 .hero-copy h1 {
+  color: var(--nt-text) !important;
+  font-size: clamp(25px, 2vw, 31px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -1.05px !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+
+body.nt-planos-v1 .hero p,
+body.nt-planos-v1 .hero-copy p {
+  max-width: 700px !important;
+  color: var(--nt-muted) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  margin-top: 7px !important;
+}
+
+body.nt-planos-v1 .hero-actions,
+body.nt-planos-v1 .hero-side {
+  color: var(--nt-text) !important;
+}
+
+/* ---------- KPI STRIP ---------- */
+body.nt-planos-v1 .kpi-grid,
+body.nt-planos-v1 .gestor-kpis {
+  gap: 12px !important;
+  margin-top: 0 !important;
+  margin-bottom: 14px !important;
+}
+
+body.nt-planos-v1 .kpi,
+body.nt-planos-v1 .gestor-kpi {
+  min-height: 104px !important;
+  padding: 16px 17px !important;
+  background: var(--nt-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--nt-line) !important;
+  border-radius: 13px !important;
+  box-shadow: none !important;
+  color: var(--nt-text) !important;
+  overflow: hidden !important;
+}
+
+body.nt-planos-v1 .kpi::before,
+body.nt-planos-v1 .kpi::after,
+body.nt-planos-v1 .gestor-kpi::before,
+body.nt-planos-v1 .gestor-kpi::after {
+  box-shadow: none !important;
+}
+
+body.nt-planos-v1 .kpi-top {
+  align-items: flex-start !important;
+}
+
+body.nt-planos-v1 .kpi small,
+body.nt-planos-v1 .gestor-kpi small,
+body.nt-planos-v1 .kpi-label {
+  color: var(--nt-muted) !important;
+  font-size: 10.5px !important;
+  line-height: 1.25 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+body.nt-planos-v1 .kpi strong,
+body.nt-planos-v1 .gestor-kpi strong,
+body.nt-planos-v1 .kpi-value {
+  display: block !important;
+  color: var(--nt-text) !important;
+  font-size: clamp(22px, 1.75vw, 27px) !important;
+  line-height: 1.05 !important;
+  font-weight: 700 !important;
+  letter-spacing: -1px !important;
+  margin-top: 8px !important;
+}
+
+body.nt-planos-v1 .kpi em,
+body.nt-planos-v1 .kpi-foot,
+body.nt-planos-v1 .gestor-kpi em {
+  color: var(--nt-muted) !important;
+  font-size: 10px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+}
+
+body.nt-planos-v1 .kpi-icon,
+body.nt-planos-v1 .gestor-kpi-icon {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 9px !important;
+  background: var(--nt-orange-soft) !important;
+  color: var(--nt-orange) !important;
+  box-shadow: none !important;
+}
+
+body.nt-planos-v1 .kpi-icon svg,
+body.nt-planos-v1 .gestor-kpi-icon svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+/* ---------- CONTENT CARDS ---------- */
+body.nt-planos-v1 .grid-main,
+body.nt-planos-v1 .gestor-grid {
+  gap: 14px !important;
+  margin-top: 14px !important;
+}
+
+body.nt-planos-v1 .grid-main {
+  grid-template-columns: minmax(0, 1.48fr) minmax(300px, .92fr) !important;
+}
+
+body.nt-planos-v1 .card,
+body.nt-planos-v1 .gestor-card,
+body.nt-planos-v1 .chart-card,
+body.nt-planos-v1 .table-card,
+body.nt-planos-v1 .quick-card,
+body.nt-planos-v1 .summary-card {
+  background: var(--nt-surface) !important;
+  background-image: none !important;
+  color: var(--nt-text) !important;
+  border: 1px solid var(--nt-line) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  padding: 18px !important;
+}
+
+body.nt-planos-v1 .gestor-chart-card,
+body.nt-planos-v1 .goal-card {
+  background: var(--nt-surface) !important;
+  background-image: none !important;
+  color: var(--nt-text) !important;
+  border: 1px solid var(--nt-line) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+}
+
+body.nt-planos-v1 .card-head,
+body.nt-planos-v1 .gestor-card-head {
+  margin-bottom: 15px !important;
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+body.nt-planos-v1 .card-head h2,
+body.nt-planos-v1 .gestor-card-head h2,
+body.nt-planos-v1 .card h2,
+body.nt-planos-v1 .gestor-card h2 {
+  color: var(--nt-text) !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  font-weight: 600 !important;
+  letter-spacing: -.25px !important;
+}
+
+body.nt-planos-v1 .card-head p,
+body.nt-planos-v1 .gestor-card-head p,
+body.nt-planos-v1 .card-subtitle {
+  color: var(--nt-muted) !important;
+  font-size: 10.5px !important;
+  line-height: 1.4 !important;
+  margin-top: 3px !important;
+}
+
+body.nt-planos-v1 .card::before,
+body.nt-planos-v1 .card::after,
+body.nt-planos-v1 .gestor-card::before,
+body.nt-planos-v1 .gestor-card::after {
+  box-shadow: none !important;
+}
+
+/* Smaller app/tool cards: useful, not promotional banners */
+body.nt-planos-v1 .apps-grid,
+body.nt-planos-v1 .quick-grid,
+body.nt-planos-v1 .tools-grid {
+  gap: 12px !important;
+}
+
+body.nt-planos-v1 .app-card {
+  min-height: 138px !important;
+  border-radius: 13px !important;
+  padding: 17px !important;
+  box-shadow: none !important;
+  border: 1px solid var(--nt-line) !important;
+  background: #fff !important;
+  background-image: none !important;
+  color: var(--nt-text) !important;
+}
+
+body.nt-planos-v1 .app-card:hover {
+  transform: translateY(-1px) !important;
+  border-color: #D9D2CB !important;
+  box-shadow: 0 8px 20px rgba(23,21,19,.045) !important;
+}
+
+body.nt-planos-v1 .app-card h3 {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.2px !important;
+}
+
+body.nt-planos-v1 .app-card p {
+  color: var(--nt-muted) !important;
+  font-size: 10.5px !important;
+}
+
+/* ---------- BUTTONS / CONTROLS ---------- */
+body.nt-planos-v1 button,
+body.nt-planos-v1 .btn,
+body.nt-planos-v1 .action-btn {
+  font-family: 'Inter', sans-serif !important;
+}
+
+body.nt-planos-v1 .btn-primary,
+body.nt-planos-v1 .primary-btn,
+body.nt-planos-v1 .action-primary {
+  min-height: 39px !important;
+  border: 1px solid var(--nt-orange) !important;
+  border-radius: 10px !important;
+  background: var(--nt-orange) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+body.nt-planos-v1 .btn-secondary,
+body.nt-planos-v1 .secondary-btn,
+body.nt-planos-v1 .ghost-btn,
+body.nt-planos-v1 .filter-btn {
+  min-height: 37px !important;
+  border: 1px solid var(--nt-line) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: var(--nt-text) !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+body.nt-planos-v1 select,
+body.nt-planos-v1 input:not([type='checkbox']):not([type='radio']) {
+  border: 1px solid var(--nt-line) !important;
+  border-radius: 10px !important;
+  background-color: #fff !important;
+  box-shadow: none !important;
+}
+
+body.nt-planos-v1 select:focus,
+body.nt-planos-v1 input:focus {
+  border-color: rgba(232,101,30,.65) !important;
+  box-shadow: 0 0 0 3px rgba(232,101,30,.08) !important;
+}
+
+/* ---------- TABLES ---------- */
+body.nt-planos-v1 table {
+  border-collapse: collapse !important;
+  color: var(--nt-text) !important;
+}
+
+body.nt-planos-v1 thead,
+body.nt-planos-v1 thead tr,
+body.nt-planos-v1 thead th {
+  background: #FAF9F7 !important;
+  background-image: none !important;
+  color: var(--nt-muted) !important;
+}
+
+body.nt-planos-v1 th {
+  height: 38px !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid var(--nt-line) !important;
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: .3px !important;
+  text-transform: uppercase !important;
+}
+
+body.nt-planos-v1 td {
+  min-height: 46px !important;
+  padding: 11px 12px !important;
+  border-bottom: 1px solid var(--nt-line-soft) !important;
+  color: var(--nt-text) !important;
+  font-size: 11px !important;
+}
+
+body.nt-planos-v1 tbody tr:hover td {
+  background: #FCFBFA !important;
+}
+
+/* ---------- BADGES / STATUS ---------- */
+body.nt-planos-v1 .badge,
+body.nt-planos-v1 .pill,
+body.nt-planos-v1 .status,
+body.nt-planos-v1 .tag {
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  font-size: 9.5px !important;
+  font-weight: 600 !important;
+}
+
+/* ---------- CHARTS ---------- */
+body.nt-planos-v1 canvas {
+  max-width: 100%;
+}
+
+body.nt-planos-v1 .chart-legend,
+body.nt-planos-v1 .chart-note {
+  color: var(--nt-muted) !important;
+  font-size: 10px !important;
+}
+
+/* ---------- SELLER / MANAGER SECTIONS ---------- */
+body.nt-planos-v1 #sec-vendedor-wrap,
+body.nt-planos-v1 #sec-gestor {
+  color: var(--nt-text) !important;
+}
+
+body.nt-planos-v1 .section-title,
+body.nt-planos-v1 .gestor-section-title {
+  color: var(--nt-text) !important;
+  font-family: 'Archivo', 'Inter', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.5px !important;
+}
+
+body.nt-planos-v1 .muted,
+body.nt-planos-v1 .subtle,
+body.nt-planos-v1 .helper {
+  color: var(--nt-muted) !important;
+}
+
+/* ---------- LOADING / MODALS ---------- */
+body.nt-planos-v1 .modal-card,
+body.nt-planos-v1 .dialog-card,
+body.nt-planos-v1 .modal-content {
+  border: 1px solid var(--nt-line) !important;
+  border-radius: 15px !important;
+  background: #fff !important;
+  box-shadow: 0 28px 70px rgba(23,21,19,.13) !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1180px) {
+  body.nt-planos-v1 .portal {
+    grid-template-columns: 198px minmax(0, 1fr) !important;
+  }
+  body.nt-planos-v1 .content {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+  body.nt-planos-v1 .grid-main {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body.nt-planos-v1 .content {
+    padding: 24px 18px 42px !important;
+  }
+}

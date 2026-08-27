@@ -1,0 +1,338 @@
+/* Nutrialle Painel — refinamentos V1.1
+   Separação gestor, limpeza visual e gráficos interativos. */
+
+body.nt-planos-v1 {
+  --nt-scope-soft: #F8F6F3;
+  --nt-scope-team: #171513;
+}
+
+/* ---------- LIMPEZA: ICONES E DECORACOES ---------- */
+body.nt-planos-v1 .kpi-icon,
+body.nt-planos-v1 .gestor-kpi-icon,
+body.nt-planos-v1 .summary-icon,
+body.nt-planos-v1 .activity-icon,
+body.nt-planos-v1 .hero-art,
+body.nt-planos-v1 .hero-ring,
+body.nt-planos-v1 .hero-decoration,
+body.nt-planos-v1 .hero-orb {
+  display: none !important;
+}
+
+body.nt-planos-v1 .kpi-top {
+  display: block !important;
+}
+
+body.nt-planos-v1 .summary-item {
+  padding-left: 0 !important;
+}
+
+body.nt-planos-v1 .activity-row {
+  gap: 0 !important;
+  border-bottom: 0 !important;
+}
+
+body.nt-planos-v1 .activity-main {
+  padding-left: 0 !important;
+}
+
+/* Remove as linhas de grade dos graficos. A curva de dados permanece. */
+body.nt-planos-v1 .grid-line,
+body.nt-planos-v1 #chart-grid line,
+body.nt-planos-v1 #chart-grid-ind line,
+body.nt-planos-v1 #g-chart-grid line {
+  display: none !important;
+}
+
+/* Remove divisorias pesadas das listas, usando superficie/espacamento. */
+body.nt-planos-v1 #g-ranking > div,
+body.nt-planos-v1 #g-alerta > div,
+body.nt-planos-v1 .rank-row,
+body.nt-planos-v1 .activity-row,
+body.nt-planos-v1 .summary-item {
+  border-bottom: 0 !important;
+}
+
+body.nt-planos-v1 #g-ranking > div,
+body.nt-planos-v1 .rank-row {
+  margin: 0 0 6px !important;
+  border-radius: 10px !important;
+  background: #FAF9F7 !important;
+}
+
+body.nt-planos-v1 #g-alerta > div {
+  margin: 0 0 6px !important;
+  border-radius: 10px !important;
+  background: #FAF9F7 !important;
+  color: var(--nt-muted) !important;
+}
+
+/* ---------- DIVISAO CLARA PARA GESTOR COMERCIAL ---------- */
+body.nt-planos-v1 .nt-scope-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 4px 0 13px;
+  padding: 0;
+}
+
+body.nt-planos-v1 .nt-scope-copy {
+  min-width: 0;
+}
+
+body.nt-planos-v1 .nt-scope-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--nt-orange);
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 1.05px;
+  text-transform: uppercase;
+}
+
+body.nt-planos-v1 .nt-scope-header h2 {
+  margin: 0 !important;
+  color: var(--nt-text) !important;
+  font-family: 'Archivo', 'Inter', sans-serif !important;
+  font-size: 20px !important;
+  line-height: 1.12 !important;
+  font-weight: 700 !important;
+  letter-spacing: -.55px !important;
+}
+
+body.nt-planos-v1 .nt-scope-header p {
+  margin: 5px 0 0 !important;
+  color: var(--nt-muted) !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+
+body.nt-planos-v1 .nt-scope-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 27px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--nt-line);
+  color: var(--nt-muted);
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: .75px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+body.nt-planos-v1 .nt-scope-team {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 0 !important;
+}
+
+body.nt-planos-v1 .nt-scope-team .nt-scope-badge {
+  background: var(--nt-scope-team);
+  border-color: var(--nt-scope-team);
+  color: #fff;
+}
+
+body.nt-planos-v1.role-gestor-comercial .manager-hero {
+  display: none !important;
+}
+
+body.nt-planos-v1.role-gestor-comercial #sec-gestor {
+  padding-top: 0 !important;
+  margin-top: 6px !important;
+}
+
+body.nt-planos-v1.role-gestor-comercial #sec-gestor .gestor-frame {
+  padding-top: 0 !important;
+}
+
+body.nt-planos-v1.role-gestor-comercial .gestor-grid {
+  margin-top: 0 !important;
+}
+
+/* Diferenca sutil entre individual e equipe sem criar outra caixa pesada. */
+body.nt-planos-v1.role-gestor-comercial .nt-scope-personal + .kpi-grid .kpi:first-child {
+  border-color: #E6D6CC !important;
+}
+
+body.nt-planos-v1.role-gestor-comercial .nt-scope-team ~ .gestor-grid .gestor-kpi:first-child {
+  border-color: #D8D1CA !important;
+}
+
+/* ---------- GRAFICOS: VISUAL MAIS DINAMICO ---------- */
+body.nt-planos-v1 .chart-wrap,
+body.nt-planos-v1 .gestor-chart-wrap {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+body.nt-planos-v1 .chart-svg,
+body.nt-planos-v1 .gestor-chart-svg {
+  overflow: visible !important;
+}
+
+body.nt-planos-v1 .chart-line,
+body.nt-planos-v1 .chart-line-quotes,
+body.nt-planos-v1 .gestor-chart-line {
+  transition: opacity .18s ease, stroke-width .18s ease, filter .18s ease !important;
+}
+
+body.nt-planos-v1 .chart-area,
+body.nt-planos-v1 .chart-area-quotes,
+body.nt-planos-v1 .gestor-chart-area {
+  transition: opacity .2s ease !important;
+}
+
+body.nt-planos-v1 .chart-dot,
+body.nt-planos-v1 .chart-dot-active,
+body.nt-planos-v1 .gestor-chart-point,
+body.nt-planos-v1 .gestor-chart-point-active {
+  transition: opacity .16s ease, r .16s ease, stroke-width .16s ease !important;
+}
+
+body.nt-planos-v1 .chart-hit-zone,
+body.nt-planos-v1 .nt-manager-hit-zone {
+  fill: transparent !important;
+  cursor: crosshair !important;
+  pointer-events: all !important;
+}
+
+body.nt-planos-v1 .chart-hover-line,
+body.nt-planos-v1 .nt-manager-hover-line {
+  stroke: #BEB7B0 !important;
+  stroke-width: 1 !important;
+  stroke-dasharray: 3 4 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .12s ease !important;
+}
+
+body.nt-planos-v1 .chart-hover-line.visible,
+body.nt-planos-v1 .nt-manager-hover-line.visible {
+  opacity: .72 !important;
+}
+
+body.nt-planos-v1 .chart-tooltip,
+body.nt-planos-v1 .nt-manager-chart-tooltip {
+  z-index: 30 !important;
+  min-width: 158px !important;
+  padding: 10px 11px !important;
+  border-radius: 11px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(12,11,10,.95) !important;
+  box-shadow: 0 12px 28px rgba(12,11,10,.16) !important;
+  color: #fff !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+body.nt-planos-v1 .chart-tooltip strong,
+body.nt-planos-v1 .nt-manager-chart-tooltip strong {
+  display: block !important;
+  margin-bottom: 7px !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: capitalize !important;
+}
+
+body.nt-planos-v1 .nt-manager-chart-tooltip {
+  position: absolute;
+  opacity: 0;
+  transform: translate(-50%, -100%) translateY(-9px);
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+}
+
+body.nt-planos-v1 .nt-manager-chart-tooltip.visible {
+  opacity: 1;
+  transform: translate(-50%, -100%) translateY(-13px);
+}
+
+body.nt-planos-v1 .nt-manager-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  color: rgba(255,255,255,.62);
+  font-size: 10px;
+}
+
+body.nt-planos-v1 .nt-manager-tooltip-row b {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+body.nt-planos-v1 .gestor-chart-card[data-nt-interactive="true"] {
+  position: relative;
+}
+
+body.nt-planos-v1 .gestor-chart-card[data-nt-interactive="true"] .gestor-chart-head::after {
+  content: 'Passe o mouse sobre o gráfico';
+  display: inline-flex;
+  margin-left: auto;
+  color: var(--nt-faint);
+  font-size: 9px;
+  font-weight: 500;
+}
+
+body.nt-planos-v1 .chart-legend-item {
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: opacity .16s ease, color .16s ease !important;
+}
+
+body.nt-planos-v1 .chart-legend-item:hover {
+  color: var(--nt-text) !important;
+}
+
+body.nt-planos-v1 .chart-legend-item.is-off {
+  opacity: .34 !important;
+}
+
+body.nt-planos-v1 .nt-hide-sales .chart-line,
+body.nt-planos-v1 .nt-hide-sales .chart-area,
+body.nt-planos-v1 .nt-hide-sales g[id^="chart-points"] {
+  opacity: .05 !important;
+  pointer-events: none !important;
+}
+
+body.nt-planos-v1 .nt-hide-quotes .chart-line-quotes,
+body.nt-planos-v1 .nt-hide-quotes .chart-area-quotes {
+  opacity: .05 !important;
+  pointer-events: none !important;
+}
+
+/* Ranking: retira os medalhoes coloridos/icone visual excessivo. */
+body.nt-planos-v1 #g-ranking > div > div:first-child,
+body.nt-planos-v1 .rank-badge {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 6px !important;
+  background: #F0ECE8 !important;
+  color: var(--nt-muted) !important;
+  font-size: 9px !important;
+}
+
+/* Alertas: remove a bolinha decorativa antes do nome. */
+body.nt-planos-v1 #g-alerta > div > div:first-child {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  body.nt-planos-v1 .nt-scope-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  body.nt-planos-v1 .nt-scope-team {
+    margin-top: 22px;
+    padding-top: 16px;
+  }
+}

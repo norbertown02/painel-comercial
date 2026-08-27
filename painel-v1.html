@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nutrialle · Painel V1</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100%;height:100%;overflow:hidden;background:#0C0B0A}
+    #painel-preview{display:block;width:100%;height:100%;border:0;background:#F4F2EF}
+  </style>
+</head>
+<body>
+  <iframe id="painel-preview" src="/index.html?nt_visual_source=v1" title="Preview visual do Painel Nutrialle"></iframe>
+  <script>
+    (() => {
+      const frame = document.getElementById('painel-preview')
+
+      function addStylesheet(doc, id, href) {
+        if (doc.getElementById(id)) return
+        const link = doc.createElement('link')
+        link.id = id
+        link.rel = 'stylesheet'
+        link.href = href
+        doc.head.appendChild(link)
+      }
+
+      function addScript(doc, id, src) {
+        if (doc.getElementById(id)) return
+        const script = doc.createElement('script')
+        script.id = id
+        script.src = src
+        script.defer = true
+        doc.head.appendChild(script)
+      }
+
+      function applyVisualSystem() {
+        try {
+          const doc = frame.contentDocument
+          if (!doc || !doc.head || !doc.body) return
+
+          doc.body.classList.add('nt-planos-v1')
+
+          addStylesheet(doc, 'nt-planos-v1-css', '/painel-planos-v1.css?v=2026082701')
+          addStylesheet(doc, 'nt-planos-v1-refinements-css', '/painel-planos-v1-refinements.css?v=2026082702')
+          addStylesheet(doc, 'nt-planos-v1-fixes-css', '/painel-planos-v1-fixes.css?v=2026082703')
+          addScript(doc, 'nt-planos-v1-js', '/painel-planos-v1.js?v=2026082702')
+          addScript(doc, 'nt-planos-v1-fixes-js', '/painel-planos-v1-fixes.js?v=2026082704')
+
+          const decorate = () => {
+            doc.body.classList.add('nt-planos-v1')
+            const eyebrow = doc.querySelector('.seller-dashboard-block.hero .eyebrow')
+            if (eyebrow && eyebrow.textContent.trim() === 'Portal Nutrialle') eyebrow.textContent = 'Visão geral'
+          }
+
+          decorate()
+          if (!doc.__ntPlanosObserver) {
+            doc.__ntPlanosObserver = new MutationObserver(decorate)
+            doc.__ntPlanosObserver.observe(doc.body, { childList: true, subtree: true })
+          }
+        } catch (err) {
+          console.error('Falha ao aplicar preview visual Nutrialle', err)
+        }
+      }
+
+      frame.addEventListener('load', applyVisualSystem)
+      setTimeout(applyVisualSystem, 400)
+      setTimeout(applyVisualSystem, 1200)
+    })()
+  </script>
+</body>
+</html>

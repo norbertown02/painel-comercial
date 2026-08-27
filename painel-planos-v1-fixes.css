@@ -1,0 +1,30 @@
+/* Nutrialle Painel — correções pontuais V1.2 */
+
+/* O tooltip original herdava cores escuras do dashboard e os valores
+   desapareciam sobre o fundo preto. Força contraste em todo o conteúdo. */
+body.nt-planos-v1 .chart-tooltip,
+body.nt-planos-v1 .chart-tooltip * {
+  color: #fff !important;
+}
+
+body.nt-planos-v1 .chart-tooltip-row {
+  color: rgba(255,255,255,.66) !important;
+}
+
+body.nt-planos-v1 .chart-tooltip-row span:not(.chart-tooltip-dot) {
+  color: rgba(255,255,255,.66) !important;
+}
+
+body.nt-planos-v1 .chart-tooltip-row b,
+body.nt-planos-v1 .chart-tooltip-row strong {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+body.nt-planos-v1 .chart-tooltip-dot.orange {
+  background: #E8651E !important;
+}
+
+body.nt-planos-v1 .chart-tooltip-dot.gray {
+  background: #A19B95 !important;
+}

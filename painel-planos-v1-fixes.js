@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = '2026.08.27.3'
+  const VERSION = '2026.08.27.4'
   const body = document.body
   if (!body || body.dataset.ntPainelFixes === VERSION) return
   body.dataset.ntPainelFixes = VERSION
@@ -39,7 +39,54 @@
     return 'R$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
   }
 
-  async function refreshValidManagerSales() {
+  async function loadFiscalReturnsBySale(saleIds) {
+    const result = new Map()
+    if (!saleIds.length) return result
+
+    const { data: links, error: linksError } = await supabaseClient
+      .from('sales_fiscal_links')
+      .select('sale_id,fiscal_document_id,link_type')
+      .in('sale_id', saleIds)
+
+    if (linksError) throw linksError
+
+    const returnLinks = (links || []).filter(link => {
+      const type = normalizeStatus(link?.link_type)
+      return type.includes('devol') || type.includes('revers') || type.includes('estorn')
+    })
+
+    const documentIds = [...new Set(returnLinks.map(link => link.fiscal_document_id).filter(Boolean))]
+    if (!documentIds.length) return result
+
+    const { data: documents, error: documentsError } = await supabaseClient
+      .from('fiscal_documents')
+      .select('ultra_document_id,document_total,is_reversal,movement_type,operation_nature')
+      .in('ultra_document_id', documentIds)
+
+    if (documentsError) throw documentsError
+
+    const docsById = new Map((documents || []).map(doc => [String(doc.ultra_document_id), doc]))
+
+    returnLinks.forEach(link => {
+      const doc = docsById.get(String(link.fiscal_document_id))
+      if (!doc) return
+
+      const movement = normalizeStatus(doc.movement_type)
+      const nature = normalizeStatus(doc.operation_nature)
+      const isReturn = doc.is_reversal === true || movement.includes('devol') || movement.includes('revers') || movement.includes('estorn') || nature.includes('devol')
+      if (!isReturn) return
+
+      const amount = Math.abs(Number(doc.document_total || 0))
+      if (!amount) return
+
+      const saleId = String(link.sale_id)
+      result.set(saleId, (result.get(saleId) || 0) + amount)
+    })
+
+    return result
+  }
+
+  async function refreshNetManagerSales() {
     if (!isManager()) return
 
     try {
@@ -51,23 +98,37 @@
 
       const { data, error } = await supabaseClient
         .from('sales')
-        .select('total,seller_id,sale_date,status')
+        .select('id,total,seller_id,sale_date,status')
         .gte('sale_date', startISO)
 
       if (error) {
-        console.warn('Não foi possível recalcular vendas válidas da equipe:', error.message)
+        console.warn('Não foi possível recalcular vendas líquidas da equipe:', error.message)
         return
       }
 
-      const validSales = (data || []).filter(sale => !isCancelledSale(sale))
+      const activeSales = (data || []).filter(sale => !isCancelledSale(sale))
+      const returnBySale = await loadFiscalReturnsBySale(activeSales.map(sale => sale.id).filter(Boolean))
+
+      const netSales = activeSales.map(sale => {
+        const gross = getTotalSafe(sale)
+        const returned = returnBySale.get(String(sale.id)) || 0
+        const net = Math.max(0, gross - returned)
+        return {
+          ...sale,
+          total: net,
+          __ntGrossTotal: gross,
+          __ntReturnedTotal: returned,
+          __ntNetTotal: net
+        }
+      })
 
       if (typeof window.updateGestorChart === 'function') {
-        window.updateGestorChart(validSales)
+        window.updateGestorChart(netSales)
       }
 
       const currentMonth = now.getMonth()
       const currentYear = now.getFullYear()
-      const currentTotal = validSales
+      const currentTotal = netSales
         .filter(sale => {
           const dateStr = getSaleDateSafe(sale)
           if (!dateStr) return false
@@ -79,10 +140,11 @@
       if ($('g-total-vendas')) $('g-total-vendas').textContent = compactMoney(currentTotal)
       if ($('g-chart-total')) $('g-chart-total').textContent = compactMoney(currentTotal)
 
-      window.__ntValidManagerSales = validSales
+      window.__ntValidManagerSales = netSales
       window.__ntManagerCurrentTotal = currentTotal
+      window.__ntFiscalReturnsBySale = returnBySale
     } catch (err) {
-      console.warn('Falha ao remover vendas canceladas da visão gerencial:', err)
+      console.warn('Falha ao aplicar devoluções fiscais na visão gerencial:', err)
     }
   }
 
@@ -93,14 +155,14 @@
 
     window.loadGestorData = async function () {
       const result = await original.apply(this, arguments)
-      await refreshValidManagerSales()
+      await refreshNetManagerSales()
       return result
     }
   }
 
   function apply() {
     patchManagerReload()
-    refreshValidManagerSales()
+    refreshNetManagerSales()
   }
 
   apply()

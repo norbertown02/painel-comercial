@@ -16,6 +16,24 @@
     (() => {
       const frame = document.getElementById('painel-preview')
 
+      function addStylesheet(doc, id, href) {
+        if (doc.getElementById(id)) return
+        const link = doc.createElement('link')
+        link.id = id
+        link.rel = 'stylesheet'
+        link.href = href
+        doc.head.appendChild(link)
+      }
+
+      function addScript(doc, id, src) {
+        if (doc.getElementById(id)) return
+        const script = doc.createElement('script')
+        script.id = id
+        script.src = src
+        script.defer = true
+        doc.head.appendChild(script)
+      }
+
       function applyVisualSystem() {
         try {
           const doc = frame.contentDocument
@@ -23,13 +41,9 @@
 
           doc.body.classList.add('nt-planos-v1')
 
-          if (!doc.getElementById('nt-planos-v1-css')) {
-            const link = doc.createElement('link')
-            link.id = 'nt-planos-v1-css'
-            link.rel = 'stylesheet'
-            link.href = '/painel-planos-v1.css?v=2026082701'
-            doc.head.appendChild(link)
-          }
+          addStylesheet(doc, 'nt-planos-v1-css', '/painel-planos-v1.css?v=2026082701')
+          addStylesheet(doc, 'nt-planos-v1-refinements-css', '/painel-planos-v1-refinements.css?v=2026082702')
+          addScript(doc, 'nt-planos-v1-js', '/painel-planos-v1.js?v=2026082702')
 
           const decorate = () => {
             doc.body.classList.add('nt-planos-v1')

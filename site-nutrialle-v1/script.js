@@ -1,113 +1,173 @@
 (() => {
-  const header = document.querySelector('[data-header]')
-  const toggle = document.querySelector('[data-menu-toggle]')
-  const mobile = document.querySelector('[data-mobile-nav]')
-  if (header) {
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 16)
-    onScroll(); window.addEventListener('scroll', onScroll, { passive:true })
-  }
-  if (toggle && mobile) {
-    toggle.addEventListener('click', () => mobile.classList.toggle('open'))
-    mobile.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobile.classList.remove('open')))
-  }
+  const LOGO = './assets/logo-nutrialle.webp';
+  const LEV = './assets/lev.webp';
+  const LEV_PLUS = './assets/lev-plus.webp';
 
-  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
-    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target) } })
-  }, { threshold:.12 }) : null
-  document.querySelectorAll('.reveal').forEach(el => observer ? observer.observe(el) : el.classList.add('in'))
+  const setLogo = () => {
+    document.querySelectorAll('.brand').forEach((brand) => {
+      brand.innerHTML = `<img class="nt-official-logo" src="${LOGO}" alt="Nutrialle" />`;
+      brand.setAttribute('aria-label', 'Nutrialle');
+    });
+  };
 
-  const products = [
-    {cat:'corte',name:'Nutrialle Phós 40',desc:'Suplemento mineral para bovinos de corte a pasto, com foco em equilíbrio mineral e desempenho produtivo.',tags:['Pasto','Mineral'],url:'https://nutrialle.com.br/produto/PRD-1AB349'},
-    {cat:'corte',name:'Performance@',desc:'Suplemento proteico adensado para cria, recria e engorda a pasto.',tags:['Pasto','Proteico'],url:'https://nutrialle.com.br/produto/PRD-BB3237'},
-    {cat:'corte',name:'Protein 30',desc:'Suplemento proteinado com 30% de proteína bruta para recria intensiva e engorda a pasto.',tags:['Recria','Terminação'],url:'https://nutrialle.com.br/produto/PRD-EC39E1'},
-    {cat:'corte',name:'Protein 40',desc:'Suplemento proteinado com 40% de proteína bruta para períodos de deficiência proteica.',tags:['Seca','Proteico'],url:'https://nutrialle.com.br/produto/PRD-094EED'},
-    {cat:'corte',name:'Max 25/5',desc:'Suplemento proteico energético para recria avançada e terminação.',tags:['Energia','Terminação'],url:'https://nutrialle.com.br/produto/PRD-7C4F3C'},
-    {cat:'corte',name:'Confina Prime 70',desc:'Núcleo proteico mineral de alta concentração para sistemas intensivos de produção.',tags:['Confinamento','Núcleo'],url:'https://nutrialle.com.br/produto/PRD-92A3D2'},
-    {cat:'corte',name:'Plus 30/3',desc:'Suplemento proteico energético com 30% de proteína bruta para recria e terminação a pasto.',tags:['Pasto','Proteico energético'],url:'https://nutrialle.com.br/produto/PRD-32F3BB'},
-    {cat:'corte',name:'Confina Plus',desc:'Núcleo mineral vitamínico para bovinos confinados e semiconfinados.',tags:['Confinamento','Mineral vitamínico'],url:'https://nutrialle.com.br/produto/PRD-898A66'},
-    {cat:'corte',name:'Protein Gold 30',desc:'Suplemento proteinado de alta eficiência para recria e engorda.',tags:['Recria','Alta eficiência'],url:'https://nutrialle.com.br/produto/PRD-204407'},
-    {cat:'leite',name:'Nutrialle Lacto',desc:'Núcleo mineral vitamínico para vacas leiteiras em produção.',tags:['Lactação','20 kg'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto ADE',desc:'Suplemento mineral vitamínico para vacas leiteiras em produção.',tags:['Lactação','Mineral'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Biomon',desc:'Núcleo mineral vitamínico para bovinos leiteiros em lactação com Biotina e Monensina.',tags:['Lactação','Biotina'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Biotin',desc:'Suplemento mineral vitamínico com biotina, voltado à saúde dos cascos.',tags:['Cascos','Biotina'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Future',desc:'Núcleo mineral vitamínico para novilhas leiteiras em recria e crescimento.',tags:['Novilhas','Recria'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Max',desc:'Núcleo mineral vitamínico tamponado para vacas de média e alta produção.',tags:['Alta produção','Tamponado'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Max Control',desc:'Núcleo tamponado para bovinos leiteiros que recebem ração comercial com monensina.',tags:['Controle','Lactação'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Pré Parto',desc:'Núcleo mineral vitamínico para vacas leiteiras em fase de pré-parto.',tags:['Transição','Pré-parto'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Rumen Pró',desc:'Suplemento com probióticos para equilíbrio da microbiota ruminal e intestinal.',tags:['Rúmen','Probióticos'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Sacch',desc:'Suplemento mineral vitamínico com levedura viva Saccharomyces cerevisiae.',tags:['Levedura','Rúmen'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'leite',name:'Lacto Tamp',desc:'Tamponante para estabilidade do pH ruminal em dietas com alto teor de concentrado.',tags:['Tamponante','pH ruminal'],url:'https://nutrialle.com.br/produtos/bovinos-de-leite'},
-    {cat:'aditivos',name:'Linha LEV +',desc:'Tecnologia em nutrição voltada a saúde, desempenho e produtividade.',tags:['Tecnologia','Funcional'],url:'https://www.nutrialle.com.br'},
-    {cat:'aditivos',name:'Nutrialle Buffer',desc:'Tamponante ruminal para auxiliar na manutenção do equilíbrio do pH do rúmen.',tags:['Rúmen','Tamponante'],url:'https://nutrialle.com.br/blog-conteudo.php?slug=o-que-e-tamponante-ruminal'},
-    {cat:'aditivos',name:'Nutrialle Buffer Pro',desc:'Agentes tamponantes e tecnologias complementares para estabilidade fermentativa.',tags:['Rúmen','Eficiência'],url:'https://nutrialle.com.br/blog-conteudo.php?slug=o-que-e-tamponante-ruminal'},
-    {cat:'suinos',name:'Nutrição para suínos',desc:'Portfólio voltado às exigências das diferentes fases da produção suína.',tags:['Precisão','Desempenho'],url:'https://www.nutrialle.com.br'}
-  ]
+  const preStyle = document.createElement('style');
+  preStyle.textContent = `
+    .spotlight{visibility:hidden}
+    .nt-official-logo{display:block;width:176px;height:auto;max-height:58px;object-fit:contain;object-position:left center}
+    .footer .nt-official-logo{width:205px;max-height:none}
+    @media(max-width:760px){.nt-official-logo{width:148px}}
+  `;
+  document.head.appendChild(preStyle);
+  setLogo();
 
-  const grid = document.querySelector('[data-product-grid]')
-  const tabs = document.querySelector('[data-tabs]')
-  const search = document.querySelector('[data-product-search]')
-  const empty = document.querySelector('[data-empty]')
-  if (grid) {
-    let filter = (location.hash || '').replace('#','') || 'all'
-    if (!['all','corte','leite','suinos','aditivos'].includes(filter)) filter='all'
-    let query = ''
-    const labels = {corte:'Bovinos de corte',leite:'Bovinos de leite',suinos:'Suínos',aditivos:'Aditivos & tecnologias'}
-    const render = () => {
-      const list = products.filter(p => (filter==='all'||p.cat===filter) && (!query || `${p.name} ${p.desc} ${p.tags.join(' ')}`.toLowerCase().includes(query)))
-      grid.innerHTML = list.map(p => `<article class="product-card"><span class="pc-cat">${labels[p.cat]}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="pc-tags">${p.tags.map(t=>`<span>${t}</span>`).join('')}</div><a href="${p.url}" target="_blank" rel="noreferrer">Ver detalhes <b>↗</b></a></article>`).join('')
-      if(empty) empty.hidden = list.length>0
-      if(tabs) tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter))
+  const core = document.createElement('script');
+  core.src = './script-core.js';
+  core.async = false;
+  core.onload = () => {
+    setLogo();
+
+    const style = document.createElement('style');
+    style.id = 'nt-final-visual-refinement';
+    style.textContent = `
+      .spotlight{visibility:visible}
+      .brand{gap:0!important;min-width:176px}
+      .brand-mark,.brand-word{display:none!important}
+      .nt-official-logo{display:block;width:176px;height:auto;max-height:58px;object-fit:contain;object-position:left center}
+      .footer .nt-official-logo{width:205px;max-height:none}
+      .hero-copy p{max-width:580px}
+      .intro-copy p{max-width:550px}
+      .lev-showcase{background:#090909;color:#fff;padding:88px 0 96px;border-top:1px solid rgba(255,255,255,.06)}
+      .lev-showcase-head{display:flex;align-items:end;justify-content:space-between;gap:54px;margin-bottom:31px}
+      .lev-showcase-head h2{font-family:Archivo,Inter,sans-serif;font-size:clamp(40px,4.5vw,62px);line-height:.98;letter-spacing:-2.8px;margin:0}
+      .lev-showcase-head p{max-width:420px;margin:0 0 4px;color:rgba(255,255,255,.56);font-size:12px;line-height:1.6}
+      .lev-gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+      .lev-art{margin:0;background:#050505;border:1px solid rgba(255,255,255,.11);border-radius:15px;overflow:hidden;box-shadow:0 26px 68px rgba(0,0,0,.28);transition:transform .25s ease,border-color .25s ease}
+      .lev-art:hover{transform:translateY(-3px);border-color:rgba(232,101,30,.36)}
+      .lev-art img{display:block;width:100%;aspect-ratio:1672/941;object-fit:cover}
+      .lev-art figcaption{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 16px 14px;border-top:1px solid rgba(255,255,255,.07)}
+      .lev-art figcaption strong{font-family:Archivo,Inter,sans-serif;font-size:13px;color:#fff}
+      .lev-art figcaption span{font-size:8px;letter-spacing:.55px;text-transform:uppercase;color:rgba(255,255,255,.43);text-align:right}
+      .lev-actions{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:24px}
+      .lev-actions p{margin:0;color:rgba(255,255,255,.48);font-size:10px;line-height:1.5}
+      .lev-actions .btn{flex:0 0 auto}
+      .science-note{max-width:760px}
+      .company-card p{max-width:430px}
+      @media(max-width:1050px){
+        .nt-official-logo{width:158px}.brand{min-width:158px}
+        .lev-showcase-head{display:block}.lev-showcase-head p{margin-top:14px}
+        .lev-gallery{grid-template-columns:1fr}
+      }
+      @media(max-width:760px){
+        .nt-official-logo{width:145px}.brand{min-width:145px}
+        .lev-showcase{padding:68px 0 74px}.lev-showcase-head h2{font-size:39px;letter-spacing:-1.8px}
+        .lev-art figcaption{display:block}.lev-art figcaption span{display:block;text-align:left;margin-top:6px}
+        .lev-actions{display:block}.lev-actions .btn{width:100%;margin-top:18px}
+      }
+    `;
+    document.head.appendChild(style);
+
+    const heroText = document.querySelector('.hero-copy p');
+    if (heroText) heroText.textContent = 'Ciência nutricional, acompanhamento técnico e dados de campo para decisões mais precisas em bovinos e suínos.';
+
+    const intro = document.querySelector('.intro-copy');
+    if (intro) intro.innerHTML = '<p>A recomendação começa pelo diagnóstico: sistema, animal, dieta, objetivo e custo. Técnica e acompanhamento orientam a decisão.</p>';
+
+    const scienceLead = document.querySelector('.science-head > p');
+    if (scienceLead) scienceLead.textContent = 'Animal, dieta, manejo e economia precisam ser lidos em conjunto antes de definir a estratégia.';
+
+    const solutionLead = document.querySelector('.solutions .section-head > p');
+    if (solutionLead) solutionLead.textContent = 'Soluções para diferentes fases, objetivos e sistemas de produção.';
+
+    const performanceText = document.querySelector('.performance-copy > p');
+    if (performanceText) performanceText.textContent = 'A formulação precisa chegar ao cocho com consistência e ser acompanhada por indicadores simples de consumo, desempenho e custo.';
+    const performanceItems = document.querySelectorAll('.performance-copy .check-list li');
+    if (performanceItems[0]) performanceItems[0].innerHTML = '<span></span>Estratégia ajustada à fase e ao objetivo';
+    if (performanceItems[1]) performanceItems[1].innerHTML = '<span></span>Consumo, desempenho e custo acompanhados';
+    if (performanceItems[2]) performanceItems[2].innerHTML = '<span></span>Suporte técnico próximo ao produtor';
+    if (performanceItems[3]) performanceItems[3].remove();
+
+    const techText = document.querySelector('.tech-copy > p');
+    if (techText) techText.textContent = 'Ferramentas próprias conectam fazendas, lotes, planos e histórico técnico em uma única leitura.';
+
+    const companyText = document.querySelector('.company-card > p');
+    if (companyText) companyText.textContent = 'Conhecimento técnico, proximidade e inovação para construir relações de longo prazo com quem produz.';
+
+    const contactText = document.querySelector('.contact-copy > p');
+    if (contactText) contactText.textContent = 'Conte seu sistema e o desafio. Nosso time direciona a conversa técnica.';
+
+    const spotlight = document.querySelector('.spotlight');
+    if (spotlight) {
+      spotlight.className = 'lev-showcase';
+      spotlight.id = 'lev';
+      spotlight.innerHTML = `
+        <div class="container">
+          <div class="lev-showcase-head reveal in">
+            <div><span class="eyebrow eyebrow-light">Tecnologia nutricional funcional</span><h2>LEV &amp; LEV+</h2></div>
+            <p>Duas tecnologias Nutrialle apresentadas com uma linguagem visual mais científica, direta e coerente com a marca.</p>
+          </div>
+          <div class="lev-gallery">
+            <figure class="lev-art reveal in">
+              <img src="${LEV}" alt="Nutrialle LEV — tecnologia nutricional funcional" loading="lazy" />
+              <figcaption><strong>LEV</strong><span>Equilíbrio digestivo · desempenho · eficiência</span></figcaption>
+            </figure>
+            <figure class="lev-art reveal in">
+              <img src="${LEV_PLUS}" alt="Nutrialle LEV+ — tecnologia avançada em nutrição" loading="lazy" />
+              <figcaption><strong>LEV+</strong><span>Levedura viva · probióticos · colina protegida</span></figcaption>
+            </figure>
+          </div>
+          <div class="lev-actions reveal in">
+            <p>Saúde digestiva · equilíbrio ruminal · desempenho</p>
+            <a class="btn btn-orange" href="#contato">Falar com o time técnico</a>
+          </div>
+        </div>`;
     }
-    tabs?.addEventListener('click', e => { const b=e.target.closest('button[data-filter]'); if(!b)return; filter=b.dataset.filter; history.replaceState(null,'',filter==='all'?'./produtos.html':`#${filter}`); render() })
-    search?.addEventListener('input', e => { query=e.target.value.toLowerCase().trim(); render() })
-    render()
-  }
-})()
 
-;(() => {
-  const A='https://raw.githubusercontent.com/rocharichard507-creator/Nutrialle/main/assets/images'
-  const logo=`${A}/logo.webp`
-  document.querySelectorAll('.brand').forEach(b=>{
-    b.innerHTML=`<span class="brand-mark"><img src="${logo}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></span><span class="brand-word">NUTRIALLE</span>`
-  })
-  if(!document.querySelector('link[data-nt-favicon]')){const l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.href=`${A}/favicon.svg`;l.dataset.ntFavicon='1';document.head.appendChild(l)}
+    let icon = document.querySelector('link[rel="icon"]');
+    if (!icon) { icon = document.createElement('link'); icon.rel = 'icon'; document.head.appendChild(icon); }
+    icon.href = LOGO;
+    icon.type = 'image/webp';
 
-  const sp=document.querySelector('.spotlight')
-  if(sp){
-    sp.id='lev'
-    sp.innerHTML=`<div class="container spotlight-grid">
-      <div class="spotlight-copy reveal in"><span class="eyebrow">Tecnologia em destaque</span><h2>LEV+</h2>
-      <p>Uma combinação completa de <strong>levedura viva, parede celular de leveduras, probióticos e colina protegida</strong> para apoiar a saúde digestiva, o equilíbrio ruminal e o desempenho do rebanho.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#ddd7d0;border:1px solid #ddd7d0;border-radius:12px;overflow:hidden;margin:24px 0 25px">
-        <span style="background:#fff;padding:13px;font-size:10px">Levedura viva</span><span style="background:#fff;padding:13px;font-size:10px">Parede celular de leveduras</span><span style="background:#fff;padding:13px;font-size:10px">Probióticos</span><span style="background:#fff;padding:13px;font-size:10px">Colina protegida</span>
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:26px"><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Equilíbrio ruminal</span><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Saúde intestinal</span><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Imunidade</span><span style="font-size:8px;border:1px solid #ddd7d0;border-radius:999px;padding:7px 9px">Leite e corte</span></div>
-      <a class="btn btn-dark" href="#contato">Fale com um especialista</a></div>
-      <div class="spotlight-visual reveal in" style="background:#ece7e1;display:grid;place-items:center;padding:22px"><img src="${A}/lev/lev-01.webp" alt="Nutrialle LEV+, tecnologia para desempenho, saúde intestinal e imunidade" style="width:100%;height:100%;max-height:430px;object-fit:contain;display:block"></div>
-    </div>`
-  }
+    const oldForm = document.querySelector('.contact-form');
+    if (oldForm) {
+      const form = oldForm.cloneNode(true);
+      oldForm.replaceWith(form);
+      form.removeAttribute('onsubmit');
+      const note = form.querySelector('.form-note');
+      if (note) note.textContent = 'A mensagem será aberta no WhatsApp oficial da Nutrialle.';
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const inputs = form.querySelectorAll('input');
+        const select = form.querySelector('select');
+        const textarea = form.querySelector('textarea');
+        const nome = inputs[0]?.value.trim();
+        const telefone = inputs[1]?.value.trim();
+        const interesse = select?.value;
+        const mensagem = textarea?.value.trim();
+        if (!nome || !telefone || !interesse || interesse === 'Selecione' || !mensagem) {
+          alert('Preencha os campos para continuar.');
+          return;
+        }
+        const text = ['Olá, equipe Nutrialle!', '', `Meu nome é ${nome}.`, `Telefone: ${telefone}.`, `Tenho interesse em: ${interesse}.`, '', 'Mensagem:', mensagem].join('\n');
+        window.open(`https://wa.me/5545999021287?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+      });
+    }
 
-  const metrics=document.querySelectorAll('.product-ui .ui-metrics strong')
-  ;['Diagnóstico','Plano','Histórico'].forEach((t,i)=>{if(metrics[i]){metrics[i].textContent=t;metrics[i].style.fontSize='12px'}})
-
-  const form=document.querySelector('.contact-form')
-  if(form){
-    form.removeAttribute('onsubmit')
-    const note=form.querySelector('.form-note'); if(note) note.textContent='Ao enviar, abriremos o WhatsApp oficial da Nutrialle com sua mensagem pronta.'
-    form.addEventListener('submit',e=>{
-      e.preventDefault()
-      const inputs=form.querySelectorAll('input'), sel=form.querySelector('select'), ta=form.querySelector('textarea')
-      const nome=inputs[0]?.value.trim(), telefone=inputs[1]?.value.trim(), interesse=sel?.value, msg=ta?.value.trim()
-      if(!nome||!telefone||!interesse||interesse==='Selecione'||!msg){alert('Preencha os campos para continuar.');return}
-      const text=['Olá, equipe Nutrialle!','',`Meu nome é ${nome}.`,`Telefone: ${telefone}.`,`Tenho interesse em: ${interesse}.`,'','Mensagem:',msg].join('\n')
-      window.open(`https://wa.me/5545999021287?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer')
-    })
-  }
-
-  const patchLev=()=>document.querySelectorAll('.product-card').forEach(c=>{
-    if(!c.querySelector('h3')?.textContent.toUpperCase().includes('LEV'))return
-    const p=c.querySelector('p'); if(p)p.textContent='Levedura viva, parede celular de leveduras, probióticos e colina protegida para apoio à saúde digestiva, equilíbrio ruminal e desempenho.'
-    const a=c.querySelector('a'); if(a){a.href='./index.html#lev';a.removeAttribute('target');a.removeAttribute('rel');a.innerHTML='Conhecer tecnologia <b>→</b>'}
-  })
-  patchLev(); const grid=document.querySelector('[data-product-grid]'); if(grid&&'MutationObserver'in window)new MutationObserver(patchLev).observe(grid,{childList:true})
-})()
+    const patchCatalog = () => document.querySelectorAll('.product-card').forEach((card) => {
+      const title = card.querySelector('h3')?.textContent.toUpperCase() || '';
+      if (!title.includes('LEV')) return;
+      const description = card.querySelector('p');
+      if (description) description.textContent = 'Tecnologia funcional voltada ao equilíbrio digestivo, saúde ruminal e desempenho.';
+      const link = card.querySelector('a');
+      if (link) {
+        link.href = './index.html#lev';
+        link.removeAttribute('target');
+        link.removeAttribute('rel');
+        link.innerHTML = 'Conhecer tecnologia <b>→</b>';
+      }
+    });
+    patchCatalog();
+    const grid = document.querySelector('[data-product-grid]');
+    if (grid && 'MutationObserver' in window) new MutationObserver(patchCatalog).observe(grid, { childList: true });
+  };
+  document.body.appendChild(core);
+})();

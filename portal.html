@@ -1781,6 +1781,31 @@ body.role-gestao #sec-gestor {
   }
 }
 
+
+
+/* Fix: permitir rolagem vertical em notebooks/telas de menor altura */
+html,
+body {
+  height: auto !important;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+}
+
+#portal-screen,
+.portal,
+.main {
+  height: auto !important;
+  min-height: 100vh;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+@media (max-height: 850px) {
+  .content {
+    padding-bottom: 72px;
+  }
+}
 </style>
 </head>
 

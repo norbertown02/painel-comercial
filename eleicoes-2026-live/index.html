@@ -61,7 +61,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:right;
 </div>
 <script>
 const WEIGHTS_2022={"AC":440882,"AL":1724170,"AP":432192,"AM":2056644,"BA":8422603,"CE":5429153,"DF":1762643,"ES":2221158,"GO":3681911,"MA":3781891,"MT":1842826,"MS":1506975,"MG":12016092,"PA":4679682,"PB":2421536,"PR":6567080,"PE":5451696,"PI":2044455,"RJ":9457087,"RN":2007271,"RS":6638297,"RO":903206,"RR":298308,"SC":4330454,"SP":25654272,"SE":1298521,"TO":861712};
-const KEY="apuracao2026_snapshots_v2";
+const KEY="apuracao2026_snapshots_v3";
 let snapshots=[]; try{snapshots=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{}
 let countdown=5, timer;
 const fmtN=n=>new Intl.NumberFormat("pt-BR").format(n||0);
@@ -75,7 +75,7 @@ function saveSnapshot(payload){
   const p=weightedProjection(payload.states);
   const snap={at:Date.now(),validVotes:payload.national.validVotes,flavioNow:payload.national.flavioShare,lulaNow:payload.national.lulaShare,flavioProj:p.flavio,lulaProj:p.lula,states:payload.states};
   const last=snapshots[snapshots.length-1];
-  if(!last || last.validVotes!==snap.validVotes){snapshots.push(snap); if(snapshots.length>720)snapshots=snapshots.slice(-720); localStorage.setItem(KEY,JSON.stringify(snapshots));}
+  if(!last || last.validVotes!==snap.validVotes || last.flavioNow!==snap.flavioNow || last.lulaNow!==snap.lulaNow){snapshots.push(snap); if(snapshots.length>720)snapshots=snapshots.slice(-720); localStorage.setItem(KEY,JSON.stringify(snapshots));}
   return {snap,p};
 }
 function render(payload){
@@ -117,17 +117,35 @@ function drawChart(){
   line("flavioProj","#4d8dff");line("lulaProj","#ff5a63");
   x.fillStyle="#8e99a5";x.fillText("histórico local • últimas "+arr.length+" leituras",pad.l,H-10);
 }
+let refreshing=false;
 async function refresh(){
+  if(refreshing) return;
+  refreshing=true;
   try{
     document.getElementById("status").textContent="atualizando...";
-    const r=await fetch("/api/tse",{cache:"no-store"}); if(!r.ok)throw new Error("HTTP "+r.status); const data=await r.json();
+    const r=await fetch("/api/tse?ts="+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const data=await r.json();
     if(!data.ok)throw new Error(data.error||"Falha na leitura do TSE");
-    render(data); document.getElementById("status").textContent="ao vivo • atualizado "+new Date().toLocaleTimeString("pt-BR");
-  }catch(e){const el=document.getElementById("error");el.textContent="Não foi possível atualizar agora: "+e.message;el.style.display="block";document.getElementById("status").textContent="tentando novamente";}
-  countdown=5;
+    render(data);
+    document.getElementById("status").textContent="ao vivo • atualizado "+new Date().toLocaleTimeString("pt-BR");
+  }catch(e){
+    const el=document.getElementById("error");
+    el.textContent="Não foi possível atualizar agora: "+e.message;
+    el.style.display="block";
+    document.getElementById("status").textContent="tentando novamente";
+  }finally{
+    refreshing=false;
+    countdown=5;
+  }
 }
-setInterval(()=>{countdown--;document.getElementById("countdown").textContent=countdown+"s";if(countdown<=0)refresh()},1000);
-window.addEventListener("resize",drawChart); refresh();
+setInterval(()=>{
+  countdown=Math.max(0,countdown-1);
+  document.getElementById("countdown").textContent=countdown+"s";
+  if(countdown===0) refresh();
+},1000);
+window.addEventListener("resize",drawChart);
+refresh();
 </script>
 </body>
 </html>

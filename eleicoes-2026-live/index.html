@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Apuração 2026 — Projeção ao vivo</title>
+<style>
+:root{--bg:#0b0d10;--panel:#12161b;--line:#252b33;--text:#f4f6f8;--muted:#9da7b3;--blue:#4d8dff;--red:#ff5a63;--green:#38d996;--amber:#ffbd4a}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1500px;margin:0 auto;padding:22px}.top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}
+h1{font-size:28px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px}.live{display:flex;align-items:center;gap:8px;color:#cfe7dc;font-size:13px}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(56,217,150,.09)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.kpi{grid-column:span 3}.chartCard{grid-column:span 8}.side{grid-column:span 4}.tableCard{grid-column:span 12}
+.label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.value{font-size:30px;font-weight:720;margin-top:8px}.small{font-size:13px;color:var(--muted);margin-top:4px}
+.blue{color:var(--blue)}.red{color:var(--red)}.green{color:var(--green)}.amber{color:var(--amber)}
+canvas{width:100%;height:360px;display:block;margin-top:10px}
+.bar{height:8px;background:#20262d;border-radius:999px;overflow:hidden;margin:9px 0 4px}.fill{height:100%;border-radius:999px}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:right;padding:10px 9px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}th{position:sticky;top:0;background:var(--panel);color:var(--muted);font-weight:600}.tableWrap{max-height:560px;overflow:auto}
+.badge{font-size:11px;padding:4px 7px;border-radius:999px;background:#1d232a;color:#cad2db}.up{color:#71dfad}.down{color:#ff858b}
+.err{padding:12px;border-radius:12px;background:#34191b;color:#ffb8bc;display:none;margin-bottom:14px}
+@media(max-width:900px){.kpi,.chartCard,.side,.tableCard{grid-column:span 12}.top{flex-direction:column}canvas{height:300px}.wrap{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Apuração presidencial 2026</h1><div class="sub">Dados oficiais do TSE • atualização automática a cada 60 segundos • 27 UFs</div></div>
+    <div class="live"><span class="dot"></span><span id="status">conectando...</span></div>
+  </div>
+  <div id="error" class="err"></div>
+  <div class="grid">
+    <div class="card kpi"><div class="label">Flávio — parcial nacional</div><div id="flavioNow" class="value blue">—</div><div id="flavioVotes" class="small">—</div></div>
+    <div class="card kpi"><div class="label">Lula — parcial nacional</div><div id="lulaNow" class="value red">—</div><div id="lulaVotes" class="small">—</div></div>
+    <div class="card kpi"><div class="label">Projeção ponderada Flávio</div><div id="flavioProj" class="value blue">—</div><div class="small">peso estadual aproximado pelo 1º turno de 2022</div></div>
+    <div class="card kpi"><div class="label">Projeção ponderada Lula</div><div id="lulaProj" class="value red">—</div><div id="projectionTrend" class="small">—</div></div>
+
+    <div class="card chartCard"><div class="label">Trajetória da projeção</div><canvas id="chart"></canvas></div>
+    <div class="card side">
+      <div class="label">Leitura atual</div>
+      <div class="row"><span>Votos válidos já totalizados</span><strong id="validVotes">—</strong></div>
+      <div class="row"><span>Diferença nacional atual</span><strong id="gapNow">—</strong></div>
+      <div class="row"><span>Distância projetada de 50%</span><strong id="to50">—</strong></div>
+      <div class="row"><span>Última atualização TSE</span><strong id="tseTime">—</strong></div>
+      <div class="row"><span>Próxima leitura</span><strong id="countdown">60s</strong></div>
+      <div class="bar"><div id="fiftyBar" class="fill" style="background:var(--blue);width:0"></div></div>
+      <div class="small">A linha de 50% no gráfico é apenas referência. A projeção é estatística e não é resultado oficial.</div>
+    </div>
+
+    <div class="card tableCard">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px">
+        <div><div class="label">27 UFs — fotografia atual</div><div class="small">Variação = mudança da margem Flávio − Lula desde a leitura anterior</div></div>
+        <span id="sampleCount" class="badge">0 leituras</span>
+      </div>
+      <div class="tableWrap"><table>
+        <thead><tr><th>UF</th><th>Válidos</th><th>Flávio</th><th>Lula</th><th>Margem F−L</th><th>Δ margem</th></tr></thead>
+        <tbody id="statesBody"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+<script>
+const WEIGHTS_2022={"AC":440882,"AL":1724170,"AP":432192,"AM":2056644,"BA":8422603,"CE":5429153,"DF":1762643,"ES":2221158,"GO":3681911,"MA":3781891,"MT":1842826,"MS":1506975,"MG":12016092,"PA":4679682,"PB":2421536,"PR":6567080,"PE":5451696,"PI":2044455,"RJ":9457087,"RN":2007271,"RS":6638297,"RO":903206,"RR":298308,"SC":4330454,"SP":25654272,"SE":1298521,"TO":861712};
+const KEY="apuracao2026_snapshots_v2";
+let snapshots=[]; try{snapshots=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{}
+let countdown=60, timer;
+const fmtN=n=>new Intl.NumberFormat("pt-BR").format(n||0);
+const pct=n=>(Number(n)||0).toFixed(2).replace(".",",")+"%";
+function weightedProjection(states){
+  let den=0, f=0, l=0;
+  for(const s of states){const w=WEIGHTS_2022[s.uf]; if(!w)continue; den+=w; f+=w*s.flavioShare; l+=w*s.lulaShare}
+  return den?{flavio:f/den,lula:l/den}:{flavio:0,lula:0};
+}
+function saveSnapshot(payload){
+  const p=weightedProjection(payload.states);
+  const snap={at:Date.now(),validVotes:payload.national.validVotes,flavioNow:payload.national.flavioShare,lulaNow:payload.national.lulaShare,flavioProj:p.flavio,lulaProj:p.lula,states:payload.states};
+  const last=snapshots[snapshots.length-1];
+  if(!last || last.validVotes!==snap.validVotes){snapshots.push(snap); if(snapshots.length>720)snapshots=snapshots.slice(-720); localStorage.setItem(KEY,JSON.stringify(snapshots));}
+  return {snap,p};
+}
+function render(payload){
+  document.getElementById("error").style.display="none";
+  const previous=snapshots[snapshots.length-1];
+  const {snap,p}=saveSnapshot(payload);
+  document.getElementById("flavioNow").textContent=pct(payload.national.flavioShare);
+  document.getElementById("lulaNow").textContent=pct(payload.national.lulaShare);
+  document.getElementById("flavioVotes").textContent=fmtN(payload.national.flavioVotes)+" votos";
+  document.getElementById("lulaVotes").textContent=fmtN(payload.national.lulaVotes)+" votos";
+  document.getElementById("flavioProj").textContent=pct(p.flavio);
+  document.getElementById("lulaProj").textContent=pct(p.lula);
+  document.getElementById("validVotes").textContent=fmtN(payload.national.validVotes);
+  document.getElementById("gapNow").textContent=(payload.national.flavioShare-payload.national.lulaShare).toFixed(2).replace(".",",")+" pp";
+  const d50=p.flavio-50; document.getElementById("to50").textContent=(d50>=0?"+":"")+d50.toFixed(2).replace(".",",")+" pp";
+  document.getElementById("to50").className=d50>=0?"green":"amber";
+  document.getElementById("tseTime").textContent=payload.national.generatedAt||new Date().toLocaleTimeString("pt-BR");
+  document.getElementById("sampleCount").textContent=snapshots.length+" leituras";
+  document.getElementById("fiftyBar").style.width=Math.max(0,Math.min(100,p.flavio*2))+"%";
+  if(previous){const d=p.flavio-previous.flavioProj; document.getElementById("projectionTrend").textContent="Última variação: "+(d>=0?"+":"")+d.toFixed(2).replace(".",",")+" pp";}else document.getElementById("projectionTrend").textContent="Primeira leitura armazenada";
+  const prevMap={}; if(previous?.states) previous.states.forEach(s=>prevMap[s.uf]=s);
+  document.getElementById("statesBody").innerHTML=payload.states.map(s=>{
+    const margin=s.flavioShare-s.lulaShare; const prev=prevMap[s.uf]; const delta=prev?margin-(prev.flavioShare-prev.lulaShare):0;
+    const cls=delta>0.02?"up":delta<-.02?"down":"";
+    return `<tr><td><strong>${s.uf}</strong></td><td>${fmtN(s.validVotes)}</td><td class="blue">${pct(s.flavioShare)}</td><td class="red">${pct(s.lulaShare)}</td><td>${margin.toFixed(2).replace(".",",")} pp</td><td class="${cls}">${prev?(delta>=0?"+":"")+delta.toFixed(2).replace(".",",")+" pp":"—"}</td></tr>`;
+  }).join("");
+  drawChart();
+}
+function drawChart(){
+  const c=document.getElementById("chart"), dpr=devicePixelRatio||1, rect=c.getBoundingClientRect(); c.width=rect.width*dpr; c.height=rect.height*dpr;
+  const x=c.getContext("2d"); x.scale(dpr,dpr); const W=rect.width,H=rect.height,pad={l:48,r:18,t:18,b:34};
+  x.clearRect(0,0,W,H); if(!snapshots.length)return;
+  const arr=snapshots.slice(-180), minY=Math.min(40,...arr.map(s=>Math.min(s.lulaProj,s.flavioProj)))-1, maxY=Math.max(51,...arr.map(s=>Math.max(s.lulaProj,s.flavioProj)))+1;
+  const yy=v=>pad.t+(maxY-v)/(maxY-minY)*(H-pad.t-pad.b), xx=i=>pad.l+(arr.length===1?0.5:i/(arr.length-1))*(W-pad.l-pad.r);
+  x.font="12px system-ui";x.fillStyle="#8e99a5";x.strokeStyle="#242a31";x.lineWidth=1;
+  for(let v=Math.ceil(minY);v<=Math.floor(maxY);v+=2){const y=yy(v);x.beginPath();x.moveTo(pad.l,y);x.lineTo(W-pad.r,y);x.stroke();x.fillText(v+"%",6,y+4)}
+  const y50=yy(50);x.strokeStyle="#67717d";x.setLineDash([5,5]);x.beginPath();x.moveTo(pad.l,y50);x.lineTo(W-pad.r,y50);x.stroke();x.setLineDash([]);
+  function line(key,color){x.strokeStyle=color;x.lineWidth=2.5;x.beginPath();arr.forEach((s,i)=>{const X=xx(i),Y=yy(s[key]);i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke(); const s=arr[arr.length-1];x.fillStyle=color;x.beginPath();x.arc(xx(arr.length-1),yy(s[key]),4,0,Math.PI*2);x.fill();}
+  line("flavioProj","#4d8dff");line("lulaProj","#ff5a63");
+  x.fillStyle="#8e99a5";x.fillText("histórico local • últimas "+arr.length+" leituras",pad.l,H-10);
+}
+async function refresh(){
+  try{
+    document.getElementById("status").textContent="atualizando...";
+    const r=await fetch("/api/tse",{cache:"no-store"}); if(!r.ok)throw new Error("HTTP "+r.status); const data=await r.json();
+    if(!data.ok)throw new Error(data.error||"Falha na leitura do TSE");
+    render(data); document.getElementById("status").textContent="ao vivo • atualizado "+new Date().toLocaleTimeString("pt-BR");
+  }catch(e){const el=document.getElementById("error");el.textContent="Não foi possível atualizar agora: "+e.message;el.style.display="block";document.getElementById("status").textContent="tentando novamente";}
+  countdown=60;
+}
+setInterval(()=>{countdown--;document.getElementById("countdown").textContent=countdown+"s";if(countdown<=0)refresh()},1000);
+window.addEventListener("resize",drawChart); refresh();
+</script>
+</body>
+</html>

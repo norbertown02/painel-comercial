@@ -3,7 +3,8 @@ const BASE="https://resultados.tse.jus.br/oficial/ele2026/6257/dados-simplificad
 function n(v){return Number(String(v??0).replace(/\./g,"").replace(",","."))||0}
 function parse(j,uf){
   const c=Array.isArray(j.cand)?j.cand:[];
-  const norm=s=>String(s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toUpperCase();\n  const byName=name=>c.find(x=>norm(x.nm)===name)||{};
+  const norm=s=>String(s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toUpperCase();
+  const byName=name=>c.find(x=>norm(x.nm)===name)||{};
   const f=byName("FLAVIO BOLSONARO"), l=byName("LULA");
   const valid=n(j.vvc)||n(j.vv)||c.reduce((a,x)=>a+n(x.vap),0);
   return {uf,validVotes:valid,flavioVotes:n(f.vap),flavioShare:n(f.pvap),lulaVotes:n(l.vap),lulaShare:n(l.pvap),sectionsPct:n(j.pst),generatedAt:[j.dt,j.ht].filter(Boolean).join(" ")};

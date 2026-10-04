@@ -1,5 +1,5 @@
 const UFS=["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
-const BASE="https://resultados.tse.jus.br/oficial/ele2026/6257/dados-simplificados";
+const BASE="https://resultados.tse.jus.br/oficial/ele2026/6257/dados";
 function n(v){return Number(String(v??0).replace(/\./g,"").replace(",","."))||0}
 function parse(j,uf){
   const c=Array.isArray(j.cand)?j.cand:[];
@@ -11,7 +11,7 @@ function parse(j,uf){
 }
 async function get(uf){
   const u=uf.toLowerCase();
-  const r=await fetch(BASE+"/"+u+"/"+u+"-c0001-e006257-r.json",{cache:"no-store"});
+  const r=await fetch(BASE+"/"+u+"/"+u+"-c0001-e006257-u.json",{cache:"no-store"});
   if(!r.ok) throw new Error(uf+" HTTP "+r.status);
   return parse(await r.json(),uf);
 }

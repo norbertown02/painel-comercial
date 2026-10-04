@@ -25,7 +25,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:right;
 <body>
 <div class="wrap">
   <div class="top">
-    <div><h1>Apuração presidencial 2026</h1><div class="sub">Dados oficiais do TSE • atualização automática a cada 60 segundos • 27 UFs</div></div>
+    <div><h1>Apuração presidencial 2026</h1><div class="sub">Dados oficiais do TSE • atualização automática a cada 5 segundos • 27 UFs</div></div>
     <div class="live"><span class="dot"></span><span id="status">conectando...</span></div>
   </div>
   <div id="error" class="err"></div>
@@ -42,7 +42,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:right;
       <div class="row"><span>Diferença nacional atual</span><strong id="gapNow">—</strong></div>
       <div class="row"><span>Distância projetada de 50%</span><strong id="to50">—</strong></div>
       <div class="row"><span>Última atualização TSE</span><strong id="tseTime">—</strong></div>
-      <div class="row"><span>Próxima leitura</span><strong id="countdown">60s</strong></div>
+      <div class="row"><span>Próxima leitura</span><strong id="countdown">5s</strong></div>
       <div class="bar"><div id="fiftyBar" class="fill" style="background:var(--blue);width:0"></div></div>
       <div class="small">A linha de 50% no gráfico é apenas referência. A projeção é estatística e não é resultado oficial.</div>
     </div>
@@ -63,7 +63,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:right;
 const WEIGHTS_2022={"AC":440882,"AL":1724170,"AP":432192,"AM":2056644,"BA":8422603,"CE":5429153,"DF":1762643,"ES":2221158,"GO":3681911,"MA":3781891,"MT":1842826,"MS":1506975,"MG":12016092,"PA":4679682,"PB":2421536,"PR":6567080,"PE":5451696,"PI":2044455,"RJ":9457087,"RN":2007271,"RS":6638297,"RO":903206,"RR":298308,"SC":4330454,"SP":25654272,"SE":1298521,"TO":861712};
 const KEY="apuracao2026_snapshots_v2";
 let snapshots=[]; try{snapshots=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{}
-let countdown=60, timer;
+let countdown=5, timer;
 const fmtN=n=>new Intl.NumberFormat("pt-BR").format(n||0);
 const pct=n=>(Number(n)||0).toFixed(2).replace(".",",")+"%";
 function weightedProjection(states){
@@ -124,7 +124,7 @@ async function refresh(){
     if(!data.ok)throw new Error(data.error||"Falha na leitura do TSE");
     render(data); document.getElementById("status").textContent="ao vivo • atualizado "+new Date().toLocaleTimeString("pt-BR");
   }catch(e){const el=document.getElementById("error");el.textContent="Não foi possível atualizar agora: "+e.message;el.style.display="block";document.getElementById("status").textContent="tentando novamente";}
-  countdown=60;
+  countdown=5;
 }
 setInterval(()=>{countdown--;document.getElementById("countdown").textContent=countdown+"s";if(countdown<=0)refresh()},1000);
 window.addEventListener("resize",drawChart); refresh();

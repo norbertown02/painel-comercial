@@ -13,7 +13,7 @@ async function get(uf){
   const u=uf.toLowerCase();
   const r=await fetch(BASE+"/"+u+"/"+u+"-c0001-e006257-u.json",{cache:"no-store"});
   if(!r.ok) throw new Error(uf+" HTTP "+r.status);
-  return parse(await r.json(),uf);
+  const j=await r.json(); if(uf==="BR") console.log("RAW_BR", JSON.stringify(j).slice(0,12000)); return parse(j,uf);
 }
 module.exports=async(req,res)=>{
   res.setHeader("Cache-Control","no-store");

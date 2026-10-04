@@ -37,7 +37,7 @@ function parse(j,uf){
 }
 async function get(uf){
   const u=uf.toLowerCase();
-  const r=await fetch(BASE+"/"+u+"/"+u+"-c0001-e006257-u.json",{cache:"no-store"});
+  const r=await fetch(BASE+"/"+u+"/"+u+"-c0001-e006257-u.json?ts="+Date.now(),{cache:"no-store",headers:{"Cache-Control":"no-cache","Pragma":"no-cache"}});
   if(!r.ok) throw new Error(uf+" TSE HTTP "+r.status);
   return parse(await r.json(),uf);
 }

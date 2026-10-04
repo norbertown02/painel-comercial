@@ -1,19 +1,45 @@
 const UFS=["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 const BASE="https://resultados.tse.jus.br/oficial/ele2026/6257/dados";
-function n(v){return Number(String(v??0).replace(/\./g,"").replace(",","."))||0}
+function n(v){return Number(String(v==null?0:v).replace(/\./g,"").replace(",","."))||0}
+function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase()}
+function allCandidates(j){
+  const out=[];
+  for(const cargo of (j.carg||[])){
+    for(const agr of (cargo.agr||[])){
+      for(const par of (agr.par||[])){
+        for(const cand of (par.cand||[])) out.push(cand);
+      }
+    }
+  }
+  return out;
+}
 function parse(j,uf){
-  const c=Array.isArray(j.cand)?j.cand:[];
-  const norm=s=>String(s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toUpperCase();
-  const byName=name=>c.find(x=>norm(x.nm)===name)||{};
-  const f=byName("FLAVIO BOLSONARO"), l=byName("LULA");
-  const valid=n(j.vvc)||n(j.vv)||c.reduce((a,x)=>a+n(x.vap),0);
-  return {uf,validVotes:valid,flavioVotes:n(f.vap),flavioShare:n(f.pvap),lulaVotes:n(l.vap),lulaShare:n(l.pvap),sectionsPct:n(j.pst),generatedAt:[j.dt,j.ht].filter(Boolean).join(" ")};
+  const cands=allCandidates(j);
+  const find=(term)=>cands.find(c=>{
+    const a=norm(c.nmu), b=norm(c.nm);
+    return a===term || a.includes(term) || b.includes(term);
+  })||{};
+  const f=find("FLAVIO BOLSONARO");
+  const l=find("LULA");
+  const vv=n(j&&j.v&&j.v.vv);
+  const out={
+    uf,
+    validVotes:vv,
+    flavioVotes:n(f.vap),
+    flavioShare:n(f.pvap),
+    lulaVotes:n(l.vap),
+    lulaShare:n(l.pvap),
+    sectionsPct:n(j&&j.s&&j.s.pst),
+    generatedAt:[j.dg,j.hg].filter(Boolean).join(" ")
+  };
+  if(uf==="BR") console.log("PARSED_BR",JSON.stringify(out),"CANDS",cands.slice(0,20).map(x=>({nm:x.nm,nmu:x.nmu,vap:x.vap,pvap:x.pvap})));
+  return out;
 }
 async function get(uf){
   const u=uf.toLowerCase();
   const r=await fetch(BASE+"/"+u+"/"+u+"-c0001-e006257-u.json",{cache:"no-store"});
-  if(!r.ok) throw new Error(uf+" HTTP "+r.status);
-  const j=await r.json(); if(uf==="BR") console.log("RAW_BR", JSON.stringify(j).slice(0,12000)); return parse(j,uf);
+  if(!r.ok) throw new Error(uf+" TSE HTTP "+r.status);
+  return parse(await r.json(),uf);
 }
 module.exports=async(req,res)=>{
   res.setHeader("Cache-Control","no-store");
@@ -21,6 +47,7 @@ module.exports=async(req,res)=>{
     const all=await Promise.all([get("BR"),...UFS.map(get)]);
     res.status(200).json({ok:true,national:all[0],states:all.slice(1),source:"TSE",retrievedAt:new Date().toISOString()});
   }catch(e){
-    res.status(502).json({ok:false,error:String(e.message||e)});
+    console.error("TSE fetch error",e);
+    res.status(502).json({ok:false,error:String(e&&e.message?e.message:e)});
   }
 };

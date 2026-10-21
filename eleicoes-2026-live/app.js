@@ -7,6 +7,7 @@ const pp=x=>Number.isFinite(x)?(x>=0?"+":"")+x.toFixed(2).replace(".",",")+" p.p
 const clamp=(x,a=0.001,b=0.999)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
+let calibration=null,latestOutlook=null;
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
 let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
 const LS="eleicoes2026_observatorio_v4";
@@ -173,11 +174,47 @@ function renderEngineModel(m,stateP){
  else if(m.ufs<23)set("quality","Cobertura estadual incompleta");
  else set("quality","Modelos convergentes*");
  set("sensitivity",ready&&range?pf(range.min)+" – "+pf(range.max):"—");
+ renderVictory(m.fit);
  // Keep side diagnostics consistent with the headline rather than using an arbitrary +/-3pp range.
  set("km",fmtStat(m.pct));
  set("kmdet",Number.isFinite(m.pct)?"Transferência nacional estimada "+pp(m.delta)+" · experimental":"Em coleta: "+m.num+" municípios em "+m.ufs+" UFs");
  set("kp",fmtStat(stateP));
  set("kpdet",Number.isFinite(stateP)?"Parciais oficiais estaduais ponderadas pelo primeiro turno; UFs faltantes estimadas":"Aguardando dados oficiais em 12 estados");
+}
+
+
+function victoryReading(o){
+ if(!o?.ready)return {t1:null,t300:null,t99:null,prob:null,margin:null};
+ return {
+  t1:Number.isFinite(o.thresholds.one)?o.thresholds.one:null,
+  t300:Number.isFinite(o.thresholds.threeHundredThousand)?o.thresholds.threeHundredThousand:null,
+  t99:Number.isFinite(o.thresholds.ninetyNine)?o.thresholds.ninetyNine:null,
+  prob:Number.isFinite(o.probability)?o.probability:null,
+  margin:Number.isFinite(o.projectedMargin)?o.projectedMargin:null
+ };
+}
+function renderVictory(fit){
+ const official=current?.national,hasVotes=official?.validVotes>0&&official?.sectionsCounted>0;
+ latestOutlook=hasVotes&&window.ElectionEngine?.victoryOutlook?
+  window.ElectionEngine.victoryOutlook({forecast:fit,national:official,validation:calibration}):null;
+ const o=latestOutlook,prob=o?.probability;
+ set("winChance",Number.isFinite(prob)?pf(prob):"—");
+ set("winChanceSub",o?.note||"Aguardando apuração e cobertura territorial");
+ set("projectedMargin",Number.isFinite(o?.projectedMargin)&&o.ready?
+  (o.projectedMargin>=0?"+":"")+nfmt(o.projectedMargin):"—");
+ set("projectedMarginSub",o?.ready?"Margem prevista de Flávio contra Lula • votos, não percentual":"Sem projeção de margem válida");
+ set("oneVoteNow",Number.isFinite(o?.thresholds?.one)?pf(o.thresholds.one):"—");
+ set("threeHundredNow",Number.isFinite(o?.thresholds?.threeHundredThousand)?pf(o.thresholds.threeHundredThousand):"—");
+ set("nearCertainNow",Number.isFinite(o?.thresholds?.ninetyNine)?pf(o.thresholds.ninetyNine):"—");
+ set("victoryAssumption",o?.ready&&!Number.isFinite(o.remainingShare)?"Resultado oficial concluído":
+  o?.ready?"Total estimado: "+nfmt(o.estimatedTotal)+" votos válidos; votos restantes: "+nfmt(Math.max(0,o.estimatedTotal-official.validVotes))+"; restante projetado de Flávio: "+pf(100*o.remainingShare):
+  "Aguardando modelo municipal e votos oficiais.");
+ const reading=liveReadings.findLast(r=>r.v===official?.validVotes);
+ if(reading&&o?.ready){
+  Object.assign(reading,victoryReading(o));
+  if(Number.isFinite(fit?.pct))reading.h=fit.pct;
+  saveReadings();drawLive();
+ }
 }
 
 function updateLiveUI(j){
@@ -189,7 +226,7 @@ function updateLiveUI(j){
  const ready=makeStateRows(j.states);
  const sample=Object.values(citySamples).filter(s=>s.validVotes>0&&s.sectionsCounted>0).length;
  set("citiesReady",nfmt(sample)+" coletadas");
- if(!started){set("sensitivity","—");
+ if(!started){latestOutlook=null;renderVictory(null);set("sensitivity","—");
   ["kf","kl","kp","km","kc"].forEach(id=>set(id,"—"));set("quality","Sem votos");set("modelCoverage","—");set("geoBias","—");set("transfer","—");set("modelRange","—");
   set("kfdet","Totalização ainda não iniciada");set("kldet","Totalização ainda não iniciada");
   set("kpdet","Aguardando parciais de pelo menos 24 estados");set("kmdet","Aguardando amostragem de municípios");
@@ -204,22 +241,56 @@ function updateLiveUI(j){
  if(j.failures?.length)updateNotice("Atualização parcial: "+j.failures.length+" UFs temporariamente indisponíveis. A projeção pode estar suspensa.",true);
  else updateNotice("Apuração oficial em andamento. As projeções são experimentais, não constituem resultado oficial ou probabilidade de vitória.");
  const last=liveReadings.at(-1),v=nt.validVotes;
- if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,h:model.combined,sec:nt.sectionsPct,at:new Date().toISOString()});liveReadings=liveReadings.slice(-700);saveReadings();}
+ if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,h:model.combined,sec:nt.sectionsPct,at:new Date().toISOString(),...victoryReading(latestOutlook)});liveReadings=liveReadings.slice(-700);saveReadings();}
  drawLive();updateSensitivity();if(selectedCity)fetchSelectedCity(selectedCity);
 }
+
 function drawLive(){
  const el=$("liveChart");if(!el)return;const {ctx,w,h}=canvas(el);
- const pad={l:42,r:18,t:20,b:40};const xs=w-pad.l-pad.r,ys=h-pad.t-pad.b;
- ctx.font="12px sans-serif";ctx.fillStyle="#9fb0c6";
- if(!liveReadings.length){ctx.fillText("Aguardando dados oficiais do segundo turno.",25,h/2);return;}
- let min=Math.min(45,...liveReadings.map(r=>r.f),...liveReadings.map(r=>r.p??100))-1;let max=Math.max(55,...liveReadings.map(r=>r.f),...liveReadings.map(r=>r.p??0))+1;
- if(max-min<8){min-=4;max+=4;}const y=x=>pad.t+(max-x)/(max-min)*ys;
- ctx.strokeStyle="#314259";ctx.lineWidth=1;
- for(let k=0;k<=4;k++){const val=min+(max-min)*k/4,Y=y(val);ctx.beginPath();ctx.moveTo(pad.l,Y);ctx.lineTo(w-pad.r,Y);ctx.stroke();ctx.fillText(val.toFixed(0)+"%",4,Y+3);}
- const half=y(50);ctx.strokeStyle="#b6c1ce";ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(pad.l,half);ctx.lineTo(w-pad.r,half);ctx.stroke();ctx.setLineDash([]);
- function line(key,color){ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();let started=false;liveReadings.forEach((r,i)=>{if(r[key]===null||!Number.isFinite(r[key]))return;let x=pad.l+(liveReadings.length===1?.5:i/(liveReadings.length-1))*xs;started?ctx.lineTo(x,y(r[key])):ctx.moveTo(x,y(r[key]));started=true;});if(started)ctx.stroke();}
- line("f","#58a6fa");line("p","#5ad9b2");line("h","#f4c879");ctx.fillStyle="#9fb0c6";ctx.fillText("Leituras oficiais: "+nfmt(liveReadings.length),pad.l,h-12);
+ const pad={l:w<530?43:55,r:16,t:22,b:54},xs=w-pad.l-pad.r,ys=h-pad.t-pad.b;
+ ctx.font="11px sans-serif";ctx.fillStyle="#9fb0c6";
+ const readings=liveReadings.filter(r=>Number.isFinite(r.sec)&&r.sec>0&&Number.isFinite(r.f)).sort((a,b)=>a.sec-b.sec||a.v-b.v);
+ if(!readings.length){ctx.fillText("Aguardando dados oficiais do segundo turno.",25,h/2);return;}
+ const series=[
+  {key:"f",color:"#58a6fa",width:3.2},
+  {key:"t1",color:"#8d9ead",width:2},
+  {key:"t300",color:"#f0a45f",width:2.4},
+  {key:"t99",color:"#5ad9b2",width:2.7,dash:[6,4]},
+  {key:"h",color:"#f4c879",width:2,dash:[2,5]}
+ ];
+ const shown=readings.flatMap(r=>series.map(s=>r[s.key]).filter(v=>Number.isFinite(v)&&v>=0&&v<=100));
+ let min=Math.max(0,Math.min(47,...shown)-2),max=Math.min(100,Math.max(53,...shown)+2);
+ if(max-min<9){min=Math.max(0,min-4);max=Math.min(100,max+4);}
+ const x=sec=>pad.l+Math.max(0,Math.min(100,sec))/100*xs;
+ const y=v=>pad.t+(max-v)/(max-min)*ys;
+ ctx.strokeStyle="#304056";ctx.lineWidth=1;ctx.setLineDash([]);
+ for(let i=0;i<=4;i++){
+  const value=min+(max-min)*i/4,Y=y(value);
+  ctx.beginPath();ctx.moveTo(pad.l,Y);ctx.lineTo(w-pad.r,Y);ctx.stroke();
+  ctx.fillStyle="#9fb0c6";ctx.textAlign="right";ctx.fillText(value.toFixed(1).replace(".",",")+"%",pad.l-7,Y+4);
+ }
+ for(const pct of [0,25,50,75,100]){
+  const X=x(pct);ctx.strokeStyle="#243349";ctx.beginPath();ctx.moveTo(X,pad.t);ctx.lineTo(X,h-pad.b);ctx.stroke();
+  ctx.fillStyle="#9fb0c6";ctx.textAlign="center";ctx.fillText(pct+"%",X,h-pad.b+18);
+ }
+ // 50% is a reference for final vote share, not a win threshold for a biased partial.
+ if(min<=50&&max>=50){ctx.strokeStyle="#5a6575";ctx.setLineDash([3,6]);ctx.beginPath();ctx.moveTo(pad.l,y(50));ctx.lineTo(w-pad.r,y(50));ctx.stroke();ctx.setLineDash([]);}
+ for(const s of series){
+  ctx.strokeStyle=s.color;ctx.lineWidth=s.width;ctx.setLineDash(s.dash||[]);
+  ctx.beginPath();let connected=false,points=0;
+  for(const r of readings){
+   const value=r[s.key];if(!Number.isFinite(value)||value<min||value>max){connected=false;continue;}
+   connected?ctx.lineTo(x(r.sec),y(value)):ctx.moveTo(x(r.sec),y(value));
+   connected=true;points++;
+  }
+  if(points>0)ctx.stroke();
+ }
+ ctx.setLineDash([]);ctx.fillStyle="#b8c7d8";ctx.textAlign="center";ctx.font="11px sans-serif";
+ ctx.fillText("Seções apuradas · evolução em %",pad.l+xs/2,h-10);
+ const last=readings.at(-1);ctx.fillStyle="#58a6fa";ctx.beginPath();ctx.arc(x(last.sec),y(last.f),3.5,0,2*Math.PI);ctx.fill();
+ ctx.textAlign="left";
 }
+
 async function pollCities(){
  if(batchBusy||!sampleOrder.length||!current?.national?.sectionsCounted)return;
  batchBusy=true;
@@ -269,11 +340,18 @@ async function syncArchive(){
   set("archiveLatest",last?new Date(last).toLocaleString("pt-BR"):"Ainda não iniciou");
   if(status.national?.valid_votes>0){
     const hist=await archived("mode=national_history");
-    const fromDB=(hist.rows||[]).map(r=>({v:+r.valid_votes,f:100*r.flavio_votes/r.valid_votes,p:null,sec:r.sections_total?100*r.sections_counted/r.sections_total:0,at:r.captured_at,source:r.generation_id})).filter(r=>Number.isFinite(r.f));
-    if(fromDB.length) {
-      // Central data is authoritative; retain new local readings only when they are not duplicates.
-      const all=new Map(fromDB.map(v=>[v.source,v]));
-      liveReadings.filter(x=>x.source).forEach(x=>{if(!all.has(x.source))all.set(x.source,x)});
+    const localByVotes=new Map(liveReadings.map(r=>[r.v,r]));
+    const fromDB=(hist.rows||[]).map(r=>{
+      const v=+r.valid_votes;
+      return {...(localByVotes.get(v)||{}),v,f:100*r.flavio_votes/v,
+       sec:r.sections_total?100*r.sections_counted/r.sections_total:0,
+       at:r.captured_at,source:r.generation_id};
+    }).filter(r=>Number.isFinite(r.f));
+    if(fromDB.length){
+      // Preserve the analysis saved for the same official vote count. Never backfill
+      // historical thresholds using information from a later snapshot.
+      const all=new Map(liveReadings.map(r=>[r.v,r]));
+      fromDB.forEach(r=>all.set(r.v,r));
       liveReadings=[...all.values()].sort((x,y)=>new Date(x.at)-new Date(y.at)).slice(-700);
       saveReadings();drawLive();
     }
@@ -323,7 +401,8 @@ async function init(){
  $("ufFilter").addEventListener("change",renderCityResults);$("citySearch").addEventListener("input",renderCityResults);
  window.addEventListener("resize",()=>{drawLive();if(results22.length)drawReplay();});
  try{
-  const [a,b]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json")]);if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
+  const [a,b,v]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json"),fetch("/data/model-validation.json").catch(()=>null)]);
+   calibration=v?.ok?await v.json():null;if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
   reference=await a.json();replay=await b.json();if(Object.keys(reference.cities||{}).length<5500||replay.stages?.length!==4)throw Error("A base municipal está incompleta.");
   initRecords();replayInit();renderCityResults();makeStateRows([]);
   set("apiText","Bases carregadas • consultando TSE");

@@ -121,5 +121,62 @@ function estimate({cities,observed={},states=[],national=null,minCities=40,minUf
   }
  };
 }
-root.ElectionEngine={version:"1.0.0",estimate};
+
+/* Conditional paths use official national votes and a domestic 1T total-vote scale.
+   Probability is illustrative; three elections cannot validate a 99% tail claim. */
+const normalCDF=z=>{
+ const x=Math.abs(z),t=1/(1+.2316419*x);
+ const tail=Math.exp(-x*x/2)/Math.sqrt(2*Math.PI)*t*
+  (.319381530+t*(-.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+ return z>=0?1-tail:tail;
+};
+function victoryOutlook({forecast,national,validation}={}){
+ const blank={ready:false,probability:null,sigmaPct:null,estimatedTotal:null,projectedMargin:null,
+  thresholds:{one:null,threeHundredThousand:null,ninetyNine:null},
+  note:"Aguardando votos e projeção territorial suficientes."};
+ const v=valid(national?.validVotes),a=valid(national?.flavioVotes),b=valid(national?.lulaVotes);
+ const sections=valid(national?.sectionsPct),point=forecast?.pct;
+ if(v<=0||a+b<=0||!Number.isFinite(point)||sections<=0)return blank;
+ const complete=sections>=99.995;
+ const old=valid(forecast?.diagnostics?.estimatedFirstRoundValid);
+ const total=complete?v:Math.max(v,old);
+ if(total<=0)return blank;
+ const remaining=Math.max(0,total-v);
+ const futureShare=remaining>0?(total*point/100-a)/remaining:null;
+ const margin=complete?a-b:total*(2*point/100-1);
+ const result={...blank,estimatedTotal:total,projectedMargin:margin,
+  remainingShare:futureShare,coverageVotesPct:100*v/total};
+ if(complete){
+  return {...result,ready:true,probability:a>b?100:a<b?0:50,sigmaPct:0,
+   note:"Resultado oficial concluído; margem real em votos."};
+ }
+ if(remaining<=0||!Number.isFinite(futureShare)||futureShare<0||futureShare>1){
+  return {...result,note:"Projeção incompatível com os votos oficiais; cenários suspensos."};
+ }
+ // Minimum integer votes to win; margin of one vote depends on parity of total.
+ const atSnapshot=neededA=>100*(neededA-remaining*futureShare)/v;
+ result.thresholds.one=atSnapshot(Math.floor(total/2)+1);
+ result.thresholds.threeHundredThousand=atSnapshot(Math.max(Math.floor(total/2)+1,Math.ceil((total+300000)/2)));
+ result.ready=true;
+ result.note="Linhas condicionais à distribuição prevista dos votos restantes.";
+ const errors=Object.values(validation?.scenarios||{})
+  .filter(s=>s&&s.repetitions>=50&&Number.isFinite(s.p90CombinedError))
+  .map(s=>s.p90CombinedError);
+ const d=forecast?.diagnostics||{};
+ const historical=errors.length>=4&&Array.isArray(validation?.historical2022)&&validation.historical2022.length>=4;
+ if(!historical||sections<10||d.observedStates<23||d.observedCities<100||valid(d.sampleCoveragePct)<5){
+  result.note=historical?"Probabilidade aguardando 10% de seções, 100 cidades, 23 UFs e cobertura municipal.":"Probabilidade aguardando relatório histórico.";
+  return result;
+ }
+ const baseSigma=Math.max(...errors)/1.6448536269514722*1.35;
+ const coverage=Math.min(.999999,v/total),sc=d.scenario||{};
+ const disagree=Number.isFinite(sc.min)&&Number.isFinite(sc.max)?Math.max(0,(sc.max-sc.min)/2):0;
+ const sigma=Math.max(.08,baseSigma*Math.sqrt(.1/Math.max(.025,coverage))*Math.pow(Math.max(0,(1-coverage)/.9),.65),disagree);
+ result.sigmaPct=sigma;
+ result.probability=Math.max(.1,Math.min(99.9,100*normalCDF((point-50)/sigma)));
+ result.thresholds.ninetyNine=atSnapshot(total*(.5+2.3263478740408408*sigma/100));
+ result.note="Chance indicativa baseada em hipóteses; limiar de 99% não é garantia validada.";
+ return result;
+}
+root.ElectionEngine={version:"1.1.0",estimate,victoryOutlook};
 })(typeof window!=="undefined"?window:globalThis);

@@ -8,7 +8,7 @@ const clamp=(x,a=0.001,b=0.999)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
-let refreshBusy=false,batchBusy=false,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
+let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
 const LS="eleicoes2026_observatorio_v4";
 try{const saved=JSON.parse(localStorage.getItem(LS)||"{}");if(Array.isArray(saved.readings))liveReadings=saved.readings.slice(-700);}catch{}
 const set=(id,x)=>{if($(id))$(id).textContent=x};
@@ -80,7 +80,7 @@ function changeView(view){
  document.querySelectorAll(".tab").forEach(el=>el.classList.toggle("on",el.dataset.view===view));
  if(view==="replay")drawReplay();if(view==="overview")drawLive();if(view==="cities")renderCityResults();
 }
-function showCity(c){
+function showCity(c,shouldFetch=true){
  selectedCity=c;set("selectedCity",c.name+" · "+c.uf);
  const fl=100*c.flavio26/c.valid26,lu=100*c.lula26/c.valid26,bol=100*c.bols22/c.valid22;
  const pair=100*c.flavio26/(c.flavio26+c.lula26),s=citySamples[c.code];
@@ -96,14 +96,14 @@ function showCity(c){
  if(s&&s.sectionsCounted>0){lines.push(["2º turno 2026 · apuração na cidade",pf(s.sectionsPct)+" das seções"],["Flávio · apuração oficial na cidade",pf(s.flavioShare)+" · "+nfmt(s.flavioVotes)+" votos"],["Lula · apuração oficial na cidade",pf(s.lulaShare)+" · "+nfmt(s.lulaVotes)+" votos"]);}
  else lines.push(["2º turno 2026","Sem parcial municipal recebida neste navegador"]);
  $("cityDetail").innerHTML=lines.map(x=>'<div class="pair"><span class="muted">'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>').join("")+'<p class="mini">Código TSE: '+esc(c.code)+' · IBGE: '+esc(c.ibge)+'. Comparação não prevê automaticamente a transferência de votos.</p>';
- if(current?.national?.sectionsCounted>0)fetchSelectedCity(c);
+ if(shouldFetch&&current?.national?.sectionsCounted>0)fetchSelectedCity(c);
 }
 async function fetchSelectedCity(c){
  try{const r=await fetch("/api/tse?mode=city&uf="+encodeURIComponent(c.uf)+"&code="+encodeURIComponent(c.code),{cache:"no-store"});const j=await r.json();
  if(j.ok&&j.data?.sectionsCounted>0){citySamples[c.code]=j.data;if(selectedCity?.code===c.code)showCitySilent(c);}
  }catch{}
 }
-function showCitySilent(c){const old=selectedCity;selectedCity=c;const x=citySamples[c.code];if(!x)return;const rows=$("cityDetail").querySelectorAll(".pair");if(rows.length<10){showCity(c);return;}rows[7].lastChild.textContent=pf(x.sectionsPct)+" das seções";rows[8].lastChild.textContent=pf(x.flavioShare)+" · "+nfmt(x.flavioVotes)+" votos";rows[9].lastChild.textContent=pf(x.lulaShare)+" · "+nfmt(x.lulaVotes)+" votos";}
+function showCitySilent(c){if(citySamples[c.code])showCity(c,false);}
 function renderCityResults(){
  if(!cities.length)return;
  const uf=$("ufFilter").value,search=$("citySearch").value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toUpperCase();
@@ -156,7 +156,7 @@ function updateLiveUI(j){
  const ready=makeStateRows(j.states);
  const sample=Object.values(citySamples).filter(s=>s.validVotes>0&&s.sectionsCounted>0).length;
  set("citiesReady",nfmt(sample)+" coletadas");
- if(!started){
+ if(!started){set("sensitivity","—");
   ["kf","kl","kp","km"].forEach(id=>set(id,"—"));
   set("kfdet","Totalização ainda não iniciada");set("kldet","Totalização ainda não iniciada");
   set("kpdet","Aguardando parciais de pelo menos 24 estados");set("kmdet","Aguardando amostragem de municípios");
@@ -173,7 +173,7 @@ function updateLiveUI(j){
  else updateNotice("Apuração oficial em andamento. As projeções são experimentais, não constituem resultado oficial ou probabilidade de vitória.");
  const last=liveReadings.at(-1),v=nt.validVotes;
  if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,sec:nt.sectionsPct,at:new Date().toISOString()});liveReadings=liveReadings.slice(-700);saveReadings();}
- drawLive();if(selectedCity)fetchSelectedCity(selectedCity);
+ drawLive();updateSensitivity();if(selectedCity)fetchSelectedCity(selectedCity);
 }
 function drawLive(){
  const el=$("liveChart");if(!el)return;const {ctx,w,h}=canvas(el);
@@ -203,6 +203,79 @@ async function pollCities(){
   if(selectedCity&&citySamples[selectedCity.code])showCitySilent(selectedCity);
  }catch(e){console.warn("Coleta municipal parcial:",e?.message||e);}finally{batchBusy=false;}
 }
+
+// Shared, read-only archive: the authorization token never leaves the server.
+function fromArchive(row){
+ const v=Number(row.valid_votes)||0;
+ return {
+  geo:row.scope==="UF"?"UF:"+row.uf:row.scope==="BR"?"BR":("MUN:"+row.uf+":"+row.city_code),
+  sectionsCounted:+row.sections_counted||0,sectionsTotal:+row.sections_total||0,
+  sectionsPct:(+row.sections_total)>0?100*(+row.sections_counted)/(+row.sections_total):0,
+  validVotes:v,flavioVotes:+row.flavio_votes||0,lulaVotes:+row.lula_votes||0,
+  flavioShare:v?100*(+row.flavio_votes)/v:null,lulaShare:v?100*(+row.lula_votes)/v:null,
+  generatedAt:row.tse_generated_at||""
+ };
+}
+async function archived(path){
+ const r=await fetch("/api/archive?"+path,{cache:"no-store"});
+ if(!r.ok)throw Error("Arquivo central HTTP "+r.status);
+ const j=await r.json();if(!j.ok)throw Error(j.error||"Arquivo central indisponível");return j;
+}
+function updateSensitivity(){
+ const m=calcMunicipalForecast();
+ if(m.pct===null){set("sensitivity","—");return;}
+ const all=cities.reduce((x,c)=>x+c.valid26,0);
+ const counted=current?.national?.validVotes||0;
+ const coverage=Math.min(1,Math.max(0,counted/all));
+ // Diagnostic scenario, deliberately NOT a statistical confidence interval.
+ const spread=Math.max(.6,3*Math.sqrt(1-coverage));
+ set("sensitivity",pf(m.pct-spread)+" – "+pf(m.pct+spread));
+}
+async function syncArchive(){
+ if(archiveBusy||!cities.length)return;
+ archiveBusy=true;
+ try{
+  const status=await archived("mode=status");
+  archiveReady=true;
+  const cs=status.collector||{};
+  const last=cs.last_success||cs.last_run;
+  set("archiveStatus","Histórico central: "+(last?"gravando resultados":"conectado"));
+  set("archiveLatest",last?new Date(last).toLocaleString("pt-BR"):"Ainda não iniciou");
+  if(status.national?.valid_votes>0){
+    const hist=await archived("mode=national_history");
+    const fromDB=(hist.rows||[]).map(r=>({v:+r.valid_votes,f:100*r.flavio_votes/r.valid_votes,p:null,sec:r.sections_total?100*r.sections_counted/r.sections_total:0,at:r.captured_at,source:r.generation_id})).filter(r=>Number.isFinite(r.f));
+    if(fromDB.length) {
+      // Central data is authoritative; retain new local readings only when they are not duplicates.
+      const all=new Map(fromDB.map(v=>[v.source,v]));
+      liveReadings.filter(x=>x.source).forEach(x=>{if(!all.has(x.source))all.set(x.source,x)});
+      liveReadings=[...all.values()].sort((x,y)=>new Date(x.at)-new Date(y.at)).slice(-700);
+      saveReadings();drawLive();
+    }
+    let offset=0;const pageSize=1000;
+    // At most six pages, enough for all 5,570 municipalities.
+    for(let i=0;i<6;i++){
+      const page=await archived("mode=latest&scope=MUN&offset="+offset+"&limit="+pageSize);
+      const rows=page.rows||[];
+      for(const row of rows) {
+       if(row.uf&&row.city_code&&row.valid_votes>0&&row.sections_counted>0){
+        const id=String(row.city_code).padStart(5,"0");
+        if(cityByCode[id])citySamples[id]=fromArchive(row);
+       }
+      }
+      offset+=rows.length;if(rows.length<pageSize)break;
+    }
+    set("citiesReady",nfmt(Object.keys(citySamples).length)+" cadastradas");
+    updateMunicipalMetric();updateSensitivity();
+    if(selectedCity&&citySamples[selectedCity.code])showCitySilent(selectedCity);
+  }
+  lastArchiveSync=Date.now();
+ }catch(e){
+  archiveReady=false;
+  set("archiveStatus","Histórico central: indisponível");
+  console.warn("Archive sync failed:",e?.message||e);
+ }finally{archiveBusy=false;}
+}
+
 function updateMunicipalMetric(){
  const m=calcMunicipalForecast();set("km",m.pct===null?"—":pf(m.pct));
  set("kmdet",m.pct===null?"Em coleta: "+m.num+" cidades em "+m.ufs+" UFs":"Amostra "+m.num+" cidades · estimativa experimental");
@@ -214,7 +287,7 @@ async function refresh(){
   if(!r.ok)throw Error("HTTP "+r.status);
   const j=await r.json();if(!j.ok)throw Error(j.error||"Retorno do TSE inválido");
   current=j;updateLiveUI(j);
-  if(j.national.sectionsCounted>0)pollCities();
+  if(j.national.sectionsCounted>0){if(!archiveReady)pollCities();if(Date.now()-lastArchiveSync>45000)syncArchive();}
  }catch(e){$("apiDot").classList.remove("active");set("apiText","Última leitura indisponível");updateNotice("Não foi possível consultar o TSE agora: "+String(e.message||e)+". Mantendo os últimos números recebidos, sem substituí-los por zeros.",true);}
  finally{refreshBusy=false;clock=30;set("refreshClock","Atualização: "+clock+" s");}
 }
@@ -228,8 +301,8 @@ async function init(){
   reference=await a.json();replay=await b.json();if(Object.keys(reference.cities||{}).length<5500||replay.stages?.length!==4)throw Error("A base municipal está incompleta.");
   initRecords();replayInit();renderCityResults();makeStateRows([]);
   set("apiText","Bases carregadas • consultando TSE");
-  await refresh();
+  await syncArchive();await refresh();
  }catch(e){updateNotice("Erro ao carregar base eleitoral: "+String(e.message||e),true);set("apiText","Dados históricos indisponíveis");}
- setInterval(()=>{clock=Math.max(0,clock-1);set("refreshClock",clock+" s para atualização");if(clock===0)refresh();},1000);
+ setInterval(()=>{clock=Math.max(0,clock-1);set("refreshClock",clock+" s para atualização");if(clock===0)refresh();},1000);setInterval(()=>{if(reference&&Date.now()-lastArchiveSync>60000)syncArchive();},60000);
 }
 init();

@@ -203,9 +203,10 @@ function renderVictory(fit){
  set("projectedMargin",Number.isFinite(o?.projectedMargin)&&o.ready?
   (o.projectedMargin>=0?"+":"")+nfmt(o.projectedMargin):"—");
  set("projectedMarginSub",o?.ready?"Margem prevista de Flávio contra Lula • votos, não percentual":"Sem projeção de margem válida");
- set("oneVoteNow",Number.isFinite(o?.thresholds?.one)?pf(o.thresholds.one):"—");
- set("threeHundredNow",Number.isFinite(o?.thresholds?.threeHundredThousand)?pf(o.thresholds.threeHundredThousand):"—");
- set("nearCertainNow",Number.isFinite(o?.thresholds?.ninetyNine)?pf(o.thresholds.ninetyNine):"—");
+ const showThreshold=x=>!Number.isFinite(x)?"—":x<0?"≤ 0%":x>100?"> 100%":pf(x);
+ set("oneVoteNow",showThreshold(o?.thresholds?.one));
+ set("threeHundredNow",showThreshold(o?.thresholds?.threeHundredThousand));
+ set("nearCertainNow",showThreshold(o?.thresholds?.ninetyNine));
  set("victoryAssumption",o?.ready&&!Number.isFinite(o.remainingShare)?"Resultado oficial concluído":
   o?.ready?"Total estimado: "+nfmt(o.estimatedTotal)+" votos válidos; votos restantes: "+nfmt(Math.max(0,o.estimatedTotal-official.validVotes))+"; restante projetado de Flávio: "+pf(100*o.remainingShare):
   "Aguardando modelo municipal e votos oficiais.");
@@ -283,7 +284,11 @@ function drawLive(){
    connected?ctx.lineTo(x(r.sec),y(value)):ctx.moveTo(x(r.sec),y(value));
    connected=true;points++;
   }
-  if(points>0)ctx.stroke();
+  if(points>0){
+   ctx.stroke();
+   const lastPoint=[...readings].reverse().find(r=>Number.isFinite(r[s.key])&&r[s.key]>=min&&r[s.key]<=max);
+   if(lastPoint){ctx.setLineDash([]);ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(x(lastPoint.sec),y(lastPoint[s.key]),3,0,2*Math.PI);ctx.fill();}
+  }
  }
  ctx.setLineDash([]);ctx.fillStyle="#b8c7d8";ctx.textAlign="center";ctx.font="11px sans-serif";
  ctx.fillText("Seções apuradas · evolução em %",pad.l+xs/2,h-10);

@@ -42,3 +42,46 @@ test("validation manifest contains each historical test class",()=>{
  }
  assert.equal(m.historical2022.length,4);
 });
+
+test("victory thresholds preserve the exact 300,000-vote margin",()=>{
+ const forecast={pct:51,diagnostics:{estimatedFirstRoundValid:120000000,observedCities:125,
+  observedStates:25,sampleCoveragePct:10,scenario:{min:50.7,max:51.2}}};
+ const national={validVotes:12000000,flavioVotes:6000000,lulaVotes:6000000,sectionsPct:10};
+ const p=engine.victoryOutlook({forecast,national,validation:load("model-validation.json")});
+ assert.ok(p.ready);assert.equal(p.estimatedTotal,120000000);
+ assert.ok(Math.abs((p.thresholds.threeHundredThousand-p.thresholds.one)-1.25)<.0001);
+ assert.ok(Number.isFinite(p.probability)&&p.probability>50&&p.probability<100);
+ assert.ok(p.thresholds.ninetyNine>p.thresholds.threeHundredThousand);
+});
+test("no pre-election win probability or invented trajectory",()=>{
+ const p=engine.victoryOutlook({forecast:{pct:51},national:{validVotes:0,sectionsPct:0},
+  validation:load("model-validation.json")});
+ assert.equal(p.ready,false);assert.equal(p.probability,null);
+ assert.equal(p.thresholds.one,null);
+});
+test("unvalidated model and insufficient geographic coverage never claim odds",()=>{
+ const forecast={pct:51,diagnostics:{estimatedFirstRoundValid:120000000,
+  observedCities:50,observedStates:12,sampleCoveragePct:10}};
+ const nat={validVotes:12000000,flavioVotes:6000000,lulaVotes:6000000,sectionsPct:10};
+ const low=engine.victoryOutlook({forecast,national:nat,validation:load("model-validation.json")});
+ const missing=engine.victoryOutlook({forecast:{...forecast,diagnostics:{...forecast.diagnostics,observedCities:110,observedStates:25}},
+  national:nat});
+ assert.ok(low.ready);assert.equal(low.probability,null);
+ assert.ok(missing.ready);assert.equal(missing.probability,null);
+ assert.equal(missing.thresholds.ninetyNine,null);
+});
+test("mismatch between forecast and official tally suspends misleading paths",()=>{
+ const p=engine.victoryOutlook({
+  forecast:{pct:20,diagnostics:{estimatedFirstRoundValid:120000000}},
+  national:{validVotes:108000000,flavioVotes:102000000,lulaVotes:6000000,sectionsPct:90}});
+ assert.equal(p.ready,false);assert.equal(p.probability,null);
+ assert.equal(p.thresholds.one,null);
+});
+test("complete official count replaces provisional chance by result",()=>{
+ const base={pct:49,diagnostics:{estimatedFirstRoundValid:150}};
+ const lose=engine.victoryOutlook({forecast:base,national:{validVotes:100,flavioVotes:49,lulaVotes:51,sectionsPct:100}});
+ const win=engine.victoryOutlook({forecast:base,national:{validVotes:101,flavioVotes:51,lulaVotes:50,sectionsPct:100}});
+ assert.equal(lose.probability,0);assert.equal(lose.projectedMargin,-2);
+ assert.equal(win.probability,100);assert.equal(win.projectedMargin,1);
+ assert.equal(win.thresholds.ninetyNine,null);
+});

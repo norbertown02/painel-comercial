@@ -7,7 +7,7 @@ const pp=x=>Number.isFinite(x)?(x>=0?"+":"")+x.toFixed(2).replace(".",",")+" p.p
 const clamp=(x,a=0.001,b=0.999)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
-let calibration=null,latestOutlook=null,earlyReport=null;
+let calibration=null,latestOutlook=null,earlyReport=null,odds5Report=null;
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
 let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
 const LS="eleicoes2026_observatorio_v4";
@@ -93,6 +93,68 @@ function renderEarlyStudy(){
  "<td>"+ppf(s.meanAbsErrorPp)+"</td><td>"+ppf(s.p90AbsErrorPp)+"</td><td>"+nfmt(s.incorrectWinnerCalls)+" / "+nfmt(s.repetitions)+"</td></tr>").join("");
  drawEarlyStudy();
 }
+
+function initOdds5(){
+ const el=$("odds5Partial");if(!el)return;
+ el.innerHTML="";for(let i=50;i<=65;i++){const opt=document.createElement("option");opt.value=String(i);opt.textContent=i+"%";el.appendChild(opt);}
+ el.value="55";el.addEventListener("change",()=>{renderOdds5();drawOdds5();});
+}
+function renderOdds5(){
+ const r=odds5Report;
+ if(!r?.table?.length){set("odds5Assumptions","Cenários condicionais indisponíveis; a apuração oficial permanece independente.");return;}
+ const selected=+$("odds5Partial")?.value||55,record=r.table.find(x=>x.partialPct===selected)||r.table[5],win=record.winPct;
+ const fmt=x=>Number.isFinite(x)?x.toFixed(1).replace(".",",")+"%":"—";
+ set("odds5Chance",fmt(win.composite));
+ set("odds5Chance300",fmt(record.win300kPct));
+ const values=[win.actual2022,win.moderate,win.regional,win.balanced].filter(Number.isFinite);
+ set("odds5Sensitivity",fmt(Math.min(...values))+" – "+fmt(Math.max(...values)));
+ set("odds5SensitivityLabel","Probabilidades sob hipóteses distintas; a amplitude não é intervalo de confiança.");
+ const weights=r.calculation.scenarioWeights,counts=r.calculation.biasDistributionStats;
+ set("odds5Assumptions","Referência municipal de 2026: "+fmt(r.calculation.referenceCandidateFirstRoundPairPct)+
+ " entre Flávio e Lula no 1º turno. "+
+ nfmt((counts.balanced?.simulations||0)+(counts.moderate?.simulations||0)+(counts.regional?.simulations||0))+
+ " sequências municipais simuladas. Erro residual assumido: "+r.calculation.independentResidualSdPp.toFixed(1).replace(".",",")+
+ " p.p. O resultado é condicional aos pesos dos cenários (10% / 35% / 35% / 20%), não uma probabilidade validada.");
+ const columns=["composite","actual2022","moderate","regional","balanced"];
+ if($("odds5Rows"))$("odds5Rows").innerHTML=r.table.map(item=>{
+  const selectedRow=item.partialPct===selected;
+  return '<tr'+(selectedRow?' style="background:#1e3850"':'')+'><td><strong>'+item.partialPct+'%</strong></td>'+
+   '<td><strong>'+fmt(item.winPct.composite)+'</strong></td>'+
+   '<td>'+fmt(item.win300kPct)+'</td>'+
+   ['actual2022','moderate','regional','balanced'].map(key=>'<td>'+fmt(item.winPct[key])+'</td>').join("")+'</tr>';
+ }).join("");
+ drawOdds5();
+}
+function drawOdds5(){
+ const el=$("odds5Chart");
+ if(!el||!odds5Report?.table?.length||$("view-early")?.classList.contains("hide"))return;
+ const {ctx,w,h}=canvas(el),p={l:42,r:17,t:16,b:43},dx=w-p.l-p.r,dy=h-p.t-p.b;
+ const data=odds5Report.table,low=data[0].partialPct,high=data.at(-1).partialPct;
+ const x=v=>p.l+(v-low)/(high-low)*dx,y=v=>p.t+(100-v)/100*dy;
+ ctx.font="11px sans-serif";ctx.lineWidth=1;
+ for(let q=0;q<=100;q+=25){const Y=y(q);ctx.strokeStyle="#304056";ctx.beginPath();ctx.moveTo(p.l,Y);ctx.lineTo(w-p.r,Y);ctx.stroke();ctx.fillStyle="#9fb0c6";ctx.textAlign="right";ctx.fillText(q+"%",p.l-7,Y+4);}
+ for(let q=50;q<=65;q+=3){const X=x(q);ctx.fillStyle="#9fb0c6";ctx.textAlign="center";ctx.fillText(q+"%",X,h-p.b+17);}
+ const lines=[
+  {key:"regional",color:"#f58a81",weight:1.7,dash:[5,4]},
+  {key:"actual2022",color:"#58a6fa",weight:1.7,dash:[5,4]},
+  {key:"moderate",color:"#5ad9b2",weight:1.7,dash:[5,4]},
+  {key:"composite",color:"#f4c879",weight:3,dash:[]}
+ ];
+ for(const line of lines){
+  ctx.lineWidth=line.weight;ctx.strokeStyle=line.color;ctx.setLineDash(line.dash);ctx.beginPath();
+  data.forEach((d,i)=>{const X=x(d.partialPct),Y=y(d.winPct[line.key]);if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y)});
+  ctx.stroke();
+ }
+ ctx.setLineDash([]);
+ const s=+$("odds5Partial")?.value||55,point=data.find(d=>d.partialPct===s);
+ if(point){
+  ctx.strokeStyle="#a8bacc";ctx.setLineDash([2,5]);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x(s),p.t);ctx.lineTo(x(s),h-p.b);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="#f4c879";ctx.beginPath();ctx.arc(x(s),y(point.winPct.composite),5,0,2*Math.PI);ctx.fill();
+ }
+ ctx.fillStyle="#9fb0c6";ctx.textAlign="center";ctx.font="11px sans-serif";
+ ctx.fillText("Parcial hipotética de Flávio com 5% das seções",p.l+dx/2,h-8);
+}
+
 function drawEarlyStudy(){
  const el=$("earlyChart");if(!el||!earlyReport||$("view-early")?.classList.contains("hide"))return;
  const {ctx,w,h}=canvas(el),p={l:51,r:18,t:18,b:43},dx=w-p.l-p.r,dy=h-p.t-p.b;
@@ -118,7 +180,7 @@ function drawEarlyStudy(){
 function changeView(view){
  document.querySelectorAll(".view").forEach(el=>el.classList.toggle("hide",el.id!=="view-"+view));
  document.querySelectorAll(".tab").forEach(el=>el.classList.toggle("on",el.dataset.view===view));
- if(view==="replay")drawReplay();if(view==="early")drawEarlyStudy();if(view==="overview")drawLive();if(view==="cities")renderCityResults();
+ if(view==="replay")drawReplay();if(view==="early"){drawEarlyStudy();drawOdds5();}if(view==="overview")drawLive();if(view==="cities")renderCityResults();
 }
 function showCity(c,shouldFetch=true){
  selectedCity=c;set("selectedCity",c.name+" · "+c.uf);
@@ -443,13 +505,14 @@ async function init(){
  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>changeView(b.dataset.view)));
  $("refreshBtn").addEventListener("click",()=>refresh());
  $("ufFilter").addEventListener("change",renderCityResults);$("citySearch").addEventListener("input",renderCityResults);
- window.addEventListener("resize",()=>{drawLive();if(results22.length)drawReplay();drawEarlyStudy();});
+ window.addEventListener("resize",()=>{drawLive();if(results22.length)drawReplay();drawEarlyStudy();drawOdds5();});
  try{
-  const [a,b,v,t]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json"),fetch("/data/model-validation.json").catch(()=>null),fetch("/data/early-count-5pct.json").catch(()=>null)]);
+  const [a,b,v,t,o]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json"),fetch("/data/model-validation.json").catch(()=>null),fetch("/data/early-count-5pct.json").catch(()=>null),fetch("/data/odds-5pct-2026.json").catch(()=>null)]);
    calibration=v?.ok?await v.json():null;
-   earlyReport=t?.ok?await t.json():null;if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
+   earlyReport=t?.ok?await t.json():null;
+   odds5Report=o?.ok?await o.json():null;if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
   reference=await a.json();replay=await b.json();if(Object.keys(reference.cities||{}).length<5500||replay.stages?.length!==4)throw Error("A base municipal está incompleta.");
-  initRecords();replayInit();renderCityResults();makeStateRows([]);renderEarlyStudy();
+  initRecords();replayInit();renderCityResults();makeStateRows([]);initOdds5();renderEarlyStudy();renderOdds5();
   set("apiText","Bases carregadas • consultando TSE");
   await syncArchive();await refresh();
  }catch(e){updateNotice("Erro ao carregar base eleitoral: "+String(e.message||e),true);set("apiText","Dados históricos indisponíveis");}

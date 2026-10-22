@@ -178,5 +178,109 @@ function victoryOutlook({forecast,national,validation}={}){
  result.note="Chance indicativa baseada em hipóteses; limiar de 99% não é garantia validada.";
  return result;
 }
-root.ElectionEngine={version:"1.1.0",estimate,victoryOutlook};
+
+/**
+ * Experimental live scenario: the 5% table is a sensitivity prior, NOT a calibrated
+ * probability. Re-evaluate using the official national snapshot, available UF
+ * geography and (when covered) the municipality/state forecast. Never reuse
+ * a forecast from a later snapshot for an earlier one.
+ */
+function liveVictoryChance({national,states=[],referenceByUf={},scenario5,forecast=null,validation=null}={}){
+ const empty={ready:false,probability:null,range:null,method:"",geoBiasPp:null,ufCoveragePct:null,
+  phase:"awaiting",note:"Aguardando 5% das seções oficialmente totalizadas."};
+ const sec=Number(national?.sectionsPct),a=Number(national?.flavioVotes),b=Number(national?.lulaVotes),v=Number(national?.validVotes);
+ if(!Number.isFinite(sec)||!Number.isFinite(a)||!Number.isFinite(b)||!Number.isFinite(v)||
+   sec<=0||v<=0||a<0||b<0||a+b<=0||a+b>v*1.001)return empty;
+ if(sec>=99.995){
+  return {...empty,ready:true,phase:"official",probability:a>b?100:a<b?0:50,
+   range:[a>b?100:a<b?0:50,a>b?100:a<b?0:50],
+   method:"Resultado oficial",note:"Apuração concluída. O percentual indica o resultado conhecido, não uma previsão."};
+ }
+ if(sec<5)return empty;
+ const rows=scenario5?.table;
+ const hasEarly=Array.isArray(rows)&&rows.length>=2&&rows.every(x=>Number.isFinite(x.partialPct)&&
+  Number.isFinite(x.winPct?.composite));
+ const pct=100*a/(a+b);
+ let ufTotal=0,ufFirst=0,ufCount=0,baseN=0,baseA=0;
+ for(const ref of Object.values(referenceByUf||{})){
+  const total=Number(ref?.valid),fa=Number(ref?.flavio),lu=Number(ref?.lula);
+  if(total>0&&fa>=0&&lu>=0&&fa+lu>0){baseN+=total;baseA+=total*fa/(fa+lu);}
+ }
+ for(const s of states||[]){
+  const key=String(s.geo??s.uf??"").replace(/^UF:/,"").toUpperCase();
+  const ref=referenceByUf?.[key],n=Number(s.validVotes??s.valid_votes);
+  const f=Number(ref?.flavio),l=Number(ref?.lula);
+  if(ref&&n>0&&f>=0&&l>=0&&f+l>0){ufTotal+=n;ufFirst+=n*f/(f+l);ufCount++;}
+ }
+ const ufCoveragePct=v>0?100*ufTotal/v:0;
+ const geoBiasPp=baseN>0&&ufTotal>0?100*(ufFirst/ufTotal-baseA/baseN):null;
+ // Reference to the 5%-scenario prior's modeled average geographic bias.
+ const meanByModel=scenario5?.calculation?.biasDistributionStats||{},w=scenario5?.calculation?.scenarioWeights||{};
+ const expected=Number(w.balanced)*Number(meanByModel.balanced?.meanBiasPp)+
+  Number(w.actual2022)*Number(scenario5?.calculation?.historicalRealEarly2022BiasPp)+
+  Number(w.moderate)*Number(meanByModel.moderate?.meanBiasPp)+
+  Number(w.regional)*Number(meanByModel.regional?.meanBiasPp);
+ // The correction is deliberately attenuated because UF-level vote receipt
+ // does not reveal where within those UFs the sections were reported.
+ const geoReliable=ufCount>=8&&ufCoveragePct>=90&&Number.isFinite(geoBiasPp)&&Number.isFinite(expected);
+ const shift=geoReliable?Math.max(-3,Math.min(3,.35*(geoBiasPp-expected))):0;
+ const earlyShare=pct-shift;
+ const interpolate=(key,value)=>{
+  if(!hasEarly)return null;
+  const sorted=rows.slice().sort((x,y)=>x.partialPct-y.partialPct),lo=sorted[0],hi=sorted.at(-1);
+  // Extrapolation outside the table is not an authenticated probability:
+  // abstain rather than silently clamping 45% to 50% or 70% to 65%.
+  if(value<lo.partialPct||value>hi.partialPct)return null;
+  for(let i=1;i<sorted.length;i++){
+   if(value<=sorted[i].partialPct){
+    const before=sorted[i-1],after=sorted[i],t=(value-before.partialPct)/(after.partialPct-before.partialPct);
+    const x=Number(before.winPct?.[key]),y=Number(after.winPct?.[key]);
+    return Number.isFinite(x)&&Number.isFinite(y)?x+(y-x)*t:null;
+   }
+  }
+  return Number(hi.winPct?.[key]);
+ };
+ let early=interpolate("composite",earlyShare);
+ const separate=["actual2022","moderate","regional","balanced"].map(k=>interpolate(k,earlyShare)).filter(Number.isFinite);
+ const earlyRange=separate.length>=3?[Math.min(...separate),Math.max(...separate)]:null;
+ // The regional model requires actual geographic coverage before the 5% prior
+ // can be replaced. Its probability is still experimental, never guaranteed.
+ const d=forecast?.diagnostics||{},isReady=Number.isFinite(forecast?.pct)&&forecast?.ready===true&&
+  d.observedCities>=40&&d.observedStates>=12&&sec>=10;
+ let modelChance=null,modelRange=null;
+ if(isReady){
+  const out=victoryOutlook({forecast,national,validation});
+  if(Number.isFinite(out.probability))modelChance=out.probability;
+  else {
+   // Extra conservative error while the stringent 23-UF/100-city criteria are unmet.
+   const sigma=Math.max(2.25,2.8*Math.sqrt(.1/Math.max(.05,sec/100))*
+    Math.pow(Math.max(.01,(100-sec)/90),.45));
+   modelChance=Math.max(.1,Math.min(99.9,100*normalCDF((forecast.pct-50)/sigma)));
+  }
+  const sc=d.scenario||{},spread=Number.isFinite(sc.min)&&Number.isFinite(sc.max)?
+    [sc.min,sc.max]:[forecast.pct,forecast.pct];
+  const s=Math.max(2,2.7*Math.sqrt(.1/Math.max(.05,sec/100)));
+  modelRange=spread.map(q=>100*normalCDF((q-50)/s));
+ }
+ if(modelChance==null&&sec>20)return {...empty,phase:"insufficient",geoBiasPp,ufCoveragePct,
+  note:"Mais de 20% das seções apuradas; aguardando municípios em 12 UFs para calcular a chance territorial."};
+ if(early==null&&modelChance==null)return {...empty,phase:"outside",geoBiasPp,ufCoveragePct,
+  note:"Parcial fora da faixa 50–65% do estudo inicial; aguardando estimativa territorial."};
+ if(early==null&&modelChance!=null){early=modelChance;}
+ const weight=modelChance!=null?Math.max(0,Math.min(1,(sec-10)/20)):0;
+ const probability=(1-weight)*early+weight*(modelChance??early);
+ if(!Number.isFinite(probability))return empty;
+ const r1=earlyRange||modelRange,r2=modelRange||earlyRange;
+ const range=r1&&r2?[Math.max(0,(1-weight)*r1[0]+weight*r2[0]),Math.min(100,(1-weight)*r1[1]+weight*r2[1])]:null;
+ const phase=weight===1?"territorial":weight>0?"transition":"early";
+ const note=phase==="territorial"
+  ?"Chance indicativa calculada da projeção territorial e da incerteza assumida. NÃO calibrada."
+  :phase==="transition"
+   ?"Chance indicativa combinando cenários dos 5% com projeções municipais e estaduais. NÃO calibrada."
+   :"Chance indicativa do estudo de 5%, adaptada com dados estaduais quando disponíveis. NÃO calibrada.";
+ return {ready:true,probability,range,phase,method:phase==="territorial"?"Projeção territorial":
+  phase==="transition"?"Transição de cenários":"Estudo histórico 5%",
+  geoBiasPp,ufCoveragePct,geoAdjusted:geoReliable,note};
+}
+root.ElectionEngine={version:"1.2.0",estimate,victoryOutlook,liveVictoryChance};
 })(typeof window!=="undefined"?window:globalThis);

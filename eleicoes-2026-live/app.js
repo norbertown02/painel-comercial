@@ -7,7 +7,7 @@ const pp=x=>Number.isFinite(x)?(x>=0?"+":"")+x.toFixed(2).replace(".",",")+" p.p
 const clamp=(x,a=0.001,b=0.999)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
-let calibration=null,latestOutlook=null,earlyReport=null,odds5Report=null;
+let calibration=null,latestOutlook=null,latestChance=null,earlyReport=null,odds5Report=null;
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
 let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
 const LS="eleicoes2026_observatorio_v4";
@@ -180,7 +180,7 @@ function drawEarlyStudy(){
 function changeView(view){
  document.querySelectorAll(".view").forEach(el=>el.classList.toggle("hide",el.id!=="view-"+view));
  document.querySelectorAll(".tab").forEach(el=>el.classList.toggle("on",el.dataset.view===view));
- if(view==="replay")drawReplay();if(view==="early"){drawEarlyStudy();drawOdds5();}if(view==="overview")drawLive();if(view==="cities")renderCityResults();
+ if(view==="replay")drawReplay();if(view==="early"){drawEarlyStudy();drawOdds5();}if(view==="overview"){drawLive();drawProbability();}if(view==="cities")renderCityResults();
 }
 function showCity(c,shouldFetch=true){
  selectedCity=c;set("selectedCity",c.name+" · "+c.uf);
@@ -284,39 +284,77 @@ function renderEngineModel(m,stateP){
 }
 
 
-function victoryReading(o){
- if(!o?.ready)return {t1:null,t300:null,t99:null,prob:null,margin:null};
+
+function victoryReading(o,l){
+ const valid=!!o?.ready,prob=l?.ready&&Number.isFinite(l?.probability)?l.probability:null;
  return {
-  t1:Number.isFinite(o.thresholds.one)?o.thresholds.one:null,
-  t300:Number.isFinite(o.thresholds.threeHundredThousand)?o.thresholds.threeHundredThousand:null,
-  t99:Number.isFinite(o.thresholds.ninetyNine)?o.thresholds.ninetyNine:null,
-  prob:Number.isFinite(o.probability)?o.probability:null,
-  margin:Number.isFinite(o.projectedMargin)?o.projectedMargin:null
+  t1:valid&&Number.isFinite(o.thresholds.one)?o.thresholds.one:null,
+  t300:valid&&Number.isFinite(o.thresholds.threeHundredThousand)?o.thresholds.threeHundredThousand:null,
+  t99:valid&&Number.isFinite(o.thresholds.ninetyNine)?o.thresholds.ninetyNine:null,
+  prob,margin:valid&&Number.isFinite(o.projectedMargin)?o.projectedMargin:null,
+  chanceVersion:prob!=null?"geo-live-1.2":null,chancePhase:l?.phase||null
  };
 }
 function renderVictory(fit){
  const official=current?.national,hasVotes=official?.validVotes>0&&official?.sectionsCounted>0;
  latestOutlook=hasVotes&&window.ElectionEngine?.victoryOutlook?
   window.ElectionEngine.victoryOutlook({forecast:fit,national:official,validation:calibration}):null;
- const o=latestOutlook,prob=o?.probability;
+ latestChance=hasVotes&&window.ElectionEngine?.liveVictoryChance?
+  window.ElectionEngine.liveVictoryChance({national:official,states:current?.states||[],
+   referenceByUf:firstByUf,scenario5:odds5Report,forecast:fit,validation:calibration}):null;
+ const o=latestOutlook,l=latestChance,prob=l?.ready?l.probability:null;
  set("winChance",Number.isFinite(prob)?pf(prob):"—");
- set("winChanceSub",o?.note||"Aguardando apuração e cobertura territorial");
+ set("winChanceSub",l?.note||"Aguardando 5% das seções totalizadas");
+ set("winPhase",l?.ready?l.method:"Aguardando cobertura");
+ set("winRange",l?.range?.length===2?pf(l.range[0])+" – "+pf(l.range[1]):"—");
+ set("winGeography",Number.isFinite(l?.geoBiasPp)&&Number.isFinite(l?.ufCoveragePct)?
+  pp(l.geoBiasPp)+" · "+pf(l.ufCoveragePct)+" de votos estaduais correspondidos":
+  "Dados regionais ainda insuficientes");
  set("projectedMargin",Number.isFinite(o?.projectedMargin)&&o.ready?
   (o.projectedMargin>=0?"+":"")+nfmt(o.projectedMargin):"—");
- set("projectedMarginSub",o?.ready?"Margem prevista de Flávio contra Lula • votos, não percentual":"Sem projeção de margem válida");
+ set("projectedMarginSub",o?.ready?"Margem prevista de Flávio contra Lula • votos, não percentual":"Aguardando projeção territorial válida");
  const showThreshold=x=>!Number.isFinite(x)?"—":x<0?"≤ 0%":x>100?"> 100%":pf(x);
  set("oneVoteNow",showThreshold(o?.thresholds?.one));
  set("threeHundredNow",showThreshold(o?.thresholds?.threeHundredThousand));
  set("nearCertainNow",showThreshold(o?.thresholds?.ninetyNine));
  set("victoryAssumption",o?.ready&&!Number.isFinite(o.remainingShare)?"Resultado oficial concluído":
   o?.ready?"Total estimado: "+nfmt(o.estimatedTotal)+" votos válidos; votos restantes: "+nfmt(Math.max(0,o.estimatedTotal-official.validVotes))+"; restante projetado de Flávio: "+pf(100*o.remainingShare):
-  "Aguardando modelo municipal e votos oficiais.");
+  "A chance pode aparecer a partir de 5%; a margem em votos exige uma projeção territorial validada.");
  const reading=liveReadings.findLast(r=>r.v===official?.validVotes);
- if(reading&&o?.ready){
-  Object.assign(reading,victoryReading(o));
+ if(reading&&hasVotes){
+  Object.assign(reading,victoryReading(o,l));
   if(Number.isFinite(fit?.pct))reading.h=fit.pct;
-  saveReadings();drawLive();
+  saveReadings();drawLive();drawProbability();
  }
+}
+function drawProbability(){
+ const el=$("winProbabilityChart");if(!el)return;const {ctx,w,h}=canvas(el);
+ const p={l:43,r:18,t:18,b:40},dx=w-p.l-p.r,dy=h-p.t-p.b;
+ const x=s=>p.l+Math.max(0,Math.min(100,s))/100*dx;
+ const y=v=>p.t+(100-v)/100*dy;
+ ctx.strokeStyle="#304056";ctx.font="11px sans-serif";ctx.lineWidth=1;
+ for(let i=0;i<=4;i++){
+  const pct=i*25,Y=y(pct);ctx.beginPath();ctx.moveTo(p.l,Y);ctx.lineTo(w-p.r,Y);ctx.stroke();
+  ctx.fillStyle="#9fb0c6";ctx.textAlign="right";ctx.fillText(pct+"%",p.l-6,Y+4);
+ }
+ for(const pct of [0,5,25,50,75,100]){
+  const X=x(pct);ctx.fillStyle="#9fb0c6";ctx.textAlign="center";
+  ctx.fillText(pct+"%",X,h-p.b+17);
+ }
+ ctx.strokeStyle="#657586";ctx.setLineDash([4,5]);ctx.beginPath();
+ ctx.moveTo(p.l,y(50));ctx.lineTo(w-p.r,y(50));ctx.stroke();ctx.setLineDash([]);
+ const rows=liveReadings.filter(r=>r.chanceVersion==="geo-live-1.2"&&
+  Number.isFinite(r.sec)&&r.sec>=5&&Number.isFinite(r.prob)).sort((a,b)=>a.sec-b.sec||a.v-b.v);
+ if(!rows.length){
+  ctx.textAlign="center";ctx.fillStyle="#b6c7dc";
+  ctx.fillText("Aguardando 5% das seções e dados oficiais para o cenário.",p.l+dx/2,p.t+dy/2);
+ }else{
+  ctx.beginPath();ctx.strokeStyle="#f4c879";ctx.lineWidth=2.8;
+  rows.forEach((r,i)=>{if(i===0)ctx.moveTo(x(r.sec),y(r.prob));else ctx.lineTo(x(r.sec),y(r.prob));});ctx.stroke();
+  const last=rows.at(-1);ctx.fillStyle="#f4c879";ctx.beginPath();ctx.arc(x(last.sec),y(last.prob),4,0,2*Math.PI);ctx.fill();
+ }
+ ctx.fillStyle="#9fb0c6";ctx.textAlign="center";ctx.font="11px sans-serif";
+ ctx.fillText("Seções oficialmente totalizadas",p.l+dx/2,h-7);
 }
 
 function updateLiveUI(j){
@@ -328,7 +366,7 @@ function updateLiveUI(j){
  const ready=makeStateRows(j.states);
  const sample=Object.values(citySamples).filter(s=>s.validVotes>0&&s.sectionsCounted>0).length;
  set("citiesReady",nfmt(sample)+" coletadas");
- if(!started){latestOutlook=null;renderVictory(null);set("sensitivity","—");
+ if(!started){latestOutlook=null;latestChance=null;renderVictory(null);set("sensitivity","—");
   ["kf","kl","kp","km","kc"].forEach(id=>set(id,"—"));set("quality","Sem votos");set("modelCoverage","—");set("geoBias","—");set("transfer","—");set("modelRange","—");
   set("kfdet","Totalização ainda não iniciada");set("kldet","Totalização ainda não iniciada");
   set("kpdet","Aguardando parciais de pelo menos 24 estados");set("kmdet","Aguardando amostragem de municípios");
@@ -343,8 +381,8 @@ function updateLiveUI(j){
  if(j.failures?.length)updateNotice("Atualização parcial: "+j.failures.length+" UFs temporariamente indisponíveis. A projeção pode estar suspensa.",true);
  else updateNotice("Apuração oficial em andamento. As projeções são experimentais, não constituem resultado oficial ou probabilidade de vitória.");
  const last=liveReadings.at(-1),v=nt.validVotes;
- if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,h:model.combined,sec:nt.sectionsPct,at:new Date().toISOString(),...victoryReading(latestOutlook)});liveReadings=liveReadings.slice(-700);saveReadings();}
- drawLive();updateSensitivity();if(selectedCity)fetchSelectedCity(selectedCity);
+ if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,h:model.combined,sec:nt.sectionsPct,at:new Date().toISOString(),...victoryReading(latestOutlook,latestChance)});liveReadings=liveReadings.slice(-700);saveReadings();}
+ drawLive();drawProbability();updateSensitivity();if(selectedCity)fetchSelectedCity(selectedCity);
 }
 
 function drawLive(){
@@ -459,7 +497,7 @@ async function syncArchive(){
       const all=new Map(liveReadings.map(r=>[r.v,r]));
       fromDB.forEach(r=>all.set(r.v,r));
       liveReadings=[...all.values()].sort((x,y)=>new Date(x.at)-new Date(y.at)).slice(-700);
-      saveReadings();drawLive();
+      saveReadings();drawLive();drawProbability();
     }
     let offset=0;const pageSize=1000;
     // At most six pages, enough for all 5,570 municipalities.
@@ -505,7 +543,7 @@ async function init(){
  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>changeView(b.dataset.view)));
  $("refreshBtn").addEventListener("click",()=>refresh());
  $("ufFilter").addEventListener("change",renderCityResults);$("citySearch").addEventListener("input",renderCityResults);
- window.addEventListener("resize",()=>{drawLive();if(results22.length)drawReplay();drawEarlyStudy();drawOdds5();});
+ window.addEventListener("resize",()=>{drawLive();drawProbability();if(results22.length)drawReplay();drawEarlyStudy();drawOdds5();});
  try{
   const [a,b,v,t,o]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json"),fetch("/data/model-validation.json").catch(()=>null),fetch("/data/early-count-5pct.json").catch(()=>null),fetch("/data/odds-5pct-2026.json").catch(()=>null)]);
    calibration=v?.ok?await v.json():null;

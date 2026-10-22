@@ -77,6 +77,26 @@
     <div class="card kpi"><div class="eyebrow">2022 · resultado final</div><div class="n" id="earlyFinal2022">—</div><div class="detail">TSE · 100% de seções</div></div>
     <div class="card kpi"><div class="eyebrow">Queda de 5% até o final</div><div class="n red" id="earlyBias5">—</div><div class="detail">Diferença de participação, em pontos percentuais</div></div>
     <div class="card kpi"><div class="eyebrow">Vantagem inicial para 300 mil votos*</div><div class="n yellow" id="earlyTarget300">—</div><div class="detail">Hipótese: repetir o desvio de 2022; 120 milhões de votos válidos</div></div>
+    
+    <div class="card full" id="odds5Panel">
+      <div class="tools" style="justify-content:space-between;align-items:start">
+        <div>
+          <div class="head">Faixas de chance condicional · parcial aos 5%</div>
+          <p class="sub">Percentual de Flávio entre os votos válidos já contabilizados quando 5% das seções estiverem apuradas. As chances são resultados de cenários, <b>não probabilidades eleitorais calibradas</b>.</p>
+        </div>
+        <div class="tools"><label for="odds5Partial" class="mini">Simular parcial</label><select id="odds5Partial" aria-label="Parcial hipotética de Flávio aos cinco por cento das seções"></select></div>
+      </div>
+      <div class="victory-metrics" style="margin-top:4px">
+        <div class="victory-measure"><div class="eyebrow">Chance de vitória no cenário composto</div><div class="n yellow" id="odds5Chance">—</div><div class="sub">Média de cenários com pesos assumidos, sujeitos a revisão</div></div>
+        <div class="victory-measure"><div class="eyebrow">Faixa entre apurações regionais distintas</div><div class="n" id="odds5Sensitivity">—</div><div class="sub" id="odds5SensitivityLabel">O mesmo percentual de parcial pode significar situações muito diferentes.</div></div>
+      </div>
+      <div class="pair"><span class="muted">Chance condicional de vitória por pelo menos 300 mil votos</span><strong id="odds5Chance300">—</strong></div>
+      <p class="mini" id="odds5Assumptions">Carregando simulações e hipóteses...</p>
+      <canvas class="chart" id="odds5Chart" style="height:320px" aria-label="Curvas de chance condicional para cada percentual da parcial com 5% das urnas apuradas"></canvas>
+      <div class="legend"><span><i class="swatch" style="background:#f4c879"></i> Cenário composto</span><span><i class="swatch" style="background:#58a6fa"></i> 2022 como referência</span><span><i class="swatch" style="background:#5ad9b2"></i> Regional moderado</span><span><i class="swatch" style="background:#f58a81"></i> Regional concentrado</span></div>
+      <div class="tbl" style="margin-top:17px"><table><thead><tr><th>Parcial aos 5%</th><th>Chance composta</th><th>Vitória ≥300 mil votos</th><th>2022 como referência</th><th>Regional moderado</th><th>Regional concentrado</th><th>Equilibrado</th></tr></thead><tbody id="odds5Rows"><tr><td colspan="7">Carregando cenários...</td></tr></tbody></table></div>
+      <p class="mini">Os pesos de combinação são escolhas analíticas: 10% equilibrado, 35% trajetória real de 2022, 35% regional moderado e 20% regional concentrado. Foram incluídos erros adicionais hipotéticos de 1,5 ponto percentual. Valores de 95% ou 99% <b>não significam garantias de 95% ou 99%</b> na eleição de 2026. <a href="/data/odds-5pct-2026.json">Ver simulações, parâmetros e limitações</a>.</p>
+    </div>
     <div class="card wide">
       <div class="head">Evolução real de 2022 · início da apuração</div>
       <p class="sub">Horizontal: % de seções totalizadas • Vertical: % dos votos válidos de Bolsonaro • Marcador em 5% é interpolado.</p>

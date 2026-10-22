@@ -17,6 +17,8 @@
 .victory-scenarios .eyebrow{text-transform:none;letter-spacing:.2px;font-size:12px}
 #liveChart{height:340px}
 @media(max-width:720px){.victory-metrics{grid-template-columns:1fr}.victory-scenarios{grid-template-columns:1fr}#liveChart{height:295px}}
+
+#winProbabilityChart{margin-top:4px;max-height:235px}
 </style></head>
 <body><div class="shell">
 <header class="top"><div class="brand"><div class="mark">▥</div><div><div class="eyebrow">Observatório eleitoral</div><h1>Apuração presidencial • 2026</h1><p class="sub">25 de outubro • Dados do TSE + análise territorial independente</p></div></div><div class="right"><span id="apiStatus" class="pill"><span id="apiDot" class="dot"></span><span id="apiText">Preparando dados</span></span><span class="pill" id="archiveStatus">Histórico central: verificando</span><span class="pill" id="refreshClock">Atualização: 30 s</span><button id="refreshBtn" type="button">Atualizar agora ↻</button></div></header>
@@ -39,9 +41,9 @@
   <p class="sub">Cenários condicionais aos votos ainda não apurados. A probabilidade indicada é um exercício estatístico, não uma declaração de vitória.</p>
   <div class="victory-metrics">
     <div class="victory-measure">
-      <div class="eyebrow">Probabilidade indicativa de vitória</div>
+      <div class="eyebrow">Chance de vitória · modelo experimental ao vivo</div>
       <div id="winChance" class="n green">—</div>
-      <div class="sub" id="winChanceSub">Aguardando apuração e cobertura territorial</div>
+      <div class="sub" id="winChanceSub">Aguardando 5% das seções totalizadas</div>
     </div>
     <div class="victory-measure">
       <div class="eyebrow">Margem final projetada em votos</div>
@@ -49,6 +51,14 @@
       <div class="sub" id="projectedMarginSub">Aguardando modelo municipal</div>
     </div>
   </div>
+
+  <div class="pair"><span class="muted">Metodologia desta leitura</span><strong id="winPhase">Aguardando cobertura</strong></div>
+  <div class="pair"><span class="muted">Sensibilidade entre cenários*</span><strong id="winRange">—</strong></div>
+  <div class="pair"><span class="muted">Viés da distribuição estadual / cobertura</span><strong id="winGeography">Dados regionais ainda insuficientes</strong></div>
+  <div class="head" style="margin-top:17px">Evolução da chance indicativa durante a apuração</div>
+  <p class="sub">O gráfico mostra cada leitura oficial recebida e o cenário calculado naquele momento. Não reconstrói valores anteriores com dados conhecidos depois.</p>
+  <canvas class="chart" id="winProbabilityChart" style="height:235px" aria-label="Probabilidade experimental de vitória de Flávio conforme avançam as seções totalizadas"></canvas>
+  <p class="mini">A estimativa começa com 5% de seções; passa a incorporar a distribuição dos votos estaduais e, quando a amostra está suficientemente coberta, a projeção municipal. Se faltarem dados ou os cenários estiverem fora da faixa estudada, o sistema mostra — em vez de inventar uma chance.</p>
   <div class="eyebrow">Parcial de Flávio necessária agora, caso os votos restantes sigam a projeção</div>
   <div class="victory-scenarios">
     <div><div class="eyebrow">Vitória mínima (≥ 1 voto)</div><strong id="oneVoteNow">—</strong><span class="mini">Limiar calculado sobre votos já contabilizados</span></div>
@@ -56,6 +66,7 @@
     <div><div class="eyebrow">Chance de 99% no modelo*</div><strong id="nearCertainNow">—</strong><span class="mini">Disponível somente após cobertura estatística mínima</span></div>
   </div>
   <p class="mini" id="victoryAssumption">Aguardando modelo municipal e votos oficiais.</p>
+  <p class="mini">*O indicador de chance e a linha de 99% baseiam-se em hipóteses não calibradas. O intervalo de sensibilidade não é intervalo de confiança formal.</p>
   <p class="mini">*A curva de 99% assume uma distribuição estatística de erro. Ela <b>não</b> é uma garantia eleitoral nem um nível de confiança validado para eventos extremos; antes do 2º turno, nenhuma probabilidade é apresentada.</p>
 </div>
 <div class="card kpi"><div class="eyebrow">Flávio · votos oficiais</div><div id="kf" class="n blue">—</div><div class="detail" id="kfdet">Aguardando totalização</div></div>

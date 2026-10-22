@@ -85,3 +85,28 @@ test("complete official count replaces provisional chance by result",()=>{
  assert.equal(win.probability,100);assert.equal(win.projectedMargin,1);
  assert.equal(win.thresholds.ninetyNine,null);
 });
+
+
+test("five-percent 2022 TSE timeline is interpolated from bracketing snapshots",()=>{
+ const d=load("early-count-5pct.json"),h=d.history2022;
+ assert.equal(d.schema,"early-count-validation-v1");
+ assert.equal(h.before5.sectionsPct,4.82);assert.equal(h.after5.sectionsPct,5.61);
+ const t=(5-h.before5.sectionsPct)/(h.after5.sectionsPct-h.before5.sectionsPct);
+ const interpolated=h.before5.candidateSharePct+t*(h.after5.candidateSharePct-h.before5.candidateSharePct);
+ assert.ok(Math.abs(interpolated-h.interpolated5SharePct)<1e-10);
+ assert.ok(Math.abs((h.interpolated5SharePct-h.officialFinalSharePct)-h.earlyMinusFinalPp)<1e-10);
+ assert.ok(Math.abs(h.conditionalThresholds2026.winBy300000VotesShareAt5-
+  h.conditionalThresholds2026.winByAtLeastOneVoteShareAt5-.125)<1e-10);
+});
+test("synthetic 5pct studies identify sampling and never claim official chronology",()=>{
+ const d=load("early-count-5pct.json");
+ assert.equal(d.syntheticValidation.length,4);
+ for(const row of d.syntheticValidation){
+  assert.equal(row.repetitions,300);
+  assert.ok(row.coverageMeanPct>=5&&row.coverageMeanPct<6);
+  assert.ok(Number.isFinite(row.meanAbsErrorPp)&&row.meanAbsErrorPp>0);
+  assert.ok(row.p90AbsErrorPp>=row.meanAbsErrorPp);
+ }
+ assert.ok(d.rules.syntheticMethodCautions.includes("NOT calibrated probabilities"));
+ assert.ok(d.interpretation.validationGaps.some(s=>s.includes("2014")));
+});

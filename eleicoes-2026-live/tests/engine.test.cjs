@@ -132,3 +132,57 @@ test("5pct conditional scenario probabilities are monotonic, auditable, and non-
  assert.ok(d.table.find(row=>row.partialPct===57).winPct.regional<50);
  assert.ok(d.calculation.simulatedSampleDefinition.includes("rather than sampling actual ballot-box"));
 });
+
+
+test("live chance stays unavailable before five-percent official sections",()=>{
+ const odds=load("odds-5pct-2026.json"),national=s=>({
+  validVotes:10000000,flavioVotes:5700000,lulaVotes:4300000,sectionsPct:s});
+ for(const sections of [0,1,4.99]){
+  const r=engine.liveVictoryChance({national:national(sections),scenario5:odds});
+  assert.equal(r.ready,false);assert.equal(r.probability,null);
+ }
+});
+test("live chance at five percent reproduces the labelled conditional scenario",()=>{
+ const odds=load("odds-5pct-2026.json");
+ const r=engine.liveVictoryChance({national:{validVotes:10000000,flavioVotes:5700000,
+  lulaVotes:4300000,sectionsPct:5},scenario5:odds});
+ const historical=odds.table.find(x=>x.partialPct===57);
+ assert.ok(r.ready);assert.equal(r.phase,"early");
+ assert.ok(Math.abs(r.probability-historical.winPct.composite)<.001);
+ assert.ok(r.range[0]<=r.probability&&r.range[1]>=r.probability);
+});
+test("as coverage advances, five-percent geographic bias is attenuated",()=>{
+ const odds=load("odds-5pct-2026.json");
+ const nat=s=>({validVotes:10000000,flavioVotes:5300000,lulaVotes:4700000,sectionsPct:s});
+ const five=engine.liveVictoryChance({national:nat(5),scenario5:odds});
+ const ten=engine.liveVictoryChance({national:nat(10),scenario5:odds});
+ assert.ok(ten.probability>five.probability);
+ assert.equal(ten.phase,"early");
+});
+test("live chance transitions to geographical engine when sample is ready",()=>{
+ const odds=load("odds-5pct-2026.json");
+ const forecast={ready:true,pct:51.3,diagnostics:{observedCities:100,observedStates:20,
+  sampleCoveragePct:7,estimatedFirstRoundValid:120000000,scenario:{min:50.5,max:51.6}}};
+ const nat=s=>({validVotes:12000000,flavioVotes:6840000,lulaVotes:5160000,sectionsPct:s});
+ const p15=engine.liveVictoryChance({national:nat(15),forecast,scenario5:odds,
+  validation:load("model-validation.json")});
+ const p30=engine.liveVictoryChance({national:nat(30),forecast,scenario5:odds,
+  validation:load("model-validation.json")});
+ assert.ok(p15.ready);assert.equal(p15.phase,"transition");
+ assert.ok(p30.ready);assert.equal(p30.phase,"territorial");
+ assert.ok(Number.isFinite(p30.probability));
+});
+test("the chance abstains for too little geographical coverage after early phase",()=>{
+ const odds=load("odds-5pct-2026.json");
+ const r=engine.liveVictoryChance({national:{validVotes:10000000,flavioVotes:5700000,
+  lulaVotes:4300000,sectionsPct:25},scenario5:odds});
+ assert.equal(r.ready,false);assert.equal(r.probability,null);
+ assert.equal(r.phase,"insufficient");
+});
+test("100-percent official completion cannot inherit modelled win odds",()=>{
+ const odds=load("odds-5pct-2026.json");
+ for(const [a,b,result] of [[48,52,0],[52,48,100],[50,50,50]]){
+  const r=engine.liveVictoryChance({national:{validVotes:100,flavioVotes:a,lulaVotes:b,sectionsPct:100},scenario5:odds});
+  assert.equal(r.phase,"official");assert.equal(r.probability,result);
+ }
+});

@@ -1,0 +1,258 @@
+{
+  "schema": "conditional-election-odds-5pct-v1",
+  "date": "2026-10-22",
+  "election": "BR 2026 presidential 2nd round",
+  "epistemicStatus": "EXPERIMENTAL SCENARIO-CONDITIONAL PROBABILITIES. NOT EMPIRICALLY CALIBRATED ELECTION WIN PROBABILITIES.",
+  "objective": "P(final Flavio share > 50% | hypothetical reported Flavio share at exactly 5% of totalized sections), approximate by 2026 first-round municipal geography and synthetic regional arrival patterns.",
+  "calculation": {
+    "baseElection": "2026 first round Flavio and Lula pair-normalized municipal shares",
+    "referenceCandidateFirstRoundPairPct": 51.02123672641911,
+    "referenceFirstRoundValidVotes": 118957565,
+    "referenceCandidateFirstRoundVotes": 55955524,
+    "referenceOpponentFirstRoundVotes": 53715522,
+    "source": "/data/reference.json",
+    "historicalRealEarly2022BiasPp": 4.39253164556962,
+    "simulatedSampleDefinition": "Select entire municipalities until reaching >=5% of first-round valid votes, rather than sampling actual ballot-box section receipts. Because of this difference, regional modeled biases cannot be considered direct measurements of real 5%-of-sections paths.",
+    "seeds": "LCG modulo 2^32: seed=20261022 + 31*i + 100000*styleIndex, i in [0,999], styleIndex 0 balanced,1 moderate,2 regional. Sorted key=-ln(max(1e-12,U))/regionalWeight, U=random(seed).",
+    "regionalWeights": {
+      "southSoutheast": 5,
+      "northeast": 0.27,
+      "north": 0.35,
+      "centerWest": 1
+    },
+    "styles": {
+      "balanced": "regionalWeight=1",
+      "moderate": "regionalWeight=sqrt(baseWeight)",
+      "regional": "regionalWeight=baseWeight"
+    },
+    "biasDistributionStats": {
+      "balanced": {
+        "simulations": 1000,
+        "meanBiasPp": 0.027751003262890598,
+        "meanMunicipalities": 293.296,
+        "meanCoveragePct": 5.279662377924431
+      },
+      "moderate": {
+        "simulations": 1000,
+        "meanBiasPp": 5.423812541744312,
+        "meanMunicipalities": 284.665,
+        "meanCoveragePct": 5.371257184862515
+      },
+      "regional": {
+        "simulations": 1000,
+        "meanBiasPp": 7.481230237759979,
+        "meanMunicipalities": 280.513,
+        "meanCoveragePct": 5.44566850288168
+      }
+    },
+    "independentResidualSdPp": 1.5,
+    "residualAssumption": "Normal(0,1.5 pp), manually widened beyond p90 5%-simulation errors seen in 2014/2018; not an independently validated 2026 distribution.",
+    "scenarioWeights": {
+      "balanced": 0.1,
+      "actual2022": 0.35,
+      "moderate": 0.35,
+      "regional": 0.2
+    },
+    "whyTheseWeights": "Illustrative sensitivity weights, chosen by analyst; NOT estimated from an empirical sequence of elections or an objective posterior.",
+    "formula": "P(win | partial p) = sum_weight [mean_over_simulated_paths Phi((p-50-bias_path)/1.5)], where 2022 path uses a single measured bias of +4.39253 pp. For winning by >=300,000 votes add 0.125 pp to final threshold assuming 120 million valid votes.",
+    "source2022": "/data/early-count-5pct.json",
+    "marginal300kValidVotesAssumption": 120000000,
+    "fullNumericalPrecision": "Published display results rounded to 2 decimal places; probabilities represent model scenarios only.",
+    "historicalValidation": "/data/early-count-5pct.json. Only one actually observed 5%-section national series available (2022), so percentages are not calibrated against repeated true early election nights."
+  },
+  "thresholdsByScenarioCompositePct": {
+    "50": 55.032,
+    "70": 56.579,
+    "80": 57.626,
+    "90": 59.048,
+    "95": 60.119,
+    "99": 61.933
+  },
+  "table": [
+    {
+      "partialPct": 50,
+      "winPct": {
+        "balanced": 48.11,
+        "moderate": 6.27,
+        "regional": 4.82,
+        "actual2022": 0.17,
+        "composite": 8.03
+      },
+      "win300kPct": 7.68
+    },
+    {
+      "partialPct": 51,
+      "winPct": {
+        "balanced": 62.89,
+        "moderate": 8.96,
+        "regional": 6.64,
+        "actual2022": 1.19,
+        "composite": 11.17
+      },
+      "win300kPct": 10.73
+    },
+    {
+      "partialPct": 52,
+      "winPct": {
+        "balanced": 76.19,
+        "moderate": 12.52,
+        "regional": 8.61,
+        "actual2022": 5.54,
+        "composite": 15.66
+      },
+      "win300kPct": 14.97
+    },
+    {
+      "partialPct": 53,
+      "winPct": {
+        "balanced": 86.51,
+        "moderate": 17.8,
+        "regional": 10.83,
+        "actual2022": 17.66,
+        "composite": 23.23
+      },
+      "win300kPct": 22.05
+    },
+    {
+      "partialPct": 54,
+      "winPct": {
+        "balanced": 93.35,
+        "moderate": 25.99,
+        "regional": 13.7,
+        "actual2022": 39.68,
+        "composite": 35.06
+      },
+      "win300kPct": 33.37
+    },
+    {
+      "partialPct": 55,
+      "winPct": {
+        "balanced": 97.16,
+        "moderate": 37.82,
+        "regional": 17.9,
+        "actual2022": 65.73,
+        "composite": 49.54
+      },
+      "win300kPct": 47.7
+    },
+    {
+      "partialPct": 56,
+      "winPct": {
+        "balanced": 98.95,
+        "moderate": 52.69,
+        "regional": 24.42,
+        "actual2022": 85.81,
+        "composite": 63.25
+      },
+      "win300kPct": 61.67
+    },
+    {
+      "partialPct": 57,
+      "winPct": {
+        "balanced": 99.67,
+        "moderate": 68.39,
+        "regional": 34.35,
+        "actual2022": 95.89,
+        "composite": 74.34
+      },
+      "win300kPct": 73.1
+    },
+    {
+      "partialPct": 58,
+      "winPct": {
+        "balanced": 99.91,
+        "moderate": 81.97,
+        "regional": 48,
+        "actual2022": 99.19,
+        "composite": 83
+      },
+      "win300kPct": 82.03
+    },
+    {
+      "partialPct": 59,
+      "winPct": {
+        "balanced": 99.98,
+        "moderate": 91.44,
+        "regional": 63.81,
+        "actual2022": 99.89,
+        "composite": 89.73
+      },
+      "win300kPct": 88.99
+    },
+    {
+      "partialPct": 60,
+      "winPct": {
+        "balanced": 100,
+        "moderate": 96.69,
+        "regional": 78.58,
+        "actual2022": 99.99,
+        "composite": 94.55
+      },
+      "win300kPct": 94.06
+    },
+    {
+      "partialPct": 61,
+      "winPct": {
+        "balanced": 100,
+        "moderate": 98.98,
+        "regional": 89.48,
+        "actual2022": 100,
+        "composite": 97.54
+      },
+      "win300kPct": 97.25
+    },
+    {
+      "partialPct": 62,
+      "winPct": {
+        "balanced": 100,
+        "moderate": 99.75,
+        "regional": 95.78,
+        "actual2022": 100,
+        "composite": 99.07
+      },
+      "win300kPct": 98.94
+    },
+    {
+      "partialPct": 63,
+      "winPct": {
+        "balanced": 100,
+        "moderate": 99.95,
+        "regional": 98.64,
+        "actual2022": 100,
+        "composite": 99.71
+      },
+      "win300kPct": 99.66
+    },
+    {
+      "partialPct": 64,
+      "winPct": {
+        "balanced": 100,
+        "moderate": 99.99,
+        "regional": 99.65,
+        "actual2022": 100,
+        "composite": 99.93
+      },
+      "win300kPct": 99.91
+    },
+    {
+      "partialPct": 65,
+      "winPct": {
+        "balanced": 100,
+        "moderate": 100,
+        "regional": 99.93,
+        "actual2022": 100,
+        "composite": 99.99
+      },
+      "win300kPct": 99.98
+    }
+  ],
+  "limitations": [
+    "An early 5% in real sections is not identical to 5% of first-turn municipality votes used for the simulated pathways.",
+    "First-round pair-normalized municipal preference does not fix second-round transferred votes, turnout, blank and null ballots or overseas votes.",
+    "Regional sequencing has a far larger effect on early raw percentages than simple binomial vote-count sampling; votes counted are strongly dependent.",
+    "The 10/35/35/20 scenario weight split is subjective; changing it materially changes reported probabilities.",
+    "The residual Normal(0,1.5 pp) is hypothetical, informed but not statistically calibrated by 2014/2018 backtests.",
+    "A displayed 99% in this table is NOT 99% real-world certainty and must never be labeled a guarantee or formal confidence level.",
+    "Snapshot-derived 2022 effect comes from 4.82 and 5.61 percent section snapshots (linear interpolation at 5)."
+  ]
+}

@@ -379,7 +379,7 @@ function updateLiveUI(j){
  const stateP=calcStateForecast(j.states,model.fit);
  renderEngineModel(model,stateP);
  if(j.failures?.length)updateNotice("Atualização parcial: "+j.failures.length+" UFs temporariamente indisponíveis. A projeção pode estar suspensa.",true);
- else updateNotice("Apuração oficial em andamento. As projeções são experimentais, não constituem resultado oficial ou probabilidade de vitória.");
+ else updateNotice("Apuração oficial em andamento. Chance de vitória exibida apenas como cenário experimental, sem calibração probabilística e sem caráter oficial.");
  const last=liveReadings.at(-1),v=nt.validVotes;
  if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,h:model.combined,sec:nt.sectionsPct,at:new Date().toISOString(),...victoryReading(latestOutlook,latestChance)});liveReadings=liveReadings.slice(-700);saveReadings();}
  drawLive();drawProbability();updateSensitivity();if(selectedCity)fetchSelectedCity(selectedCity);

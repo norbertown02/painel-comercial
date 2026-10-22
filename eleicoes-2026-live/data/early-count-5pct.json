@@ -1,0 +1,189 @@
+{
+  "schema": "early-count-validation-v1",
+  "generatedAt": "2026-10-22",
+  "subject": "Brazilian second-round presidential elections; 5% of polling sections",
+  "rules": {
+    "sources": "Real 2022 TSE national time-series (wcota archived conversion); synthetic city-order validation for 2014/2018; never conflate synthetic with historical broadcast timeline.",
+    "officialFivePct": "Interpolated from the two national TSE snapshots immediately bracketing 5.00% of polling sections; no claim that a literal 5.00% snapshot existed.",
+    "syntheticSampling": "Seeded 32-bit LCG a=(1664525*a+1013904223) mod 2^32; city rank=-ln(U)/regionWeight, sorted ascending; reveal complete second-round municipal vote totals until 5% of first-round valid votes.",
+    "regionalWeights": "S/SE 5.00; NE 0.27; N 0.35; CO 1.00. Balanced: all weights 1.",
+    "syntheticRuns": 300,
+    "syntheticMethodCautions": "Selection orders are artificial, 5% measures share of first-round valid votes rather than actual polling sections, late-vote correlation and within-city counting are not modeled. Validation errors are NOT calibrated probabilities or a 99% confidence guarantee."
+  },
+  "history2022": {
+    "candidate": "Jair Bolsonaro",
+    "opponent": "Luiz Inácio Lula da Silva",
+    "source": "https://github.com/wcota/br_eleicoes_2022_2T/blob/main/br.csv",
+    "sourceSecondary": "https://www.tse.jus.br/comunicacao/noticias/2022/Outubro/100-das-secoes-totalizadas-confira-como-ficou-o-quadro-eleitoral-apos-o-2o-turno/",
+    "before5": {
+      "date": "2022-10-30 17:26:11",
+      "sectionsPct": 4.82,
+      "candidateSharePct": 53.57,
+      "candidateVotes": 3125350,
+      "sectionsCounted": 22765
+    },
+    "after5": {
+      "date": "2022-10-30 17:27:18",
+      "sectionsPct": 5.61,
+      "candidateSharePct": 53.23,
+      "candidateVotes": 3597163,
+      "sectionsCounted": 26518
+    },
+    "interpolated5SharePct": 53.49253164556962,
+    "officialFinalSharePct": 49.1,
+    "earlyMinusFinalPp": 4.39253164556962,
+    "votesFinalCandidate": 58206354,
+    "totalFinalValidVotes": 118552353,
+    "assumed2026TotalValidVotes": 120000000,
+    "conditionalThresholds2026": {
+      "winByAtLeastOneVoteShareAt5": 54.39253164556962,
+      "winBy300000VotesShareAt5": 54.51753164556962
+    },
+    "observations": [
+      [
+        0.55,
+        55.58
+      ],
+      [
+        1.16,
+        56.68
+      ],
+      [
+        2.05,
+        56.41
+      ],
+      [
+        2.94,
+        55.39
+      ],
+      [
+        3.47,
+        54.94
+      ],
+      [
+        4.39,
+        53.89
+      ],
+      [
+        4.82,
+        53.57
+      ],
+      [
+        5.61,
+        53.23
+      ],
+      [
+        6.26,
+        52.93
+      ],
+      [
+        7.53,
+        52.57
+      ],
+      [
+        8.71,
+        52.22
+      ],
+      [
+        10.72,
+        52.02
+      ],
+      [
+        15.34,
+        51.68
+      ],
+      [
+        27.7,
+        51.13
+      ],
+      [
+        100,
+        49.1
+      ]
+    ],
+    "note": "These are actual official national TSE snapshot percentages. The interpolated 5% value is a linear estimate. Percentage change here is descriptive, not an independent election forecast."
+  },
+  "syntheticValidation": [
+    {
+      "year": 2014,
+      "candidate": "Aécio Neves",
+      "actualFinalPct": 48.3241047165583,
+      "style": "balanced",
+      "repetitions": 300,
+      "coverageMeanPct": 5.346621800696498,
+      "meanCities": 296.30333333333334,
+      "meanStates": 24.596666666666668,
+      "meanRawPct": 48.16256344711648,
+      "meanForecastPct": 48.43418021850439,
+      "meanAbsErrorPp": 0.5038718404924383,
+      "p90AbsErrorPp": 1.0270175980831766,
+      "p95AbsErrorPp": 1.3016382419293535,
+      "maxAbsErrorPp": 2.657469477202298,
+      "incorrectWinnerCalls": 6
+    },
+    {
+      "year": 2014,
+      "candidate": "Aécio Neves",
+      "actualFinalPct": 48.3241047165583,
+      "style": "regional_bias",
+      "repetitions": 300,
+      "coverageMeanPct": 5.491345468281525,
+      "meanCities": 269.8833333333333,
+      "meanStates": 16.98,
+      "meanRawPct": 55.83545287233228,
+      "meanForecastPct": 47.501865807490766,
+      "meanAbsErrorPp": 0.858080062140545,
+      "p90AbsErrorPp": 1.6848251302314097,
+      "p95AbsErrorPp": 1.9685268682226464,
+      "maxAbsErrorPp": 3.68428644306875,
+      "incorrectWinnerCalls": 0
+    },
+    {
+      "year": 2018,
+      "candidate": "Jair Bolsonaro",
+      "actualFinalPct": 55.10208215786533,
+      "style": "balanced",
+      "repetitions": 300,
+      "coverageMeanPct": 5.367821864500099,
+      "meanCities": 296.4,
+      "meanStates": 24.583333333333332,
+      "meanRawPct": 55.518766769359054,
+      "meanForecastPct": 56.20554652391293,
+      "meanAbsErrorPp": 1.127014714633269,
+      "p90AbsErrorPp": 1.9513463986435227,
+      "p95AbsErrorPp": 2.0634120167432,
+      "maxAbsErrorPp": 2.5449414168783093,
+      "incorrectWinnerCalls": 0
+    },
+    {
+      "year": 2018,
+      "candidate": "Jair Bolsonaro",
+      "actualFinalPct": 55.10208215786533,
+      "style": "regional_bias",
+      "repetitions": 300,
+      "coverageMeanPct": 5.493761322413758,
+      "meanCities": 272.88666666666666,
+      "meanStates": 17.026666666666667,
+      "meanRawPct": 65.1844353508383,
+      "meanForecastPct": 55.865607725722036,
+      "meanAbsErrorPp": 0.9448434962799485,
+      "p90AbsErrorPp": 1.6185843186892015,
+      "p95AbsErrorPp": 1.7374415709286382,
+      "maxAbsErrorPp": 2.8642377114793476,
+      "incorrectWinnerCalls": 0
+    }
+  ],
+  "interpretation": {
+    "safest": "No single 5% victory guarantee. Use adaptive geo-stratified model and 2022 actual trend as descriptive risk screen.",
+    "provisionalThreshold2022": {
+      "minimum": 54.39,
+      "winBy300k": 54.52
+    },
+    "validationGaps": [
+      "No 2014 actual national 5% sequence sourced",
+      "No 2018 actual national 5% sequence sourced",
+      "No out-of-sample independent calibration for 99% odds",
+      "Synthetic 2014/2018 uses whole-city reveal not actual station-arrival chronology"
+    ]
+  }
+}

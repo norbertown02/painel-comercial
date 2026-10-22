@@ -110,3 +110,25 @@ test("synthetic 5pct studies identify sampling and never claim official chronolo
  assert.ok(d.rules.syntheticMethodCautions.includes("NOT calibrated probabilities"));
  assert.ok(d.interpretation.validationGaps.some(s=>s.includes("2014")));
 });
+
+
+test("5pct conditional scenario probabilities are monotonic, auditable, and non-calibrated",()=>{
+ const d=load("odds-5pct-2026.json");
+ assert.equal(d.schema,"conditional-election-odds-5pct-v1");
+ assert.equal(d.table.length,16);
+ assert.ok(d.epistemicStatus.includes("NOT EMPIRICALLY CALIBRATED"));
+ const w=d.calculation.scenarioWeights;
+ assert.ok(Math.abs(Object.values(w).reduce((s,x)=>s+x,0)-1)<1e-12);
+ assert.equal(d.calculation.independentResidualSdPp,1.5);
+ const expected=["balanced","actual2022","moderate","regional"];
+ for(let i=0;i<d.table.length;i++){
+  const v=d.table[i];assert.equal(v.partialPct,50+i);
+  const composite=expected.reduce((sum,key)=>sum+w[key]*v.winPct[key],0);
+  assert.ok(Math.abs(composite-v.winPct.composite)<.02);
+  assert.ok(v.win300kPct<=v.winPct.composite+.01);
+  if(i>0)assert.ok(d.table[i-1].winPct.composite<=v.winPct.composite);
+ }
+ assert.ok(d.table.find(row=>row.partialPct===57).winPct.composite>70);
+ assert.ok(d.table.find(row=>row.partialPct===57).winPct.regional<50);
+ assert.ok(d.calculation.simulatedSampleDefinition.includes("rather than sampling actual ballot-box"));
+});

@@ -7,7 +7,7 @@ const pp=x=>Number.isFinite(x)?(x>=0?"+":"")+x.toFixed(2).replace(".",",")+" p.p
 const clamp=(x,a=0.001,b=0.999)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
-let calibration=null,latestOutlook=null,latestChance=null,earlyReport=null,odds5Report=null,metroCities=[];
+let calibration=null,latestOutlook=null,latestChance=null,earlyReport=null,odds5Report=null,metroCities=[],historicalZoneStudy=null;
 const zoneCache=Object.create(null);let zoneBusy=false;
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
 let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
@@ -176,6 +176,28 @@ function drawEarlyStudy(){
  ctx.textAlign="center";ctx.fillText("Seções apuradas · 2022",p.l+dx/2,h-7);
 }
 
+
+
+function renderHistoricalZoneStudy(){
+ const info=historicalZoneStudy?.years, fmt=x=>Number.isFinite(x)?x.toFixed(2).replace(".",","):"—";
+ if(!info){set("zoneHistoricalRows","Estudo indisponível.");return;}
+ const order=["2014","2018","2022"];
+ if($("zoneHistoricalRows"))$("zoneHistoricalRows").innerHTML=order.map(year=>{
+  const r=info[year];if(!r)return "";
+  return "<tr><td><strong>"+year+"</strong></td><td>"+nfmt(r.zones)+"</td>"+
+   "<td>"+fmt(r.MAE_municipal)+" p.p.</td><td>"+fmt(r.MAE_zone)+" p.p.</td>"+
+   "<td class='green'>"+fmt(r.zonalGainPct)+"%</td><td>"+pp(r.abstentionDeltaPp)+"</td></tr>";
+ }).join("");
+ const coverage=Number($("zoneHistoricalCoverage")?.value||5);
+ if($("zoneHistoricalCoverageRows"))$("zoneHistoricalCoverageRows").innerHTML=order.map(year=>{
+  const r=info[year],tests=r?.scenarios?.filter(x=>x.coverage===coverage)||[];
+  if(!tests.length)return "";
+  const m=tests.reduce((s,x)=>s+x.munMae,0)/tests.length,
+   z=tests.reduce((s,x)=>s+x.zoneMae,0)/tests.length;
+  return "<tr><td>"+year+"</td><td>"+fmt(m)+" p.p.</td><td>"+fmt(z)+" p.p.</td>"+
+   "<td class='green'>"+fmt(m>0?100*(m-z)/m:null)+"%</td></tr>";
+ }).join("");
+}
 
 function setMetroCities(raw){
  metroCities=Array.isArray(raw?.cities)?raw.cities:[];
@@ -724,17 +746,20 @@ async function init(){
  $("refreshBtn").addEventListener("click",()=>refresh());
  $("metroSelect").addEventListener("change",()=>{renderMetroZones();loadMetroZones();});
  $("zoneRefreshBtn").addEventListener("click",()=>loadMetroZones(true));
+ $("zoneHistoricalCoverage").addEventListener("change",renderHistoricalZoneStudy);
  $("zoneCandidateFilter").addEventListener("change",renderMetroZones);
  $("zoneTurnoutAssumption").addEventListener("input",renderMetroZones);
  $("zoneOtherParticipation").addEventListener("input",renderMetroZones);
  $("ufFilter").addEventListener("change",renderCityResults);$("citySearch").addEventListener("input",renderCityResults);
  window.addEventListener("resize",()=>{drawLive();drawProbability();if(results22.length)drawReplay();drawEarlyStudy();drawOdds5();});
  try{
-  const [a,b,v,t,o,met]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json"),fetch("/data/model-validation.json").catch(()=>null),fetch("/data/early-count-5pct.json").catch(()=>null),fetch("/data/odds-5pct-2026.json").catch(()=>null),fetch("/data/metros-2026.json").catch(()=>null)]);
+  const [a,b,v,t,o,met,zh]=await Promise.all([fetch("/data/reference.json"),fetch("/data/replay2022.json"),fetch("/data/model-validation.json").catch(()=>null),fetch("/data/early-count-5pct.json").catch(()=>null),fetch("/data/odds-5pct-2026.json").catch(()=>null),fetch("/data/metros-2026.json").catch(()=>null),fetch("/data/historical-zone-backtest-2014-2018-2022.json").catch(()=>null)]);
    calibration=v?.ok?await v.json():null;
    earlyReport=t?.ok?await t.json():null;
    odds5Report=o?.ok?await o.json():null;
-   setMetroCities(met?.ok?await met.json():null);if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
+   setMetroCities(met?.ok?await met.json():null);
+   historicalZoneStudy=zh?.ok?await zh.json():null;
+   renderHistoricalZoneStudy();if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
   reference=await a.json();replay=await b.json();if(Object.keys(reference.cities||{}).length<5500||replay.stages?.length!==4)throw Error("A base municipal está incompleta.");
   initRecords();replayInit();renderCityResults();makeStateRows([]);initOdds5();renderEarlyStudy();renderOdds5();
   set("apiText","Bases carregadas • consultando TSE");

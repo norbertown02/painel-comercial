@@ -10,7 +10,7 @@ function extractCandidates(j){
  for(const cargo of j?.carg||[]){if(String(cargo.cd)!=="1")continue;
   for(const ag of cargo.agr||[])for(const pa of ag.par||[])for(const c of pa.cand||[]){
    const number=String(c.n||"").trim(),votes=toInt(c.vap);
-   if(!/^\\d{1,3}$/.test(number)||votes<0)continue;
+   if(!/^[0-9]{1,3}$/.test(number)||votes<0)continue;
    const prior=map.get(number);
    // Multiple appearances must never cause an accidental double count.
    if(prior){if(prior.votes!==votes)throw Error("Votação duplicada e divergente");continue;}

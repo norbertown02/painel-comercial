@@ -151,13 +151,23 @@ test("live chance at five percent reproduces the labelled conditional scenario",
  assert.ok(Math.abs(r.probability-historical.winPct.composite)<.001);
  assert.ok(r.range[0]<=r.probability&&r.range[1]>=r.probability);
 });
-test("as coverage advances, five-percent geographic bias is attenuated",()=>{
+test("coverage alone cannot increase the uncalibrated five-percent win chance",()=>{
  const odds=load("odds-5pct-2026.json");
  const nat=s=>({validVotes:10000000,flavioVotes:5300000,lulaVotes:4700000,sectionsPct:s});
- const five=engine.liveVictoryChance({national:nat(5),scenario5:odds});
- const ten=engine.liveVictoryChance({national:nat(10),scenario5:odds});
- assert.ok(ten.probability>five.probability);
- assert.equal(ten.phase,"early");
+ const values=[5,10,15,20].map(s=>engine.liveVictoryChance({national:nat(s),scenario5:odds}));
+ assert.ok(values.every(x=>x.ready&&x.phase==="early"));
+ for(const x of values)assert.ok(Math.abs(x.probability-values[0].probability)<1e-9);
+ const unavailable=engine.liveVictoryChance({national:nat(21),scenario5:odds});
+ assert.equal(unavailable.ready,false);
+ assert.equal(unavailable.probability,null);
+});
+test("new official votes can change the early estimate without coverage inflation",()=>{
+ const odds=load("odds-5pct-2026.json");
+ const partial=p=>engine.liveVictoryChance({national:{
+  validVotes:10000000,flavioVotes:Math.round(100000*p),lulaVotes:Math.round(100000*(100-p)),sectionsPct:10
+ },scenario5:odds});
+ const low=partial(53),high=partial(57);
+ assert.ok(high.probability>low.probability);
 });
 test("live chance transitions to geographical engine when sample is ready",()=>{
  const odds=load("odds-5pct-2026.json");

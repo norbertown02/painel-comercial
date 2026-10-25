@@ -218,6 +218,20 @@ function recordShadowSnapshot(result){
  shadowSnapshots.push(Object.freeze(row));
  shadowSnapshots=shadowSnapshots.slice(-500);saveShadowSnapshots();
 }
+function exportShadowCsv(){
+ if(!shadowSnapshots.length)return;
+ const cols=["at","nationalSourceTime","nationalVotes","sec","baseline","zonal","delta","metroCoverage",
+  "metroWeight","eligibleCities","eligibleUFs","observedCities","observedZones","model"];
+ const csv=cols.join(";")+"\n"+shadowSnapshots.map(r=>cols.map(k=>{
+  const v=r[k]==null?"":String(r[k]);return '"'+v.replace(/"/g,'""')+'"';
+ }).join(";")).join("\n");
+ const link=document.createElement("a");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+ const href=URL.createObjectURL(blob);
+ link.href=href;link.download="metodologia-norberto-auditoria-zonas-2026.csv";
+ document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(href),1000);
+}
 function renderShadowComparison(record=false){
  const r=shadowResult();
  if(record)recordShadowSnapshot(r);
@@ -909,6 +923,7 @@ async function init(){
  $("zoneRefreshBtn").addEventListener("click",()=>loadMetroZones(true));
  $("zoneHistoricalCoverage").addEventListener("change",renderHistoricalZoneStudy);
  $("metroWinnerDetails").addEventListener("click",()=>changeView("zones"));
+ $("shadowExportCsv").addEventListener("click",exportShadowCsv);
  $("zoneCandidateFilter").addEventListener("change",renderMetroZones);
  $("zoneTurnoutAssumption").addEventListener("input",renderMetroZones);
  $("zoneOtherParticipation").addEventListener("input",renderMetroZones);

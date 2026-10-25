@@ -99,7 +99,7 @@
    <div class="tools"><label for="zoneCandidateFilter" class="mini">Explorar candidato do 1º turno</label><select id="zoneCandidateFilter" aria-label="Candidato do primeiro turno por zona"></select></div>
    <div class="tbl"><table><thead><tr><th>Zona</th><th>Seções apuradas</th><th>Flávio · 1º turno*</th><th>Candidato escolhido · 1º turno</th><th>Flávio · 2º turno*</th><th>Desvio</th><th>Votos válidos no 2º turno</th></tr></thead>
     <tbody id="zoneRows"><tr><td colspan="7">Carregando cadastro eleitoral...</td></tr></tbody></table></div>
-   <p class="mini">*Participação apenas entre Flávio e Lula, para comparação entre turnos. O total de votos válido inclui todos os candidatos do primeiro turno. Zonas sem resultados aparecem como indisponíveis, nunca como zero. Fonte: TSE (EA12/EA20).</p>
+   <p class="mini">*As colunas de Flávio usam a participação entre Flávio e Lula; a coluna do candidato escolhido usa todos os votos válidos do 1º turno. Dados ausentes não são zeros. Fonte: TSE (EA12/EA20).</p>
   </div>
 
   <div class="card full">
@@ -116,14 +116,14 @@
    <div class="pair"><span class="muted">Comparecimento no 1º turno</span><strong id="zoneTurnoutFirst">—</strong></div>
    <div class="pair"><span class="muted">Abstenção no 1º turno</span><strong id="zoneAbstentionFirst">—</strong></div>
    <div class="pair"><span class="muted">Comparecimento nas seções já totalizadas do 2º turno</span><strong id="zoneTurnoutSecond">—</strong></div>
-   <div class="pair"><span class="muted">Variação observada*</span><strong id="zoneTurnoutDelta">—</strong></div>
-   <p class="mini">*A comparação parcial é descritiva: as seções totalizadas podem não representar todas as zonas.</p>
+   <div class="pair"><span class="muted">Diferença bruta nas mesmas zonas*</span><strong id="zoneTurnoutDelta">—</strong></div>
+   <p class="mini">*Compara o 1º turno completo nas zonas com dados e as seções já apuradas dessas mesmas zonas no 2º turno. A composição das seções pode ser diferente.</p>
   </div>
   <div class="card half">
    <div class="head">Sensibilidade à participação · cenário hipotético</div>
    <label class="mini" for="zoneTurnoutAssumption">Variação do comparecimento no 2º turno em relação ao 1º: <strong id="zoneTurnoutAssumptionValue">0,0 p.p.</strong></label>
    <input type="range" id="zoneTurnoutAssumption" min="-10" max="10" step="0.5" value="0" style="width:100%;margin:12px 0">
-   <label class="mini" for="zoneOtherParticipation">Parcela dos votos de terceiros que voltaria a ser válida: <strong id="zoneOtherParticipationValue">80%</strong></label>
+   <label class="mini" for="zoneOtherParticipation">Parcela hipotética dos votos de terceiros que permaneceria válida: <strong id="zoneOtherParticipationValue">80%</strong></label>
    <input type="range" id="zoneOtherParticipation" min="0" max="100" step="5" value="80" style="width:100%;margin:12px 0">
    <div class="pair"><span class="muted">Mudança hipotética de comparecimento</span><strong id="zoneScenarioAttendance">—</strong></div>
    <div class="pair"><span class="muted">Votos de terceiros considerados válidos na hipótese</span><strong id="zoneScenarioPool">—</strong></div>

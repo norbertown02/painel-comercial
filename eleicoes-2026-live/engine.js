@@ -223,11 +223,12 @@ function liveVictoryChance({national,states=[],referenceByUf={},scenario5,foreca
  // The correction is deliberately attenuated because UF-level vote receipt
  // does not reveal where within those UFs the sections were reported.
  const geoReliable=ufCount>=8&&ufCoveragePct>=90&&Number.isFinite(geoBiasPp)&&Number.isFinite(expected);
- // The very-early composition bias should shrink as more sections are counted.
- // sqrt(5/sections) is a declared sensitivity hypothesis, NOT observed law.
- const decay=Math.sqrt(5/Math.max(5,sec));
- const shift=geoReliable?Math.max(-3,Math.min(3,.35*(geoBiasPp-expected*decay))):0;
- const earlyShare=50+(pct-shift-50)/decay;
+ // The 5%-scenario table is NOT validated for later section coverage.
+ // Do not automatically increase certainty as sections rise if the territorial
+ // model has not become usable: only fresh official vote shares and sufficiently
+ // covered UF composition may move the early conditional probability.
+ const shift=geoReliable?Math.max(-3,Math.min(3,.35*(geoBiasPp-expected))):0;
+ const earlyShare=pct-shift;
  const interpolate=(key,value)=>{
   if(!hasEarly)return null;
   const sorted=rows.slice().sort((x,y)=>x.partialPct-y.partialPct),lo=sorted[0],hi=sorted.at(-1);
@@ -280,7 +281,7 @@ function liveVictoryChance({national,states=[],referenceByUf={},scenario5,foreca
   ?"Chance indicativa calculada da projeção territorial e da incerteza assumida. NÃO calibrada."
   :phase==="transition"
    ?"Chance indicativa combinando cenários dos 5% com projeções municipais e estaduais. NÃO calibrada."
-   :"Chance indicativa do estudo de 5%, com viés inicial reduzido conforme a apuração avança. NÃO calibrada.";
+   :"Cenário experimental de 5% mantido conservadoramente; só os votos ou a composição estadual podem alterar a chance. NÃO calibrada.";
  return {ready:true,probability,range,phase,method:phase==="territorial"?"Projeção territorial":
   phase==="transition"?"Transição de cenários":"Estudo histórico 5%",
   geoBiasPp,ufCoveragePct,geoAdjusted:geoReliable,note};

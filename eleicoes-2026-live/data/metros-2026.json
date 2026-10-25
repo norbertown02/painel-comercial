@@ -1,0 +1,132 @@
+{
+  "schema": "metro-zone-selection-v1",
+  "source": "IBGE municipal population estimates 2026, reference date 2026-07-01",
+  "sourceUrl": "https://www.ibge.gov.br/estatisticas/sociais/populacao/9103-estimativas-de-populacao.html",
+  "cutoff": "strictly more than 1,000,000 residents",
+  "notes": [
+    "Brasília is the DF territorial aggregation for this purpose, not an ordinary municipality.",
+    "Identifiers are TSE 5-digit location codes aligned with reference.json and IBGE 7-digit codes."
+  ],
+  "cities": [
+    {
+      "name": "São Paulo",
+      "uf": "SP",
+      "pop": 11911337,
+      "ibge": "3550308",
+      "tse": "71072",
+      "firstRoundValid": 6552820
+    },
+    {
+      "name": "Rio de Janeiro",
+      "uf": "RJ",
+      "pop": 6731133,
+      "ibge": "3304557",
+      "tse": "60011",
+      "firstRoundValid": 3471874
+    },
+    {
+      "name": "Brasília",
+      "uf": "DF",
+      "pop": 3009996,
+      "ibge": "5300108",
+      "tse": "97012",
+      "firstRoundValid": 1772808
+    },
+    {
+      "name": "Fortaleza",
+      "uf": "CE",
+      "pop": 2582360,
+      "ibge": "2304400",
+      "tse": "13897",
+      "firstRoundValid": 1490374
+    },
+    {
+      "name": "Salvador",
+      "uf": "BA",
+      "pop": 2559945,
+      "ibge": "2927408",
+      "tse": "38490",
+      "firstRoundValid": 1447014
+    },
+    {
+      "name": "Belo Horizonte",
+      "uf": "MG",
+      "pop": 2415451,
+      "ibge": "3106200",
+      "tse": "41238",
+      "firstRoundValid": 1430488
+    },
+    {
+      "name": "Manaus",
+      "uf": "AM",
+      "pop": 2327101,
+      "ibge": "1302603",
+      "tse": "02550",
+      "firstRoundValid": 1182539
+    },
+    {
+      "name": "Curitiba",
+      "uf": "PR",
+      "pop": 1832183,
+      "ibge": "4106902",
+      "tse": "75353",
+      "firstRoundValid": 1093434
+    },
+    {
+      "name": "Recife",
+      "uf": "PE",
+      "pop": 1588983,
+      "ibge": "2611606",
+      "tse": "25313",
+      "firstRoundValid": 983138
+    },
+    {
+      "name": "Goiânia",
+      "uf": "GO",
+      "pop": 1511709,
+      "ibge": "5208707",
+      "tse": "93734",
+      "firstRoundValid": 791095
+    },
+    {
+      "name": "Belém",
+      "uf": "PA",
+      "pop": 1396157,
+      "ibge": "1501402",
+      "tse": "04278",
+      "firstRoundValid": 826218
+    },
+    {
+      "name": "Porto Alegre",
+      "uf": "RS",
+      "pop": 1388791,
+      "ibge": "4314902",
+      "tse": "88013",
+      "firstRoundValid": 776777
+    },
+    {
+      "name": "Guarulhos",
+      "uf": "SP",
+      "pop": 1351284,
+      "ibge": "3518800",
+      "tse": "64777",
+      "firstRoundValid": 713469
+    },
+    {
+      "name": "Campinas",
+      "uf": "SP",
+      "pop": 1189761,
+      "ibge": "3509502",
+      "tse": "62910",
+      "firstRoundValid": 633220
+    },
+    {
+      "name": "São Luís",
+      "uf": "MA",
+      "pop": 1090229,
+      "ibge": "2111300",
+      "tse": "09210",
+      "firstRoundValid": 619322
+    }
+  ]
+}

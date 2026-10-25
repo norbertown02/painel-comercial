@@ -81,8 +81,12 @@ module.exports=async(req,res)=>{
    const raw=String(req.query?.zones||"").split(",").filter(Boolean);
    const zs=[...new Set(raw)].slice(0,8);
    if(!zs.length||raw.length>8||zs.some(z=>!/^\d{4}$/.test(z)))return res.status(400).json({ok:false,error:"Lote inválido; máximo de oito zonas."});
+   const turn=String(req.query?.turn||"both");
+   if(!["first","second","both"].includes(turn))return res.status(400).json({ok:false,error:"Turno inválido"});
    const results=await Promise.all(zs.map(async z=>{
-    const [first,second]=await Promise.allSettled([resultFor(city,z,1),resultFor(city,z,2)]);
+    const requests=[turn==="second"?Promise.resolve(null):resultFor(city,z,1),
+     turn==="first"?Promise.resolve(null):resultFor(city,z,2)];
+    const [first,second]=await Promise.allSettled(requests);
     return {zone:z,first:first.status==="fulfilled"?first.value:null,
      second:second.status==="fulfilled"?second.value:null,
      firstError:first.status==="rejected"?String(first.reason?.message||first.reason).slice(0,80):null,

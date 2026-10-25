@@ -50,6 +50,27 @@
  <button type="button" id="metroWinnerDetails" style="margin-top:5px">Ver análise por zonas</button>
  <p class="mini">Este indicador prevê o vencedor apenas nessas 15 localidades. Não é uma previsão nacional nem uma probabilidade de vitória.</p>
 </div>
+<div class="card full" id="shadowNationalCard">
+ <div class="eyebrow">Laboratório de validação · Brasil</div>
+ <div class="head" style="font-size:18px;margin-top:5px">As zonas melhoram a previsão nacional?</div>
+ <div class="grid" style="margin-top:10px">
+  <div class="card kpi" style="background:#0e1b2a"><div class="eyebrow">Modelo nacional original</div><div class="n" id="shadowBaseline">—</div></div>
+  <div class="card kpi" style="background:#0e1b2a"><div class="eyebrow">Brasil · ajuste experimental por zonas</div><div class="n blue" id="shadowAdjusted">—</div></div>
+  <div class="card kpi" style="background:#0e1b2a"><div class="eyebrow">Efeito adicional das zonas</div><div class="n" id="shadowDelta">—</div></div>
+  <div class="card kpi" style="background:#0e1b2a"><div class="eyebrow">Previsões congeladas</div><div class="n" id="shadowCount">0</div></div>
+ </div>
+ <div class="pair"><span class="muted">Cobertura zonal usada no ajuste</span><strong id="shadowZoneCoverage">—</strong></div>
+ <div class="pair"><span class="muted">Peso eleitoral das 15 localidades</span><strong id="shadowNationalWeight">—</strong></div>
+ <p class="sub" id="shadowStatus">Aguardando referência completa das zonas e projeção nacional válida.</p>
+ <div class="pair"><span class="muted">Erro médio do modelo nacional contra o resultado final</span><strong id="shadowOriginalError">—</strong></div>
+ <div class="pair"><span class="muted">Erro médio com ajuste zonal contra o resultado final</span><strong id="shadowZonalError">—</strong></div>
+ <div class="pair"><span class="muted">Parciais em que o ajuste reduziu o erro</span><strong id="shadowBetter">Aguardando resultado final</strong></div>
+ <p class="mini">A diferença entre projeções não mede acerto. Os erros só serão calculados quando houver resultado final oficial, usando exclusivamente previsões salvas antes dele. O estudo paralelo não altera a projeção nacional principal nem a chance de vitória.</p>
+ <div class="head" style="margin-top:16px">Fotografias da apuração real</div>
+ <div class="tbl" style="max-height:230px"><table><thead><tr><th>Seções nacionais</th><th>Nacional original</th><th>Ajustado por zonas</th><th>Diferença</th><th>Cobertura zonal</th><th>Erro comparado*</th></tr></thead>
+  <tbody id="shadowHistoryRows"><tr><td colspan="6">Aguardando fotografias elegíveis.</td></tr></tbody></table></div>
+ <p class="mini">*Comparação com o resultado final somente após a conclusão. Fotografias guardadas neste navegador (armazenamento local), com data e base oficial da leitura; não constitui arquivo central de auditoria.</p>
+</div>
 <div class="card full victory-panel" id="victoryPanel">
   <div class="head">Radar de vitória · Flávio Bolsonaro</div>
   <p class="sub">Estimativa experimental · não é resultado oficial</p>
@@ -106,7 +127,15 @@
   <div class="card kpi"><div class="eyebrow">Zonas com dados do 2º turno</div><div class="n blue" id="zoneCounted">—</div><div class="detail">EA20 oficial · 6258</div></div>
   <div class="card kpi"><div class="eyebrow">Cobertura das zonas</div><div class="n" id="zoneCoverage">—</div><div class="detail">Seções totalizadas nas zonas verificadas</div></div>
   <div class="card kpi"><div class="eyebrow">Referência histórica validada</div><div class="n" id="zoneVerified">—</div><div class="detail">1º turno por zona × total municipal</div></div>
-  <div class="card full" id="metroWinnerZoneCard">
+     <div class="card full">
+    <div class="head">Contribuição das zonas ao modelo nacional · monitor paralelo</div>
+    <div class="pair"><span class="muted">Modelo do Brasil sem ajuste zonal</span><strong id="shadowZoneBase">—</strong></div>
+    <div class="pair"><span class="muted">Modelo nacional ajustado pelas zonas</span><strong id="shadowZoneAdjusted">—</strong></div>
+    <div class="pair"><span class="muted">Efeito ponderado sobre o Brasil</span><strong id="shadowZoneDifference">—</strong></div>
+    <p class="sub" id="shadowZoneNote">Sem resultados suficientes para isolar um efeito territorial.</p>
+    <p class="mini">Mesmos votos observados, mesmas hipóteses de comparecimento e volumes: comparamos somente a referência municipal contra a referência por zona. A diferença é aplicada proporcionalmente ao peso das 15 localidades no 1º turno nacional.</p>
+   </div>
+<div class="card full" id="metroWinnerZoneCard">
    <div class="eyebrow">Modelo por zona · agregado das 15 localidades</div>
    <div class="head">Vencedor projetado nas grandes cidades</div>
    <div class="tools" style="gap:30px">

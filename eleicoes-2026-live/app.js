@@ -227,6 +227,56 @@ async function loadMetroZones(force=false){
  }catch(e){state.error=String(e?.message||e);}
  finally{zoneBusy=false;if(zoneActive()===id)renderMetroZones();else if(zoneActive())loadMetroZones();}
 }
+
+function renderZoneParticipation(m,rows,known,verified){
+ const sums=new Map();
+ let valid=0,eligible=0,turnout=0,blank=0,nullVotes=0;
+ for(const z of known){
+  const first=z.first;valid+=first.validVotes;eligible+=first.registeredVoters||0;
+  turnout+=first.turnoutVotes||0;blank+=first.blankVotes||0;nullVotes+=first.nullVotes||0;
+  for(const cc of first.candidates||[]){
+   if(!sums.has(cc.number))sums.set(cc.number,{number:cc.number,name:cc.name,votes:0});
+   sums.get(cc.number).votes+=cc.votes;
+  }
+ }
+ const fullCandidates=verified&&known.length===rows.length&&
+  known.every(z=>Array.isArray(z.first.candidates)&&
+    z.first.candidates.reduce((s,a)=>s+a.votes,0)===z.first.validVotes);
+ const candidates=[...sums.values()].sort((a,b)=>b.votes-a.votes);
+ const select=$("zoneCandidateFilter");
+ if(select){
+  const old=select.value||"22";
+  select.innerHTML=candidates.map(z=>'<option value="'+esc(z.number)+'">'+esc(z.name)+" · "+esc(z.number)+"</option>").join("");
+  if(candidates.some(z=>z.number===old))select.value=old;
+  else if(candidates.length)select.value=candidates[0].number;
+ }
+ if($("zoneCandidates"))$("zoneCandidates").innerHTML=candidates.length?
+  candidates.map(z=>"<tr><td>"+esc(z.name)+" ("+esc(z.number)+")</td><td>"+nfmt(z.votes)+"</td><td>"+
+   (valid>0?pf(100*z.votes/valid):"—")+"</td></tr>").join(""):
+  '<tr><td colspan="3">Aguardando votos do 1º turno por zona.</td></tr>';
+ const others=candidates.filter(z=>!["13","22"].includes(z.number)).reduce((s,z)=>s+z.votes,0);
+ set("zoneOtherVotes",fullCandidates?nfmt(others):"—");
+ set("zoneBlankNull",verified?nfmt(blank+nullVotes):"—");
+ const firstTurnout=verified&&eligible>0&&turnout<=eligible?100*turnout/eligible:null;
+ const second=rows.filter(z=>z.second?.sectionsCounted>0&&
+  z.second.registeredProcessed>0&&z.second.turnoutVotes>=0&&
+  z.second.turnoutVotes<=z.second.registeredProcessed);
+ const eligibleSecond=second.reduce((s,z)=>s+z.second.registeredProcessed,0);
+ const turnoutSecond=second.reduce((s,z)=>s+z.second.turnoutVotes,0);
+ const secondTurnout=eligibleSecond>0?100*turnoutSecond/eligibleSecond:null;
+ set("zoneTurnoutFirst",firstTurnout!=null?pf(firstTurnout)+" · "+nfmt(turnout)+" eleitores":"—");
+ set("zoneAbstentionFirst",firstTurnout!=null?pf(100-firstTurnout)+" · "+nfmt(eligible-turnout)+" eleitores":"—");
+ set("zoneTurnoutSecond",secondTurnout!=null?pf(secondTurnout)+" · "+second.length+" zonas com dados":"—");
+ set("zoneTurnoutDelta",firstTurnout!=null&&secondTurnout!=null?pp(secondTurnout-firstTurnout):"—");
+ const delta=Number($("zoneTurnoutAssumption")?.value||0),
+  participation=Number($("zoneOtherParticipation")?.value||0);
+ set("zoneTurnoutAssumptionValue",(delta>=0?"+":"")+delta.toFixed(1).replace(".",",")+" p.p.");
+ set("zoneOtherParticipationValue",participation.toFixed(0)+"%");
+ set("zoneScenarioAttendance",firstTurnout!=null?nfmt(Math.round(eligible*Math.max(0,Math.min(100,firstTurnout+delta))/100)-turnout)+" eleitores":"—");
+ set("zoneScenarioPool",fullCandidates?nfmt(Math.round(others*participation/100))+" votos":"—");
+ return {firstValid:valid,available:fullCandidates,selected:select?.value||"22"};
+}
+
 function renderMetroZones(){
  const id=zoneActive(),m=metroCities.find(c=>c.ibge===id),state=zoneCache[id];
  if(!m){set("zoneStatus","Aguardando a lista de cidades.");return;}
@@ -245,13 +295,17 @@ function renderMetroZones(){
  set("zoneVerified",verified?"Confirmada":known.length+"/"+zs.length);
  set("zoneStatus",state.error?"Última consulta: "+state.error:
   "TSE · "+m.name+"/"+m.uf+" · referência de "+known.length+"/"+zs.length+" zonas carregada(s)");
+ const zoneDiagnostics=renderZoneParticipation(m,rows,known,verified);
+ const selectedCandidate=zoneDiagnostics.selected;
  const f=x=>Number.isFinite(x)?pf(x):"—";
  if($("zoneRows"))$("zoneRows").innerHTML=rows.map(z=>{
   const first=z.first,second=z.second,p1=first?pairPct(first.flavioVotes,first.lulaVotes):null,
    p2=second&&second.sectionsCounted>0?pairPct(second.flavioVotes,second.lulaVotes):null;
   const shift=p1!=null&&p2!=null?p2-p1:null;
+  const cand=first?.candidates?.find(q=>q.number===selectedCandidate);
+  const candidatePct=cand&&first.validVotes>0?100*cand.votes/first.validVotes:null;
   return "<tr><td><strong>"+esc(Number(z.zone))+"</strong></td><td>"+(second&&second.sectionsCounted>0?second.sectionsCounted+" / "+second.sectionsTotal:"—")+"</td>"+
-   "<td>"+f(p1)+"</td><td>"+f(p2)+"</td><td class='"+(shift>=0?"green":"red")+"'>"+pp(shift)+"</td><td>"+
+   "<td>"+f(p1)+"</td><td>"+f(candidatePct)+"</td><td>"+f(p2)+"</td><td class='"+(shift>=0?"green":"red")+"'>"+pp(shift)+"</td><td>"+
    (p2!=null?nfmt(second.validVotes):"—")+"</td></tr>";
  }).join("");
  set("zoneSummary","Zonas com apuração: "+counted.length+" de "+zs.length+" · primeiro turno confirmado em "+known.length+" zonas.");
@@ -658,6 +712,9 @@ async function init(){
  $("refreshBtn").addEventListener("click",()=>refresh());
  $("metroSelect").addEventListener("change",()=>{renderMetroZones();loadMetroZones();});
  $("zoneRefreshBtn").addEventListener("click",()=>loadMetroZones(true));
+ $("zoneCandidateFilter").addEventListener("change",renderMetroZones);
+ $("zoneTurnoutAssumption").addEventListener("input",renderMetroZones);
+ $("zoneOtherParticipation").addEventListener("input",renderMetroZones);
  $("ufFilter").addEventListener("change",renderCityResults);$("citySearch").addEventListener("input",renderCityResults);
  window.addEventListener("resize",()=>{drawLive();drawProbability();if(results22.length)drawReplay();drawEarlyStudy();drawOdds5();});
  try{

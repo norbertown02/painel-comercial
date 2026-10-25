@@ -100,6 +100,34 @@
     <tbody id="zoneRows"><tr><td colspan="6">Carregando cadastro eleitoral...</td></tr></tbody></table></div>
    <p class="mini">*Participação apenas entre Flávio e Lula, para comparação entre turnos. O total de votos válido inclui todos os candidatos do primeiro turno. Zonas sem resultados aparecem como indisponíveis, nunca como zero. Fonte: TSE (EA12/EA20).</p>
   </div>
+
+  <div class="card full">
+   <div class="head">Primeiro turno de 2026 · todos os candidatos</div>
+   <p class="sub">Votação nominal por zona, agregada apenas após conciliação com o resultado municipal oficial.</p>
+   <div class="tbl"><table><thead><tr><th>Candidato</th><th>Votos</th><th>% dos válidos no 1º turno</th></tr></thead>
+    <tbody id="zoneCandidates"><tr><td colspan="3">Carregando referência oficial por zona...</td></tr></tbody></table></div>
+   <div class="pair"><span class="muted">Votos em candidatos fora da disputa do 2º turno</span><strong id="zoneOtherVotes">—</strong></div>
+   <div class="pair"><span class="muted">Votos brancos e nulos (1º turno)</span><strong id="zoneBlankNull">—</strong></div>
+   <p class="mini">Esses votos não têm destino conhecido no segundo turno. Uma mudança nos votos agregados não identifica individualmente quem transferiu seu voto.</p>
+  </div>
+  <div class="card half">
+   <div class="head">Comparecimento e abstenção</div>
+   <div class="pair"><span class="muted">Comparecimento no 1º turno</span><strong id="zoneTurnoutFirst">—</strong></div>
+   <div class="pair"><span class="muted">Abstenção no 1º turno</span><strong id="zoneAbstentionFirst">—</strong></div>
+   <div class="pair"><span class="muted">Comparecimento nas seções já totalizadas do 2º turno</span><strong id="zoneTurnoutSecond">—</strong></div>
+   <div class="pair"><span class="muted">Variação observada*</span><strong id="zoneTurnoutDelta">—</strong></div>
+   <p class="mini">*A comparação parcial é descritiva: as seções totalizadas podem não representar todas as zonas.</p>
+  </div>
+  <div class="card half">
+   <div class="head">Sensibilidade à participação · cenário hipotético</div>
+   <label class="mini" for="zoneTurnoutAssumption">Variação do comparecimento no 2º turno em relação ao 1º: <strong id="zoneTurnoutAssumptionValue">0,0 p.p.</strong></label>
+   <input type="range" id="zoneTurnoutAssumption" min="-10" max="10" step="0.5" value="0" style="width:100%;margin:12px 0">
+   <label class="mini" for="zoneOtherParticipation">Parcela dos votos de terceiros que voltaria a ser válida: <strong id="zoneOtherParticipationValue">80%</strong></label>
+   <input type="range" id="zoneOtherParticipation" min="0" max="100" step="5" value="80" style="width:100%;margin:12px 0">
+   <div class="pair"><span class="muted">Mudança hipotética de comparecimento</span><strong id="zoneScenarioAttendance">—</strong></div>
+   <div class="pair"><span class="muted">Votos de terceiros considerados válidos na hipótese</span><strong id="zoneScenarioPool">—</strong></div>
+   <p class="mini">Os controles não atribuem votos a candidatos nem produzem chance de vitória: mostram apenas o tamanho dos grupos sob hipóteses informadas pelo leitor.</p>
+  </div>
   <div class="card full">
    <div class="head">Diagnóstico por zonas · uso experimental</div>
    <div class="pair"><span class="muted">Diferença territorial da parcial recebida</span><strong id="zoneShift">—</strong></div>

@@ -23,7 +23,7 @@
 </style></head>
 <body><div class="shell">
 <header class="top"><div class="brand"><div class="mark">N</div><div><div class="eyebrow">ELEIÇÕES 2026 · APURAÇÃO AO VIVO</div><h1>Análise Preditiva</h1><div class="method-signature"><span>METODOLOGIA</span><strong>NORBERTO</strong></div></div></div><div class="right"><span id="apiStatus" class="pill"><span id="apiDot" class="dot"></span><span id="apiText">Preparando dados</span></span><span class="pill" id="archiveStatus">Histórico central: verificando</span><span class="pill" id="refreshClock">Atualização: 30 s</span><button id="refreshBtn" type="button">Atualizar agora ↻</button></div></header>
-<nav class="tabs"><button class="tab on" data-view="overview">Visão geral</button><button class="tab" data-view="early">Estudo 5%</button><button class="tab" data-view="cities">Municípios</button><button class="tab" data-view="replay">Replay 2022</button><button class="tab" data-view="replay14">Teste 2014</button><button class="tab" data-view="methods">Metodologia</button></nav>
+<nav class="tabs"><button class="tab on" data-view="overview">Visão geral</button><button class="tab" data-view="zones">Zonas · +1 milhão</button><button class="tab" data-view="early">Estudo 5%</button><button class="tab" data-view="cities">Municípios</button><button class="tab" data-view="replay">Replay 2022</button><button class="tab" data-view="replay14">Teste 2014</button><button class="tab" data-view="methods">Metodologia</button></nav>
 <div id="notice" class="notice" role="status">Carregando bases históricas...</div>
 <section id="view-overview" class="view"><div class="intro"><h2>Apuração e projeções</h2></div>
 <div class="grid">
@@ -78,6 +78,36 @@
 <div class="card full"><div class="tools" style="justify-content:space-between"><div><div class="head">Apuração por estado</div></div><span id="tableStatus" class="tag">Aguardando 2º turno</span></div><div class="tbl"><table><thead><tr><th>UF</th><th>Seções</th><th>Votos válidos</th><th>Flávio (oficial)</th><th>Flávio 1º turno*</th><th>Desvio**</th></tr></thead><tbody id="stateRows"><tr><td colspan="6">Carregando...</td></tr></tbody></table></div><p class="mini">*Participação entre os finalistas no 1º turno. **Desvio em pontos percentuais.</p></div>
 </div></section>
 
+
+<section id="view-zones" class="view hide">
+ <div class="intro"><h2>Apuração por zona eleitoral</h2><p class="muted">15 cidades com mais de 1 milhão de habitantes · estimativa populacional IBGE 2026</p></div>
+ <div class="card" style="margin-bottom:14px">
+  <div class="tools" style="justify-content:space-between">
+   <div class="tools"><label for="metroSelect" class="eyebrow">Localidade</label><select id="metroSelect" aria-label="Cidade com mais de um milhão de habitantes"></select></div>
+   <button id="zoneRefreshBtn" type="button">Atualizar zonas</button>
+  </div>
+  <p class="sub" id="zoneStatus">Selecione uma localidade para carregar o cadastro de zonas do TSE.</p>
+ </div>
+ <div class="grid">
+  <div class="card kpi"><div class="eyebrow">Zonas cadastradas</div><div class="n" id="zoneTotal">—</div><div class="detail">Cadastro oficial EA12</div></div>
+  <div class="card kpi"><div class="eyebrow">Zonas com dados do 2º turno</div><div class="n blue" id="zoneCounted">—</div><div class="detail">EA20 oficial · 6258</div></div>
+  <div class="card kpi"><div class="eyebrow">Cobertura das zonas</div><div class="n" id="zoneCoverage">—</div><div class="detail">Seções totalizadas nas zonas verificadas</div></div>
+  <div class="card kpi"><div class="eyebrow">Referência histórica validada</div><div class="n" id="zoneVerified">—</div><div class="detail">1º turno por zona × total municipal</div></div>
+  <div class="card full">
+   <div class="head">Leitura territorial · primeiro e segundo turnos</div>
+   <p class="sub" id="zoneSummary">Votos oficiais de cada zona eleitoral, sem somar novamente os totais municipais.</p>
+   <div class="tbl"><table><thead><tr><th>Zona</th><th>Seções apuradas</th><th>Flávio · 1º turno*</th><th>Flávio · 2º turno*</th><th>Desvio</th><th>Votos válidos no 2º turno</th></tr></thead>
+    <tbody id="zoneRows"><tr><td colspan="6">Carregando cadastro eleitoral...</td></tr></tbody></table></div>
+   <p class="mini">*Participação apenas entre Flávio e Lula, para comparação entre turnos. O total de votos válido inclui todos os candidatos do primeiro turno. Zonas sem resultados aparecem como indisponíveis, nunca como zero. Fonte: TSE (EA12/EA20).</p>
+  </div>
+  <div class="card full">
+   <div class="head">Diagnóstico por zonas · uso experimental</div>
+   <div class="pair"><span class="muted">Diferença territorial da parcial recebida</span><strong id="zoneShift">—</strong></div>
+   <div class="pair"><span class="muted">Projeção exploratória da cidade pelas zonas</span><strong id="zoneProjection">—</strong></div>
+   <p class="mini" id="zoneProjectionNote">A projeção ficará suspensa até termos referência do primeiro turno para todas as zonas e cobertura suficiente do segundo turno. Ela não entra automaticamente no motor nacional ou nas chances eleitorais.</p>
+  </div>
+ </div>
+</section>
 <section id="view-early" class="view hide">
   <div class="intro"><h2>Estudo histórico · primeiras 5% das urnas</h2>
     <p class="muted">Apuração real de 2022 e simulações territoriais de 2014/2018.</p>

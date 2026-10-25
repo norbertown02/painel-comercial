@@ -73,7 +73,7 @@ def backtest(year,zone):
  rows=[]
  for fraction in [5,10,25,50]:
   for style in ['balanced','largest_city_first','first_A_strong_zone_first','first_B_strong_zone_first']:
-   aeM=[];aeZ=[];deltaM=[];deltaZ=[]
+   aeM=[];aeZ=[];deltaM=[];deltaZ=[];wrongM=0;wrongZ=0;predM=[];predZ=[]
    for i in range(50):
     rnd=random.Random(year*1000000+fraction*1000+i*53+['balanced','largest_city_first','first_A_strong_zone_first','first_B_strong_zone_first'].index(style)*100000)
     def score(x):
@@ -90,7 +90,9 @@ def backtest(year,zone):
     m=forecast(seen,'municipal');z=forecast(seen,'zonal')
     aeM.append(abs(m-actual));aeZ.append(abs(z-actual))
     deltaM.append(m-actual);deltaZ.append(z-actual)
-   rows.append(dict(coverage=fraction,style=style,n=50,munMae=round(statistics.mean(aeM),4),zoneMae=round(statistics.mean(aeZ),4),munP90=round(sorted(aeM)[44],4),zoneP90=round(sorted(aeZ)[44],4)))
+    predM.append(m);predZ.append(z)
+    wrongM+=int((m>50)!=(actual>50));wrongZ+=int((z>50)!=(actual>50))
+   rows.append(dict(coverage=fraction,style=style,n=50,munMae=round(statistics.mean(aeM),4),zoneMae=round(statistics.mean(aeZ),4),munP90=round(sorted(aeM)[44],4),zoneP90=round(sorted(aeZ)[44],4),munWrongWinner=wrongM,zoneWrongWinner=wrongZ,munForecastMean=round(statistics.mean(predM),5),zoneForecastMean=round(statistics.mean(predZ),5),zoneForecastMin=round(min(predZ),5),zoneForecastMax=round(max(predZ),5)))
  return actual,rows
 output={'methodology':'Real TSE 2014/2018/2022 zone-level presidential final returns; hypothetical sequential zone reveal, fixed forecasting formula and same vote volume model in both methods. NOT true historical 5% sectional-time replays.','years':{}}
 for year in [2014,2018,2022]:

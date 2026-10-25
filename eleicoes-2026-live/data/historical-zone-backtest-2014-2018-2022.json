@@ -1,0 +1,498 @@
+{
+  "methodology": "Real TSE 2014/2018/2022 zone-level presidential final returns; hypothetical sequential zone reveal, fixed forecasting formula and same vote volume model in both methods. NOT true historical 5% sectional-time replays.",
+  "years": {
+    "2014": {
+      "zones": 317,
+      "cities": 15,
+      "mismatch": 0,
+      "truth": 54.99856,
+      "attendance1": 82.384,
+      "attendance2": 80.935,
+      "abstentionDeltaPp": 1.449,
+      "MAE_municipal": 3.5859,
+      "MAE_zone": 1.5164,
+      "zonalGainPct": 57.71,
+      "scenarios": [
+        {
+          "coverage": 5,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 2.9881,
+          "zoneMae": 1.0415,
+          "munP90": 5.5768,
+          "zoneP90": 1.9865
+        },
+        {
+          "coverage": 5,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 2.9656,
+          "zoneMae": 1.0618,
+          "munP90": 6.3317,
+          "zoneP90": 2.0089
+        },
+        {
+          "coverage": 5,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 5.6569,
+          "zoneMae": 3.1461,
+          "munP90": 8.9423,
+          "zoneP90": 4.0528
+        },
+        {
+          "coverage": 5,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 5.9718,
+          "zoneMae": 3.0822,
+          "munP90": 9.6138,
+          "zoneP90": 4.4005
+        },
+        {
+          "coverage": 10,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 2.3208,
+          "zoneMae": 0.7289,
+          "munP90": 4.3916,
+          "zoneP90": 1.3758
+        },
+        {
+          "coverage": 10,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 1.9455,
+          "zoneMae": 0.7924,
+          "munP90": 3.7035,
+          "zoneP90": 1.5144
+        },
+        {
+          "coverage": 10,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 6.2711,
+          "zoneMae": 3.2268,
+          "munP90": 8.5274,
+          "zoneP90": 4.0885
+        },
+        {
+          "coverage": 10,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 5.159,
+          "zoneMae": 2.7923,
+          "munP90": 7.5629,
+          "zoneP90": 3.6719
+        },
+        {
+          "coverage": 25,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 1.1307,
+          "zoneMae": 0.2645,
+          "munP90": 2.1882,
+          "zoneP90": 0.5534
+        },
+        {
+          "coverage": 25,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 1.0254,
+          "zoneMae": 0.3967,
+          "munP90": 2.0256,
+          "zoneP90": 0.8293
+        },
+        {
+          "coverage": 25,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 5.8813,
+          "zoneMae": 2.5335,
+          "munP90": 7.2216,
+          "zoneP90": 3.2006
+        },
+        {
+          "coverage": 25,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 5.3945,
+          "zoneMae": 2.0063,
+          "munP90": 6.8352,
+          "zoneP90": 2.6065
+        },
+        {
+          "coverage": 50,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 0.5273,
+          "zoneMae": 0.1554,
+          "munP90": 0.9574,
+          "zoneP90": 0.311
+        },
+        {
+          "coverage": 50,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 0.584,
+          "zoneMae": 0.172,
+          "munP90": 1.2772,
+          "zoneP90": 0.3163
+        },
+        {
+          "coverage": 50,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 4.7996,
+          "zoneMae": 1.6007,
+          "munP90": 5.8368,
+          "zoneP90": 1.9867
+        },
+        {
+          "coverage": 50,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 4.7523,
+          "zoneMae": 1.2609,
+          "munP90": 5.7421,
+          "zoneP90": 1.5171
+        }
+      ]
+    },
+    "2018": {
+      "zones": 263,
+      "cities": 15,
+      "mismatch": 0,
+      "truth": 59.95932,
+      "attendance1": 80.547,
+      "attendance2": 80.457,
+      "abstentionDeltaPp": 0.09,
+      "MAE_municipal": 1.7424,
+      "MAE_zone": 0.9252,
+      "zonalGainPct": 46.9,
+      "scenarios": [
+        {
+          "coverage": 5,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 1.8536,
+          "zoneMae": 0.9251,
+          "munP90": 3.6317,
+          "zoneP90": 1.8063
+        },
+        {
+          "coverage": 5,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 2.3142,
+          "zoneMae": 0.8395,
+          "munP90": 4.0143,
+          "zoneP90": 2.0266
+        },
+        {
+          "coverage": 5,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 2.9244,
+          "zoneMae": 1.2228,
+          "munP90": 4.8772,
+          "zoneP90": 2.3234
+        },
+        {
+          "coverage": 5,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 3.0909,
+          "zoneMae": 2.9536,
+          "munP90": 5.8827,
+          "zoneP90": 4.7163
+        },
+        {
+          "coverage": 10,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 1.2445,
+          "zoneMae": 0.7481,
+          "munP90": 2.4887,
+          "zoneP90": 1.4299
+        },
+        {
+          "coverage": 10,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 1.3734,
+          "zoneMae": 0.6427,
+          "munP90": 2.7928,
+          "zoneP90": 1.542
+        },
+        {
+          "coverage": 10,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 2.5087,
+          "zoneMae": 1.1152,
+          "munP90": 4.2242,
+          "zoneP90": 1.9569
+        },
+        {
+          "coverage": 10,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 2.3807,
+          "zoneMae": 1.9006,
+          "munP90": 3.9733,
+          "zoneP90": 2.8009
+        },
+        {
+          "coverage": 25,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 0.7464,
+          "zoneMae": 0.4313,
+          "munP90": 1.3325,
+          "zoneP90": 0.7939
+        },
+        {
+          "coverage": 25,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 0.5259,
+          "zoneMae": 0.2963,
+          "munP90": 1.1188,
+          "zoneP90": 0.5737
+        },
+        {
+          "coverage": 25,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 2.0482,
+          "zoneMae": 0.8443,
+          "munP90": 3.0015,
+          "zoneP90": 1.384
+        },
+        {
+          "coverage": 25,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 2.4623,
+          "zoneMae": 1.1622,
+          "munP90": 3.3893,
+          "zoneP90": 1.5511
+        },
+        {
+          "coverage": 50,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 0.3253,
+          "zoneMae": 0.1795,
+          "munP90": 0.7073,
+          "zoneP90": 0.3796
+        },
+        {
+          "coverage": 50,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 0.3469,
+          "zoneMae": 0.186,
+          "munP90": 0.7716,
+          "zoneP90": 0.3389
+        },
+        {
+          "coverage": 50,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 2.0084,
+          "zoneMae": 0.6832,
+          "munP90": 2.7285,
+          "zoneP90": 0.952
+        },
+        {
+          "coverage": 50,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 1.7242,
+          "zoneMae": 0.672,
+          "munP90": 2.2588,
+          "zoneP90": 0.8913
+        }
+      ]
+    },
+    "2022": {
+      "zones": 262,
+      "cities": 15,
+      "mismatch": 1,
+      "truth": 49.76347,
+      "attendance1": 80.017,
+      "attendance2": 80.64,
+      "abstentionDeltaPp": -0.623,
+      "MAE_municipal": 1.3816,
+      "MAE_zone": 0.2108,
+      "zonalGainPct": 84.74,
+      "scenarios": [
+        {
+          "coverage": 5,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 1.7729,
+          "zoneMae": 0.2424,
+          "munP90": 3.1078,
+          "zoneP90": 0.5069
+        },
+        {
+          "coverage": 5,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 1.6016,
+          "zoneMae": 0.2251,
+          "munP90": 2.9066,
+          "zoneP90": 0.4652
+        },
+        {
+          "coverage": 5,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 1.8152,
+          "zoneMae": 0.3467,
+          "munP90": 3.7628,
+          "zoneP90": 0.6392
+        },
+        {
+          "coverage": 5,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 2.5853,
+          "zoneMae": 0.4742,
+          "munP90": 4.7115,
+          "zoneP90": 0.8155
+        },
+        {
+          "coverage": 10,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 1.0937,
+          "zoneMae": 0.1658,
+          "munP90": 2.525,
+          "zoneP90": 0.3498
+        },
+        {
+          "coverage": 10,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 0.9005,
+          "zoneMae": 0.1367,
+          "munP90": 1.5716,
+          "zoneP90": 0.2905
+        },
+        {
+          "coverage": 10,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 1.8395,
+          "zoneMae": 0.3316,
+          "munP90": 3.2581,
+          "zoneP90": 0.5765
+        },
+        {
+          "coverage": 10,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 2.3305,
+          "zoneMae": 0.3633,
+          "munP90": 3.6471,
+          "zoneP90": 0.5434
+        },
+        {
+          "coverage": 25,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 0.772,
+          "zoneMae": 0.0998,
+          "munP90": 1.3347,
+          "zoneP90": 0.1959
+        },
+        {
+          "coverage": 25,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 0.6053,
+          "zoneMae": 0.1007,
+          "munP90": 1.0788,
+          "zoneP90": 0.1907
+        },
+        {
+          "coverage": 25,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 1.657,
+          "zoneMae": 0.2506,
+          "munP90": 2.2848,
+          "zoneP90": 0.3662
+        },
+        {
+          "coverage": 25,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 1.7703,
+          "zoneMae": 0.2336,
+          "munP90": 2.627,
+          "zoneP90": 0.3734
+        },
+        {
+          "coverage": 50,
+          "style": "balanced",
+          "n": 50,
+          "munMae": 0.3669,
+          "zoneMae": 0.052,
+          "munP90": 0.7397,
+          "zoneP90": 0.1034
+        },
+        {
+          "coverage": 50,
+          "style": "largest_city_first",
+          "n": 50,
+          "munMae": 0.2481,
+          "zoneMae": 0.0445,
+          "munP90": 0.5581,
+          "zoneP90": 0.0855
+        },
+        {
+          "coverage": 50,
+          "style": "first_A_strong_zone_first",
+          "n": 50,
+          "munMae": 1.3308,
+          "zoneMae": 0.1572,
+          "munP90": 1.8135,
+          "zoneP90": 0.2314
+        },
+        {
+          "coverage": 50,
+          "style": "first_B_strong_zone_first",
+          "n": 50,
+          "munMae": 1.416,
+          "zoneMae": 0.1482,
+          "munP90": 1.7776,
+          "zoneP90": 0.2077
+        }
+      ]
+    }
+  },
+  "schema": "norberto-official-tse-zonal-backtest-2014-2018-2022-v1",
+  "generatedAt": "2026-10-25",
+  "caveats": [
+    "All election vote/turnout values come from official TSE files by zone. No actual chronological zone receipt sequence is available in this study.",
+    "Fifty simulated zone receipt sequences per coverage x style x election. The 15 metros are selected by 2026 population and examined retrospectively.",
+    "Errors are in percentage points of candidate A in two-candidate-valid-vote total aggregated across selected 15 localities, not Brazil-wide forecasting errors.",
+    "Both estimators share the same projected remaining valid-vote denominator, and differ only by within-city zonal prior.",
+    "No inference of individual vote transfers or candidate victory probabilities is provided.",
+    "Historic municipality/zonal boundaries and electoral zone assignments may change between election years.",
+    "2022 has one rejected inconsistent zone; 2014 and 2018 have zero."
+  ],
+  "sources": [
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2014.zip",
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2014.zip",
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2018.zip",
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2018.zip",
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2022.zip",
+    "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2022.zip"
+  ]
+}

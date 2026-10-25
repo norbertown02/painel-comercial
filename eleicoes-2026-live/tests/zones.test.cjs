@@ -112,3 +112,29 @@ test("inconsistent candidate totals are rejected instead of creating invented tr
   assert.match(r.body.results[0].firstError,/Totalização não disponível/);
  });
 });
+
+
+test("cached first round can skip redundant TSE download on live refresh",async()=>{
+ const urls=[];
+ const mock=url=>{urls.push(url);return {
+  ok:true,json:async()=>zoneDoc(6258,"0001",{a:90,b:90,valid:180,counted:3})
+ }};
+ await withMock(mock,async()=>{
+  const r=res();await handler({query:{city:"3550308",mode:"batch",zones:"0001",turn:"second"}},r);
+  assert.equal(r.code,200);assert.equal(r.body.results[0].first,null);
+  assert.equal(r.body.results[0].second.sectionsCounted,3);
+  assert.equal(urls.length,1);assert.ok(urls[0].includes("/6258/"));
+ });
+});
+test("live tally can be unavailable while first-round zone remains accessible",async()=>{
+ let count=0;
+ const mock=url=>{count++;assert.ok(url.includes("/6257/"));return {
+  ok:true,json:async()=>zoneDoc(6257,"0001",{a:75,b:65,valid:180})
+ }};
+ await withMock(mock,async()=>{
+  const r=res();await handler({query:{city:"3550308",mode:"batch",zones:"0001",turn:"first"}},r);
+  assert.equal(r.code,200);assert.ok(r.body.results[0].first);
+  assert.equal(r.body.results[0].second,null);
+  assert.equal(count,1);
+ });
+});

@@ -225,7 +225,7 @@ async function loadMetroZones(force=false){
   }
   state.error="";
  }catch(e){state.error=String(e?.message||e);}
- finally{zoneBusy=false;if(zoneActive()===id)renderMetroZones();}
+ finally{zoneBusy=false;if(zoneActive()===id)renderMetroZones();else if(zoneActive())loadMetroZones();}
 }
 function renderMetroZones(){
  const id=zoneActive(),m=metroCities.find(c=>c.ibge===id),state=zoneCache[id];
@@ -241,7 +241,7 @@ function renderMetroZones(){
   allSections=rows.reduce((s,z)=>s+(z.second?.sectionsTotal||z.first?.sectionsTotal||0),0);
  const coverage=allSections>0?100*countedSections/allSections:0;
  set("zoneTotal",zs.length.toString());set("zoneCounted",counted.length+" / "+zs.length);
- set("zoneCoverage",pf(coverage));
+ set("zoneCoverage",whole?pf(coverage):"—");
  set("zoneVerified",verified?"Confirmada":known.length+"/"+zs.length);
  set("zoneStatus",state.error?"Última consulta: "+state.error:
   "TSE · "+m.name+"/"+m.uf+" · referência de "+known.length+"/"+zs.length+" zonas carregada(s)");
@@ -302,6 +302,13 @@ function showCity(c,shouldFetch=true){
  if(s&&s.sectionsCounted>0){lines.push(["2º turno 2026 · apuração na cidade",pf(s.sectionsPct)+" das seções"],["Flávio · apuração oficial na cidade",pf(s.flavioShare)+" · "+nfmt(s.flavioVotes)+" votos"],["Lula · apuração oficial na cidade",pf(s.lulaShare)+" · "+nfmt(s.lulaVotes)+" votos"]);}
  else lines.push(["2º turno 2026","Sem parcial municipal recebida neste navegador"]);
  $("cityDetail").innerHTML=lines.map(x=>'<div class="pair"><span class="muted">'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>').join("")+'<p class="mini">Código TSE: '+esc(c.code)+' · IBGE: '+esc(c.ibge)+'. Comparação não prevê automaticamente a transferência de votos.</p>';
+ if(metroCities.some(m=>m.ibge===c.ibge)){
+  const b=document.createElement("button");b.textContent="Ver zonas eleitorais de "+c.name;
+  b.style.marginTop="12px";b.onclick=()=>{
+   $("metroSelect").value=c.ibge;changeView("zones");
+  };
+  $("cityDetail").appendChild(b);
+ }
  if(shouldFetch&&current?.national?.sectionsCounted>0)fetchSelectedCity(c);
 }
 async function fetchSelectedCity(c){

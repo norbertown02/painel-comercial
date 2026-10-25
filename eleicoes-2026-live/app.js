@@ -207,11 +207,17 @@ function renderMetroWinner(){
  const percent=data.ready?"Flávio "+pf(data.flavioPct)+" · Lula "+pf(data.lulaPct):"Aguardando referência completa e cobertura ≥ 5%";
  set("metroWinnerPct",percent);set("metroWinnerZonePct",percent);
  set("metroWinnerZones",nfmt(seenZones)+" zonas");
- set("metroWinnerCoverage",data.ready?pf(data.coveragePct):"Aguardando");
+ set("metroWinnerCoverage",data.ready?pf(data.coveragePct)+" dos votos de referência":"Aguardando");
  set("metroWinnerVerified",scanned+" / "+metroCities.length);
  set("metroWinnerCityCoverage",knownCityStatuses+" / "+metroCities.length);
- set("metroWinnerMargin",data.ready?(data.estimatedMargin>=0?"+":"−")+nfmt(Math.abs(data.estimatedMargin))+" votos para Flávio":"—");
- const note=data.ready?"Projeção das 15 localidades · zonas totalmente apuradas · "+pf(data.coveragePct)+" da referência. Não prevê o Brasil.":
+ set("metroWinnerMargin",data.ready?(data.estimatedMargin>=0?"Flávio":"Lula")+": "+nfmt(Math.abs(data.estimatedMargin))+" votos":"—");
+ const hist=historicalZoneStudy?.years?.["2022"],stage=[50,25,10,5].find(v=>data.coveragePct>=v)||5;
+ const modeled=hist?.scenarios?.filter(x=>x.coverage===stage)||[],
+  warning=modeled.length?Math.max(...modeled.map(x=>x.zoneP90)):null;
+ const gap=data.ready?Math.abs(data.flavioPct-50):null;
+ const caution=data.ready&&Number.isFinite(warning)?
+  (gap<=warning?" Atenção: vantagem menor que os maiores erros P90 simulados em 2022 nessa etapa.":" Estimativa não calibrada em nova eleição."):"";
+ const note=data.ready?"Somente as 15 localidades · peso de "+pf(data.coveragePct)+" dos votos de referência do 1º turno em zonas concluídas."+caution:
   scanned+" / 15 localidades conciliadas · "+nfmt(knownZones)+" zonas do primeiro turno recebidas. "+data.reason;
  set("metroWinnerStatus",note);set("metroWinnerZoneStatus",note);
 }
@@ -219,7 +225,12 @@ async function backgroundMetroRefresh(){
  if(zoneBusy||!metroCities.length||!reference||!current)return;
  // Refresh the 15 selected localities in round-robin order; at most 16 zones
  // per iteration so election-night requests never flood the TSE.
- const metro=metroCities[metroScanIndex++%metroCities.length];
+ const pending=metroCities.filter(m=>{
+  const st=zoneCache[m.ibge];
+  return !st?.loaded||st.zones.some(z=>!st.rows?.[z]?.first);
+ });
+ const choices=pending.length?pending:metroCities;
+ const metro=choices[metroScanIndex++%choices.length];
  await loadMetroZones(false,metro.ibge);
 }
 function renderHistoricalZoneStudy(){

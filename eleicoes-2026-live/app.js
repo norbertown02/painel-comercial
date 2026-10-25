@@ -199,7 +199,7 @@ async function loadMetroZones(force=false){
   if(!state.loaded){
    const r=await fetch("/api/zones?mode=list&city="+encodeURIComponent(id),{cache:"no-store"});
    const j=await r.json();if(!r.ok||!j.ok||!Array.isArray(j.zones)||!j.zones.length)throw Error(j.error||"Cadastro de zonas indisponível");
-   state.zones=j.zones;state.loaded=true;state.next=0;
+   state.zones=j.zones;state.firstMunicipal=j.firstMunicipal||null;state.loaded=true;state.next=0;
   }
   if(state.zones.length){
    // Two small batches per reading; avoid an unbounded request burst at the TSE.
@@ -292,13 +292,18 @@ function renderMetroZones(){
  const knownTotal=known.reduce((s,z)=>s+z.first.validVotes,0),whole=known.length===zs.length;
  // The TSE first-turn municipal result must match the sum of all zones before
  // any separate zone-based projection becomes eligible.
- const verified=whole&&Math.abs(knownTotal-m.firstRoundValid)<=Math.max(20,m.firstRoundValid*.002);
+ const officialReference=state.firstMunicipal?.validVotes||null;
+ const expectedFirstValid=officialReference||m.firstRoundValid;
+ // Official EA20 municipal reconciliation must match exactly; never permit
+ // an arbitrary percentage tolerance to label different vote totals valid.
+ const verified=whole&&knownTotal===expectedFirstValid;
  const countedSections=counted.reduce((s,z)=>s+z.second.sectionsCounted,0),
   allSections=rows.reduce((s,z)=>s+(z.second?.sectionsTotal||z.first?.sectionsTotal||0),0);
  const coverage=allSections>0?100*countedSections/allSections:0;
  set("zoneTotal",zs.length.toString());set("zoneCounted",counted.length+" / "+zs.length);
  set("zoneCoverage",whole?pf(coverage):"—");
- set("zoneVerified",verified?"Confirmada":known.length+"/"+zs.length);
+ set("zoneVerified",verified?(officialReference?"EA20 validada":"Base conciliada"):
+  whole?"Diferença: "+nfmt(knownTotal-expectedFirstValid):known.length+"/"+zs.length);
  set("zoneStatus",state.error?"Última consulta: "+state.error:
   "TSE · "+m.name+"/"+m.uf+" · referência de "+known.length+"/"+zs.length+" zonas carregada(s)");
  const zoneDiagnostics=renderZoneParticipation(m,rows,known,verified);
@@ -314,7 +319,8 @@ function renderMetroZones(){
    "<td>"+f(p1)+"</td><td>"+f(candidatePct)+"</td><td>"+f(p2)+"</td><td class='"+(shift>=0?"green":"red")+"'>"+pp(shift)+"</td><td>"+
    (p2!=null?nfmt(second.validVotes):"—")+"</td></tr>";
  }).join("");
- set("zoneSummary","Zonas com apuração: "+counted.length+" de "+zs.length+" · primeiro turno confirmado em "+known.length+" zonas.");
+ set("zoneSummary","Zonas com apuração: "+counted.length+" de "+zs.length+" · primeiro turno carregado em "+known.length+
+  " zonas. "+(verified?"Total conciliado com "+(officialReference?"EA20 municipal.":"base de referência."):"Aguardando conciliação exata."));
  const zoneShiftNum=counted.reduce((s,z)=>{
   const first=z.first;return s+(first?z.second.validVotes*(pairPct(z.second.flavioVotes,z.second.lulaVotes)-pairPct(first.flavioVotes,first.lulaVotes))/100:0);
  },0);

@@ -188,6 +188,15 @@ function renderHistoricalZoneStudy(){
    "<td>"+fmt(r.MAE_municipal)+" p.p.</td><td>"+fmt(r.MAE_zone)+" p.p.</td>"+
    "<td class='green'>"+fmt(r.zonalGainPct)+"%</td><td>"+pp(r.abstentionDeltaPp)+"</td></tr>";
  }).join("");
+ const people={"2014":["Aécio","Dilma"],"2018":["Bolsonaro","Haddad"],"2022":["Bolsonaro","Lula"]};
+ const signed=x=>x>=0?"+"+nfmt(x):"−"+nfmt(-x);
+ if($("zoneHistoricalNetRows"))$("zoneHistoricalNetRows").innerHTML=order.map(year=>{
+  const r=info[year],names=people[year];if(!r||r.firstOtherCandidateVotes==null)return "";
+  return "<tr><td>"+year+"</td><td>"+nfmt(r.firstOtherCandidateVotes)+"</td>"+
+   "<td>"+esc(names[0])+": "+signed(r.netCandidateAGain)+"</td>"+
+   "<td>"+esc(names[1])+": "+signed(r.netCandidateBGain)+"</td>"+
+   "<td>"+signed(r.netValidVoteChange)+"</td></tr>";
+ }).join("");
  const coverage=Number($("zoneHistoricalCoverage")?.value||5);
  if($("zoneHistoricalCoverageRows"))$("zoneHistoricalCoverageRows").innerHTML=order.map(year=>{
   const r=info[year],tests=r?.scenarios?.filter(x=>x.coverage===coverage)||[];

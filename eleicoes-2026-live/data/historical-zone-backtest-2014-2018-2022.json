@@ -6,6 +6,13 @@
       "cities": 15,
       "mismatch": 0,
       "truth": 54.99856,
+      "firstOtherCandidateVotes": 7368638,
+      "firstVotesA": 7835532,
+      "secondVotesA": 12220366,
+      "firstVotesB": 6721078,
+      "secondVotesB": 9999065,
+      "firstValid": 21925248,
+      "secondValid": 22219431,
       "attendance1": 82.384,
       "attendance2": 80.935,
       "abstentionDeltaPp": 1.449,
@@ -157,13 +164,23 @@
           "munP90": 5.7421,
           "zoneP90": 1.5171
         }
-      ]
+      ],
+      "netCandidateAGain": 4384834,
+      "netCandidateBGain": 3277987,
+      "netValidVoteChange": 294183
     },
     "2018": {
       "zones": 263,
       "cities": 15,
       "mismatch": 0,
       "truth": 59.95932,
+      "firstOtherCandidateVotes": 7117100,
+      "firstVotesA": 11018351,
+      "secondVotesA": 13224165,
+      "firstVotesB": 4414655,
+      "secondVotesB": 8831062,
+      "firstValid": 22550106,
+      "secondValid": 22055227,
       "attendance1": 80.547,
       "attendance2": 80.457,
       "abstentionDeltaPp": 0.09,
@@ -315,13 +332,23 @@
           "munP90": 2.2588,
           "zoneP90": 0.8913
         }
-      ]
+      ],
+      "netCandidateAGain": 2205814,
+      "netCandidateBGain": 4416407,
+      "netValidVoteChange": -494879
     },
     "2022": {
       "zones": 262,
       "cities": 15,
       "mismatch": 1,
       "truth": 49.76347,
+      "firstOtherCandidateVotes": 2824649,
+      "firstVotesA": 10414026,
+      "secondVotesA": 12205715,
+      "firstVotesB": 11229873,
+      "secondVotesB": 12321743,
+      "firstValid": 24468548,
+      "secondValid": 24527458,
       "attendance1": 80.017,
       "attendance2": 80.64,
       "abstentionDeltaPp": -0.623,
@@ -473,19 +500,23 @@
           "munP90": 1.7776,
           "zoneP90": 0.2077
         }
-      ]
+      ],
+      "netCandidateAGain": 1791689,
+      "netCandidateBGain": 1091870,
+      "netValidVoteChange": 58910
     }
   },
   "schema": "norberto-official-tse-zonal-backtest-2014-2018-2022-v1",
   "generatedAt": "2026-10-25",
   "caveats": [
-    "All election vote/turnout values come from official TSE files by zone. No actual chronological zone receipt sequence is available in this study.",
-    "Fifty simulated zone receipt sequences per coverage x style x election. The 15 metros are selected by 2026 population and examined retrospectively.",
-    "Errors are in percentage points of candidate A in two-candidate-valid-vote total aggregated across selected 15 localities, not Brazil-wide forecasting errors.",
-    "Both estimators share the same projected remaining valid-vote denominator, and differ only by within-city zonal prior.",
-    "No inference of individual vote transfers or candidate victory probabilities is provided.",
-    "Historic municipality/zonal boundaries and electoral zone assignments may change between election years.",
-    "2022 has one rejected inconsistent zone; 2014 and 2018 have zero."
+    "Votações finais e comparecimento por zona são dados oficiais do TSE; a sequência de entrada é simulada, NÃO histórica.",
+    "15 cidades com mais de 1 milhão de habitantes em 2026, reaplicadas retroativamente em 2014, 2018 e 2022.",
+    "50 caminhos simulados por etapa (5,10,25,50%) e por estilo (4) em cada ano; 800 simulações por ano.",
+    "Erros expressos em pontos percentuais da participação do candidato A no total dos dois finalistas dessas cidades; NÃO são erros de previsão do Brasil inteiro.",
+    "Todos os estimadores compartilham a mesma hipótese de volume de votos restantes. Não modelam individualmente participação nem transferências.",
+    "Votos de outros candidatos e diferenças líquidas por finalista entre turnos são quantidades agregadas, não identificação de transferências individuais.",
+    "Zonas eleitorais e cadastros podem diferir entre eleições.",
+    "Uma zona de 2022 foi rejeitada por inconsistência; 2014 e 2018 tiveram zero rejeições."
   ],
   "sources": [
     "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2014.zip",

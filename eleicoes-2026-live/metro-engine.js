@@ -110,7 +110,7 @@ function contrast({metros=[],cache={},nationalPct=null,nationalReferenceValid=nu
 }
 function evaluate(records,officialFinalPct,{minSecs=0,maxSecs=99.995}={}){
  const final=Number(officialFinalPct);
- if(!Number.isFinite(final)||final<0||final>100)return {ready:false,reason:"Sem resultado final oficial."};
+ if(officialFinalPct==null||!Number.isFinite(final)||final<0||final>100)return {ready:false,reason:"Sem resultado final oficial."};
  const rows=(records||[]).filter(r=>Number.isFinite(r?.baseline)&&Number.isFinite(r?.zonal)&&
   Number.isFinite(r?.sec)&&r.sec>=minSecs&&r.sec<maxSecs);
  if(!rows.length)return {ready:false,reason:"Sem fotografias elegíveis anteriores ao fechamento."};

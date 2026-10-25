@@ -188,6 +188,7 @@ function drawEarlyStudy(){
 function shadowResult(){
  const n=current?.national;
  if(!(n?.validVotes>0&&n.sectionsCounted>0))return {ready:false,reason:"Aguardando votação oficial."};
+ if(n.sectionsPct>=99.995)return {ready:false,reason:"Apuração concluída. Verificando o histórico contra o resultado final oficial."};
  const nationalFirstVotes=UFS.reduce((sum,uf)=>sum+(firstByUf[uf]?.valid||0),0);
  return window.MetroZoneEngine?.contrast?.({
   metros:metroCities,cache:zoneCache,
@@ -212,6 +213,7 @@ function recordShadowSnapshot(result){
   sec:Number(n.sectionsPct),baseline:result.nationalPct,zonal:result.adjustedPct,
   delta:result.deltaNationalPp,metroCoverage:result.zoneCoveragePct,
   observedCities:result.observedCities,observedZones:result.observedZones,
+  eligibleCities:result.eligibleCities,eligibleUFs:result.eligibleUFs,
   metroWeight:result.weight};
  shadowSnapshots.push(Object.freeze(row));
  shadowSnapshots=shadowSnapshots.slice(-500);saveShadowSnapshots();
@@ -227,7 +229,7 @@ function renderShadowComparison(record=false){
  set("shadowAdjusted",result?pf(result.adjustedPct):"—");
  set("shadowDelta",result?fmtSigned(result.deltaNationalPp):"—");
  set("shadowCount",nfmt(shadowSnapshots.length));
- set("shadowZoneCoverage",result?pf(result.zoneCoveragePct)+" · "+nfmt(result.observedZones)+" zonas concluídas":"—");
+ set("shadowZoneCoverage",result?pf(result.zoneCoveragePct)+" · "+result.eligibleCities+"/15 cidades · "+nfmt(result.observedZones)+" zonas concluídas":"—");
  set("shadowNationalWeight",result?pf(result.weight*100):"—");
  set("shadowZoneBase",result?pf(result.nationalPct):"—");
  set("shadowZoneAdjusted",result?pf(result.adjustedPct):"—");

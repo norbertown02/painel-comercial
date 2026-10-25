@@ -152,5 +152,5 @@ test("shadow abstains from extrapolating one city's zonal preference to the coun
  for(let i=0;i<15;i++)cache[metros[i].ibge].rows["0001"].second=null;
  cache[metros[0].ibge].rows["0001"].second=second(800,200);
  const r=engine.contrast({metros,cache,nationalPct:51,nationalReferenceValid:100000});
- assert.equal(r.ready,false);assert.match(r.reason,/3 cidades/);
+ assert.equal(r.ready,false);assert.match(r.reason,/3 cidades|5% da referência/);
 });

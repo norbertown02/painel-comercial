@@ -7,7 +7,7 @@ const sandbox={};
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(path.join(__dirname,"../metro-engine.js"),"utf8"),sandbox);
 const engine=sandbox.MetroZoneEngine;
-const metros=Array.from({length:15},(_,i)=>({ibge:"m"+i,name:"Cidade "+i,firstRoundValid:2000}));
+const metros=Array.from({length:15},(_,i)=>({ibge:"m"+i,name:"Cidade "+i,uf:["SP","RJ","MG","BA","PR","CE"][i%6],firstRoundValid:2000}));
 function fixture(){
  const cache={};
  for(const m of metros)cache[m.ibge]={
@@ -135,4 +135,22 @@ test("retrospective scoring is strictly limited to eligible pre-final, immutable
 test("final-result error cannot be claimed before actual final official share exists",()=>{
  const inputs=[null,undefined,NaN,Number.POSITIVE_INFINITY,-1,101];
  for(const v of inputs)assert.equal(engine.evaluate([],v).ready,false);
+});
+
+test("shadow starts on 5 verified cities in 4 UFs but weights only those five",()=>{
+ const cache=fixture();
+ for(let i=5;i<15;i++)delete cache[metros[i].ibge];
+ for(let i=0;i<5;i++)for(const z of cache[metros[i].ibge].zones)
+  cache[metros[i].ibge].rows[z].second=second(530,470);
+ const r=engine.contrast({metros,cache,nationalPct:51,nationalReferenceValid:100000});
+ assert.equal(r.ready,true);assert.equal(r.eligibleCities,5);assert.equal(r.eligibleUFs,5);
+ assert.equal(r.weight,.10);assert.equal(r.observedCities,5);
+ assert.equal(r.observedUFs,5);
+});
+test("shadow abstains from extrapolating one city's zonal preference to the country",()=>{
+ const cache=fixture();
+ for(let i=0;i<15;i++)cache[metros[i].ibge].rows["0001"].second=null;
+ cache[metros[0].ibge].rows["0001"].second=second(800,200);
+ const r=engine.contrast({metros,cache,nationalPct:51,nationalReferenceValid:100000});
+ assert.equal(r.ready,false);assert.match(r.reason,/3 cidades/);
 });

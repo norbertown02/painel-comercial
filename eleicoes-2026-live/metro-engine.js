@@ -1,11 +1,11 @@
 (function(root){
 "use strict";
 function clamp(x,min,max){return Math.max(min,Math.min(max,x))}
-function project({metros=[],cache={},minCoveragePct=5,referenceMode="zone"}={}){
+function project({metros=[],cache={},minCoveragePct=5,referenceMode="zone",expectedCount=15}={}){
  if(!["zone","municipal"].includes(referenceMode))throw Error("Unknown reference mode");
  const progress={ready:false,reason:"Aguardando referências oficiais por zona das 15 localidades.",knownCities:0,totalCities:metros.length,observedCities:0,
   knownZones:0,totalZones:0,observedZones:0,coveragePct:0,winner:null,flavioPct:null,lulaPct:null,estimatedMargin:null};
- if(!Array.isArray(metros)||metros.length!==15)return {...progress,reason:"A referência das 15 localidades não está completa."};
+ if(!Array.isArray(metros)||metros.length!==expectedCount||expectedCount<1)return {...progress,reason:"A referência territorial esperada está incompleta."};
  const zones=[],byCity=new Map(),observed=[];
  for(const city of metros){
   const state=cache[city.ibge],keys=state?.zones;
@@ -89,10 +89,36 @@ function project({metros=[],cache={},minCoveragePct=5,referenceMode="zone"}={}){
  * The difference isolates the extra value of using a finer spatial prior.
  */
 function contrast({metros=[],cache={},nationalPct=null,nationalReferenceValid=null,minCoveragePct=5}={}){
- const zone=project({metros,cache,minCoveragePct,referenceMode:"zone"});
- const municipal=project({metros,cache,minCoveragePct,referenceMode:"municipal"});
- if(!zone.ready||!municipal.ready)return {ready:false,reason:zone.reason||municipal.reason,zone,municipal};
- const mass=metros.reduce((s,m)=>s+Number(cache[m.ibge]?.firstMunicipal?.validVotes||m.firstRoundValid||0),0);
+ if(!Array.isArray(metros)||metros.length!==15)return {ready:false,reason:"Seleção das 15 cidades não carregada."};
+ // Early shadow analysis can use only independently validated metro references.
+ // These metros are never extrapolated to missing cities: their ACTUAL share of
+ // nationwide first-round votes is the maximum weight in the adjusted forecast.
+ const eligible=metros.filter(m=>{
+  const state=cache[m.ibge],zones=state?.zones;
+  if(!Array.isArray(zones)||!zones.length||new Set(zones).size!==zones.length)return false;
+  const found=zones.map(z=>state.rows?.[z]?.first);
+  if(found.some(z=>!(z?.validVotes>0)||z.flavioVotes<0||z.lulaVotes<0||
+    z.flavioVotes+z.lulaVotes<=0||z.flavioVotes+z.lulaVotes>z.validVotes))return false;
+  const total=found.reduce((n,z)=>n+z.validVotes,0);
+  return total===Number(state.firstMunicipal?.validVotes||m.firstRoundValid);
+ });
+ const numberUFs=new Set(eligible.map(m=>m.uf)).size;
+ if(eligible.length<5||numberUFs<4)
+  return {ready:false,eligibleCities:eligible.length,eligibleUFs:numberUFs,
+   reason:"Aguardando ao menos 5 cidades conciliadas em 4 estados para testar as zonas."};
+ const zone=project({metros:eligible,cache,minCoveragePct,referenceMode:"zone",expectedCount:eligible.length});
+ const municipal=project({metros:eligible,cache,minCoveragePct,referenceMode:"municipal",expectedCount:eligible.length});
+ if(!zone.ready||!municipal.ready)return {ready:false,eligibleCities:eligible.length,eligibleUFs:numberUFs,
+  reason:zone.reason||municipal.reason,zone,municipal};
+ const observedUFs=new Set(eligible.filter(m=>zone.observedCities>0&&
+  cache[m.ibge]?.zones?.some(z=>{
+   const s=cache[m.ibge]?.rows?.[z]?.second;
+   return s?.sectionsTotal>0&&s.sectionsCounted===s.sectionsTotal&&s.validVotes>0;
+  })).map(m=>m.uf)).size;
+ if(zone.observedCities<3||observedUFs<2)
+  return {ready:false,eligibleCities:eligible.length,eligibleUFs:numberUFs,
+   reason:"Aguardando zonas concluídas em ao menos 3 cidades de 2 estados."};
+ const mass=eligible.reduce((s,m)=>s+Number(cache[m.ibge]?.firstMunicipal?.validVotes||m.firstRoundValid||0),0);
  const denominator=Number(nationalReferenceValid);
  if(!(denominator>mass&&mass>0)||!Number.isFinite(Number(nationalPct))||nationalPct==null)
   return {ready:false,reason:"Aguardando projeção nacional válida e pesos de voto do primeiro turno.",zone,municipal};
@@ -106,7 +132,8 @@ function contrast({metros=[],cache={},nationalPct=null,nationalReferenceValid=nu
   deltaMetroPp,deltaNationalPp,weight,metroZonePct:zone.flavioPct,
   metroMunicipalPct:municipal.flavioPct,zoneCoveragePct:zone.coveragePct,
   observedCities:zone.observedCities,observedZones:zone.observedZones,
-  totalZones:zone.totalZones,reason:"Ajuste zonal experimental paralelo; não é validação de acurácia."};
+  totalZones:zone.totalZones,eligibleCities:eligible.length,eligibleUFs:numberUFs,
+  observedUFs,reason:"Ajuste zonal experimental paralelo; não é validação de acurácia."};
 }
 function evaluate(records,officialFinalPct,{minSecs=0,maxSecs=99.995}={}){
  const final=Number(officialFinalPct);

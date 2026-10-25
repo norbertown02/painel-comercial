@@ -136,6 +136,19 @@
    <p class="mini" id="zoneProjectionNote">A projeção ficará suspensa até termos referência do primeiro turno para todas as zonas e cobertura suficiente do segundo turno. Ela não entra automaticamente no motor nacional ou nas chances eleitorais.</p>
   </div>
  </div>
+
+  <div class="card full">
+   <div class="head">Validação histórica por zonas · 2014, 2018 e 2022</div>
+   <p class="sub">15 cidades acima de 1 milhão de habitantes · votos finais reais do TSE · ordem de entrada das zonas simulada.</p>
+   <div class="tbl"><table><thead><tr><th>Ano</th><th>Zonas</th><th>Erro municipal</th><th>Erro por zona</th><th>Redução de erro</th><th>Abstenção: 2º − 1º turno</th></tr></thead>
+    <tbody id="zoneHistoricalRows"><tr><td colspan="6">Carregando estudo auditável...</td></tr></tbody></table></div>
+   <div class="tools" style="margin-top:12px"><label for="zoneHistoricalCoverage" class="mini">Amostra simulada</label>
+    <select id="zoneHistoricalCoverage"><option value="5">5%</option><option value="10">10%</option><option value="25">25%</option><option value="50">50%</option></select></div>
+   <div class="tbl"><table><thead><tr><th>Eleição</th><th>Erro municipal nessa etapa</th><th>Erro por zona</th><th>Ganho observado</th></tr></thead>
+    <tbody id="zoneHistoricalCoverageRows"><tr><td colspan="4">Carregando detalhes...</td></tr></tbody></table></div>
+   <p class="mini">Os resultados testam a previsão da participação nos votos válidos dos dois finalistas das 15 localidades, não do Brasil inteiro. Cada faixa utiliza 200 caminhos sintéticos de divulgação, com dados finais oficiais por zona. Esses erros não são intervalos de confiança nem validam probabilidades de vitória.</p>
+   <p class="mini"><a href="/data/historical-zone-backtest-2014-2018-2022.json">Dados e hipóteses do estudo</a> · <a href="https://github.com/norbertown02/painel-comercial/blob/main/eleicoes-2026-live/research/historical_zones_backtest.py" target="_blank" rel="noopener">Código reproduzível</a></p>
+  </div>
 </section>
 <section id="view-early" class="view hide">
   <div class="intro"><h2>Estudo histórico · primeiras 5% das urnas</h2>

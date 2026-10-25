@@ -56,6 +56,17 @@ function parseZone(j,turn,zone){
   abstentionVotes:abstentions,turnoutPct,abstentionPct,
   generatedAt:[j.dg,j.hg].filter(Boolean).join(" "),idg:j.idg||null};
 }
+async function firstMunicipal(city){
+ const uf=city.uf.toLowerCase();
+ const path=BASE+"/6257/dados/"+uf+"/"+uf+city.tse+"-c0001-e006257-u.json";
+ const j=await fetchTse(path,8500);
+ if(String(j?.ele)!=="6257"||String(j?.tpabr||"").toLowerCase()!=="municipio")
+  throw Error("Arquivo municipal não corresponde ao primeiro turno");
+ const validVotes=toInt(j?.v?.vv),candidates=extractCandidates(j);
+ if(validVotes<=0||candidates.reduce((s,c)=>s+c.votes,0)>validVotes)
+  throw Error("Votos municipais inconsistentes");
+ return {validVotes,candidatesCount:candidates.length,idg:j.idg||null};
+}
 async function resultFor(city,z,turn){
  const elect=turn===1?6257:6258,year=String(elect).padStart(6,"0"),uf=city.uf.toLowerCase();
  const path=BASE+"/"+elect+"/dados/"+uf+"/"+uf+city.tse+"-z"+z+"-c0001-e"+year+"-u.json";
@@ -69,12 +80,13 @@ module.exports=async(req,res)=>{
  try{
   if(mode==="list"){
    res.setHeader("Cache-Control","public, s-maxage=86400, stale-while-revalidate=172800");
-   const j=await config();
+   const [j,cityResult]=await Promise.all([config(),firstMunicipal(city).catch(()=>null)]);
    const area=j.abr.find(a=>String(a.cd).toUpperCase()===city.uf);
    const municipal=area?.mu?.find(m=>String(m.cd)===city.tse&&String(m.cdi)===city.ibge);
    const zones=[...new Set((municipal?.z||[]).map(z=>String(z).padStart(4,"0")))].filter(z=>/^\d{4}$/.test(z)).sort();
    if(!zones.length)throw Error("Cidade não encontrada no cadastro oficial de zonas (EA12).");
-   return res.status(200).json({ok:true,city,zones,source:"TSE · EA12 primeiro turno",retrievedAt:new Date().toISOString()});
+   return res.status(200).json({ok:true,city,zones,firstMunicipal:cityResult,
+    source:"TSE · EA12 cadastro / EA20 municipal primeiro turno",retrievedAt:new Date().toISOString()});
   }
   if(mode==="batch"){
    res.setHeader("Cache-Control","public, s-maxage=20, stale-while-revalidate=25");

@@ -9,6 +9,12 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
 let calibration=null,latestOutlook=null,latestChance=null,earlyReport=null,odds5Report=null,metroCities=[],historicalZoneStudy=null;
 const zoneCache=Object.create(null);let zoneBusy=false,metroScanIndex=0;
+const SHADOW_STORE_KEY="eleicoes2026_shadow_zone_v1";
+let lastNationalShadowBaseline=null,shadowSnapshots=[];
+try{const data=JSON.parse(localStorage.getItem(SHADOW_STORE_KEY)||"[]");
+ if(Array.isArray(data))shadowSnapshots=data.filter(x=>x?.model==="shadow-zone-1"&&Number.isFinite(x.baseline)&&Number.isFinite(x.zonal)).slice(-500);
+}catch{}
+function saveShadowSnapshots(){try{localStorage.setItem(SHADOW_STORE_KEY,JSON.stringify(shadowSnapshots.slice(-500)));}catch{}}
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
 let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
 const LS="eleicoes2026_observatorio_v4";
@@ -178,6 +184,77 @@ function drawEarlyStudy(){
 
 
 
+
+function shadowResult(){
+ const n=current?.national;
+ if(!(n?.validVotes>0&&n.sectionsCounted>0))return {ready:false,reason:"Aguardando votação oficial."};
+ const nationalFirstVotes=UFS.reduce((sum,uf)=>sum+(firstByUf[uf]?.valid||0),0);
+ return window.MetroZoneEngine?.contrast?.({
+  metros:metroCities,cache:zoneCache,
+  nationalPct:lastNationalShadowBaseline,
+  nationalReferenceValid:nationalFirstVotes
+ })||{ready:false,reason:"Modelo de contraste indisponível."};
+}
+function shadowFinalResult(){
+ const n=current?.national;
+ if(!(n?.sectionsPct>=99.995&&n?.flavioVotes>=0&&n?.lulaVotes>=0&&n.flavioVotes+n.lulaVotes>0))return null;
+ return 100*n.flavioVotes/(n.flavioVotes+n.lulaVotes);
+}
+function recordShadowSnapshot(result){
+ const n=current?.national;
+ if(!result.ready||!(n?.validVotes>0)||!(n.sectionsPct>=5&&n.sectionsPct<99.995))return;
+ // A snapshot is frozen ONLY at a new official nationwide count.
+ // Later zone data must NEVER backfill that national count.
+ if(shadowSnapshots.some(s=>s.nationalVotes===n.validVotes))return;
+ if(shadowSnapshots.length&&n.validVotes<shadowSnapshots.at(-1).nationalVotes)return;
+ const row={model:"shadow-zone-1",at:new Date().toISOString(),
+  nationalVotes:n.validVotes,nationalSourceTime:n.generatedAt||null,
+  sec:Number(n.sectionsPct),baseline:result.nationalPct,zonal:result.adjustedPct,
+  delta:result.deltaNationalPp,metroCoverage:result.zoneCoveragePct,
+  observedCities:result.observedCities,observedZones:result.observedZones,
+  metroWeight:result.weight};
+ shadowSnapshots.push(Object.freeze(row));
+ shadowSnapshots=shadowSnapshots.slice(-500);saveShadowSnapshots();
+}
+function renderShadowComparison(record=false){
+ const r=shadowResult();
+ if(record)recordShadowSnapshot(r);
+ const finish=shadowFinalResult();
+ const scores=finish==null?{ready:false}:window.MetroZoneEngine.evaluate(shadowSnapshots,finish);
+ const fmtSigned=x=>Number.isFinite(x)?(x>=0?"+":"")+x.toFixed(3).replace(".",",")+" p.p.":"—";
+ const result=r.ready?r:null;
+ set("shadowBaseline",result?pf(result.nationalPct):"—");
+ set("shadowAdjusted",result?pf(result.adjustedPct):"—");
+ set("shadowDelta",result?fmtSigned(result.deltaNationalPp):"—");
+ set("shadowCount",nfmt(shadowSnapshots.length));
+ set("shadowZoneCoverage",result?pf(result.zoneCoveragePct)+" · "+nfmt(result.observedZones)+" zonas concluídas":"—");
+ set("shadowNationalWeight",result?pf(result.weight*100):"—");
+ set("shadowZoneBase",result?pf(result.nationalPct):"—");
+ set("shadowZoneAdjusted",result?pf(result.adjustedPct):"—");
+ set("shadowZoneDifference",result?fmtSigned(result.deltaNationalPp):"—");
+ const message=result?"Estimativa paralela, não incorporada à projeção principal. "+
+  "Correção puramente espacial calculada com os mesmos dados observados.":
+  (r.reason||"Aguardando dados oficiais e referência por zona.");
+ set("shadowStatus",scores.ready?
+  "Resultado oficial final disponível: comparação calculada sobre as fotografias anteriores à conclusão.":message);
+ set("shadowZoneNote",message);
+ set("shadowOriginalError",scores.ready?pf(scores.baselineMae).replace("%"," p.p."):"Aguardando resultado final");
+ set("shadowZonalError",scores.ready?pf(scores.zonalMae).replace("%"," p.p."):"Aguardando resultado final");
+ set("shadowBetter",scores.ready?
+  scores.improved+" de "+scores.n+" fotografias · "+(scores.improvementPp>=0?"redução":"aumento")+" de "+
+  Math.abs(scores.improvementPp).toFixed(3).replace(".",",")+" p.p. no erro médio":
+  "Aguardando resultado final");
+ const scored=new Map((scores.scores||[]).map(s=>[s.at,s]));
+ const recent=shadowSnapshots.slice(-10).reverse();
+ if($("shadowHistoryRows"))$("shadowHistoryRows").innerHTML=recent.length?recent.map(s=>{
+  const z=scored.get(s.at);
+  const verdict=!z?"—":z.improved?"Melhorou":z.worsened?"Piorou":"Empatou";
+  return "<tr><td>"+pf(s.sec)+"</td><td>"+pf(s.baseline)+"</td>"+
+  "<td>"+pf(s.zonal)+"</td><td>"+fmtSigned(s.delta)+"</td>"+
+  "<td>"+pf(s.metroCoverage)+"</td><td>"+verdict+"</td></tr>";
+ }).join(""):'<tr><td colspan="6">Aguardando leituras reais com ambos os modelos disponíveis.</td></tr>';
+}
+
 function renderMetroWinner(){
  const data=window.MetroZoneEngine?.project?.({metros:metroCities,cache:zoneCache});
  if(!data)return;
@@ -220,6 +297,7 @@ function renderMetroWinner(){
  const note=data.ready?"Somente as 15 localidades · peso de "+pf(data.coveragePct)+" dos votos de referência do 1º turno em zonas concluídas."+caution:
   scanned+" / 15 localidades conciliadas · "+nfmt(knownZones)+" zonas do primeiro turno recebidas. "+data.reason;
  set("metroWinnerStatus",note);set("metroWinnerZoneStatus",note);
+ renderShadowComparison(false);
 }
 async function backgroundMetroRefresh(){
  if(zoneBusy||!metroCities.length||!reference||!current)return;
@@ -558,6 +636,8 @@ function renderEngineModel(m,stateP){
  set("kmdet",Number.isFinite(m.pct)?"Desvio: "+pp(m.delta):"Em coleta · "+m.num+" municípios");
  set("kp",fmtStat(stateP));
  set("kpdet",Number.isFinite(stateP)?"Projeção por estado":"Aguardando 12 UFs");
+ lastNationalShadowBaseline=ready?m.combined:null;
+ renderShadowComparison(false);
 }
 
 
@@ -814,6 +894,7 @@ async function refresh(){
   if(!r.ok)throw Error("HTTP "+r.status);
   const j=await r.json();if(!j.ok)throw Error(j.error||"Retorno do TSE inválido");
   current=j;updateLiveUI(j);
+  renderShadowComparison(true);
   if(j.national.sectionsCounted>0){if(!archiveReady)pollCities();if(Date.now()-lastArchiveSync>45000)syncArchive();}
  }catch(e){$("apiDot").classList.remove("active");set("apiText","Última leitura indisponível");updateNotice("Não foi possível consultar o TSE agora: "+String(e.message||e)+". Mantendo os últimos números recebidos, sem substituí-los por zeros.",true);}
  finally{refreshBusy=false;clock=30;set("refreshClock","Atualização: "+clock+" s");}
@@ -838,7 +919,7 @@ async function init(){
    odds5Report=o?.ok?await o.json():null;
    setMetroCities(met?.ok?await met.json():null);
    historicalZoneStudy=zh?.ok?await zh.json():null;
-   renderHistoricalZoneStudy();renderMetroWinner();if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
+   renderHistoricalZoneStudy();renderMetroWinner();renderShadowComparison(false);if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
   reference=await a.json();replay=await b.json();if(Object.keys(reference.cities||{}).length<5500||replay.stages?.length!==4)throw Error("A base municipal está incompleta.");
   initRecords();replayInit();renderCityResults();makeStateRows([]);initOdds5();renderEarlyStudy();renderOdds5();
   set("apiText","Bases carregadas • consultando TSE");

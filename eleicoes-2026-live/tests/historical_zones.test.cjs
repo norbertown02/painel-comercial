@@ -39,3 +39,16 @@ test("do not use selected-metro retrospective results to claim Brazil-wide certa
   assert.ok(j.caveats.some(c=>c.includes("not Brazil-wide")));
   assert.ok(j.caveats.some(c=>/No inference of individual/.test(c)));
 });
+
+
+test("net first/second round vote arithmetic reconciles the observed third-party pool",()=>{
+  for(const [year,r] of Object.entries(j.years)){
+    assert.equal(r.firstVotesA+r.firstVotesB+r.firstOtherCandidateVotes,r.firstValid);
+    assert.equal(r.secondVotesA+r.secondVotesB,r.secondValid);
+    assert.equal(r.netCandidateAGain+r.netCandidateBGain,
+      r.firstOtherCandidateVotes+r.netValidVoteChange);
+    assert.equal(r.secondVotesA-r.firstVotesA,r.netCandidateAGain);
+    assert.equal(r.secondVotesB-r.firstVotesB,r.netCandidateBGain);
+    assert.equal(r.secondValid-r.firstValid,r.netValidVoteChange);
+  }
+});

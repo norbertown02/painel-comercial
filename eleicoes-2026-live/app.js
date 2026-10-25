@@ -108,13 +108,11 @@ function renderOdds5(){
  set("odds5Chance300",fmt(record.win300kPct));
  const values=[win.actual2022,win.moderate,win.regional,win.balanced].filter(Number.isFinite);
  set("odds5Sensitivity",fmt(Math.min(...values))+" – "+fmt(Math.max(...values)));
- set("odds5SensitivityLabel","Probabilidades sob hipóteses distintas; a amplitude não é intervalo de confiança.");
+ set("odds5SensitivityLabel","Diferença entre cenários, não margem de confiança.");
  const weights=r.calculation.scenarioWeights,counts=r.calculation.biasDistributionStats;
- set("odds5Assumptions","Referência municipal de 2026: "+fmt(r.calculation.referenceCandidateFirstRoundPairPct)+
- " entre Flávio e Lula no 1º turno. "+
- nfmt((counts.balanced?.simulations||0)+(counts.moderate?.simulations||0)+(counts.regional?.simulations||0))+
- " sequências municipais simuladas. Erro residual assumido: "+r.calculation.independentResidualSdPp.toFixed(1).replace(".",",")+
- " p.p. O resultado é condicional aos pesos dos cenários (10% / 35% / 35% / 20%), não uma probabilidade validada.");
+ set("odds5Assumptions",nfmt((counts.balanced?.simulations||0)+(counts.moderate?.simulations||0)+(counts.regional?.simulations||0))+
+ " simulações · erro adicional de "+r.calculation.independentResidualSdPp.toFixed(1).replace(".",",")+
+ " p.p. · pesos hipotéticos · não calibrado.");
  const columns=["composite","actual2022","moderate","regional","balanced"];
  if($("odds5Rows"))$("odds5Rows").innerHTML=r.table.map(item=>{
   const selectedRow=item.partialPct===selected;
@@ -263,7 +261,7 @@ function renderEngineModel(m,stateP){
  const fmtStat=x=>Number.isFinite(x)?pf(x):"—";
  const ready=Number.isFinite(m.combined);
  set("kc",ready?pf(m.combined):"—");
- set("kcdet",ready?"Estimativa experimental: municípios + estratos estaduais; não é resultado oficial":"Aguardando 40 municípios de pelo menos 12 estados");
+ set("kcdet",ready?"Estimativa territorial · não oficial":"Aguardando amostra municipal");
  set("modelCoverage",nfmt(m.num)+" cidades / "+m.ufs+" UFs");
  set("geoBias",Number.isFinite(d.geographicBiasIndex)?pf(100*d.geographicBiasIndex)+" de concentração territorial":"—");
  set("transfer",Number.isFinite(d.globalTransferPp)?pp(d.globalTransferPp)+" na amostra":"—");
@@ -278,9 +276,9 @@ function renderEngineModel(m,stateP){
  renderVictory(m.fit);
  // Keep side diagnostics consistent with the headline rather than using an arbitrary +/-3pp range.
  set("km",fmtStat(m.pct));
- set("kmdet",Number.isFinite(m.pct)?"Transferência nacional estimada "+pp(m.delta)+" · experimental":"Em coleta: "+m.num+" municípios em "+m.ufs+" UFs");
+ set("kmdet",Number.isFinite(m.pct)?"Desvio: "+pp(m.delta):"Em coleta · "+m.num+" municípios");
  set("kp",fmtStat(stateP));
- set("kpdet",Number.isFinite(stateP)?"Parciais oficiais estaduais ponderadas pelo primeiro turno; UFs faltantes estimadas":"Aguardando dados oficiais em 12 estados");
+ set("kpdet",Number.isFinite(stateP)?"Projeção por estado":"Aguardando 12 UFs");
 }
 
 
@@ -304,22 +302,24 @@ function renderVictory(fit){
    referenceByUf:firstByUf,scenario5:odds5Report,forecast:fit,validation:calibration}):null;
  const o=latestOutlook,l=latestChance,prob=l?.ready?l.probability:null;
  set("winChance",Number.isFinite(prob)?pf(prob):"—");
- set("winChanceSub",l?.note||"Aguardando 5% das seções totalizadas");
+ set("winChanceSub",l?.ready?(l.phase==="official"?"Resultado concluído":"Estimativa experimental · não calibrada"):
+  l?.phase==="insufficient"?"Aguardando dados municipais":
+  l?.phase==="outside"?"Fora da faixa estudada":"Aguardando 5% das seções");
  set("winPhase",l?.ready?l.method:"Aguardando cobertura");
  set("winRange",l?.range?.length===2?pf(l.range[0])+" – "+pf(l.range[1]):"—");
  set("winGeography",Number.isFinite(l?.geoBiasPp)&&Number.isFinite(l?.ufCoveragePct)?
-  pp(l.geoBiasPp)+" · "+pf(l.ufCoveragePct)+" de votos estaduais correspondidos":
+  pp(l.geoBiasPp)+" · "+pf(l.ufCoveragePct)+" de cobertura":
   "Dados regionais ainda insuficientes");
  set("projectedMargin",Number.isFinite(o?.projectedMargin)&&o.ready?
   (o.projectedMargin>=0?"+":"")+nfmt(o.projectedMargin):"—");
- set("projectedMarginSub",o?.ready?"Margem prevista de Flávio contra Lula • votos, não percentual":"Aguardando projeção territorial válida");
+ set("projectedMarginSub",o?.ready?"Votos de vantagem previstos":"Aguardando projeção territorial");
  const showThreshold=x=>!Number.isFinite(x)?"—":x<0?"≤ 0%":x>100?"> 100%":pf(x);
  set("oneVoteNow",showThreshold(o?.thresholds?.one));
  set("threeHundredNow",showThreshold(o?.thresholds?.threeHundredThousand));
  set("nearCertainNow",showThreshold(o?.thresholds?.ninetyNine));
  set("victoryAssumption",o?.ready&&!Number.isFinite(o.remainingShare)?"Resultado oficial concluído":
-  o?.ready?"Total estimado: "+nfmt(o.estimatedTotal)+" votos válidos; votos restantes: "+nfmt(Math.max(0,o.estimatedTotal-official.validVotes))+"; restante projetado de Flávio: "+pf(100*o.remainingShare):
-  "A chance pode aparecer a partir de 5%; a margem em votos exige uma projeção territorial validada.");
+  o?.ready?"Faltam aproximadamente "+nfmt(Math.max(0,o.estimatedTotal-official.validVotes))+" votos · Flávio nos restantes: "+pf(100*o.remainingShare):
+  "Margem em votos disponível com projeção territorial.");
  const reading=liveReadings.findLast(r=>r.v===official?.validVotes);
  if(reading&&hasVotes){
   Object.assign(reading,victoryReading(o,l));
@@ -370,7 +370,7 @@ function updateLiveUI(j){
   ["kf","kl","kp","km","kc"].forEach(id=>set(id,"—"));set("quality","Sem votos");set("modelCoverage","—");set("geoBias","—");set("transfer","—");set("modelRange","—");
   set("kfdet","Totalização ainda não iniciada");set("kldet","Totalização ainda não iniciada");
   set("kpdet","Aguardando parciais de pelo menos 24 estados");set("kmdet","Aguardando amostragem de municípios");
-  updateNotice("Pré-eleição: os resultados municipais do 1º turno estão disponíveis para consulta. O 2º turno ainda não tem votos totalizados no TSE.");
+  updateNotice("Aguardando apuração do 2º turno no TSE.");
   drawLive();return;
  }
  set("kf",pf(nt.flavioShare));set("kl",pf(nt.lulaShare));
@@ -379,7 +379,7 @@ function updateLiveUI(j){
  const stateP=calcStateForecast(j.states,model.fit);
  renderEngineModel(model,stateP);
  if(j.failures?.length)updateNotice("Atualização parcial: "+j.failures.length+" UFs temporariamente indisponíveis. A projeção pode estar suspensa.",true);
- else updateNotice("Apuração oficial em andamento. Chance de vitória exibida apenas como cenário experimental, sem calibração probabilística e sem caráter oficial.");
+ else updateNotice("TSE em apuração · projeções experimentais.");
  const last=liveReadings.at(-1),v=nt.validVotes;
  if(!last||last.v!==v||last.f!==nt.flavioShare){liveReadings.push({v,f:nt.flavioShare,p:stateP,h:model.combined,sec:nt.sectionsPct,at:new Date().toISOString(),...victoryReading(latestOutlook,latestChance)});liveReadings=liveReadings.slice(-700);saveReadings();}
  drawLive();drawProbability();updateSensitivity();if(selectedCity)fetchSelectedCity(selectedCity);
@@ -541,6 +541,7 @@ async function refresh(){
 }
 async function init(){
  document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>changeView(b.dataset.view)));
+ document.querySelectorAll("[data-method-link]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();changeView("methods");window.scrollTo({top:0,behavior:"smooth"});}));
  $("refreshBtn").addEventListener("click",()=>refresh());
  $("ufFilter").addEventListener("change",renderCityResults);$("citySearch").addEventListener("input",renderCityResults);
  window.addEventListener("resize",()=>{drawLive();drawProbability();if(results22.length)drawReplay();drawEarlyStudy();drawOdds5();});

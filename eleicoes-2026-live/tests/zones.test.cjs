@@ -67,3 +67,48 @@ test("an unavailable second turn never becomes fabricated zero votes",async()=>{
   assert.equal(r.body.results[0].secondError,"TSE HTTP 404");
  });
 });
+
+
+test("first-round zone returns ALL candidates and auditable turnout/abstention",async()=>{
+ const mock=url=>{
+  const first=url.includes("/6257/");
+  const all=first?[candidate(13,90),candidate(22,75),candidate(14,20),candidate(55,15)]:
+   [candidate(13,90),candidate(22,100)];
+  return {ok:true,json:async()=>({
+   ele:first?"6257":"6258",tpabr:"zona",cdabr:"0001",
+   s:{ts:"5",st:first?"5":"3"},v:{vv:first?"200":"190",vb:"5",tvn:"6"},
+   e:{te:"300",esi:first?"300":"260",c:first?"220":"200",a:first?"80":"60"},
+   carg:[{cd:"1",agr:[{par:[{cand:all}]}]}]
+  })};
+ };
+ await withMock(mock,async()=>{
+  const r=res();await handler({query:{city:"3550308",mode:"batch",zones:"0001"}},r);
+  assert.equal(r.code,200);
+  const {first,second}=r.body.results[0];
+  assert.equal(first.candidates.length,4);
+  assert.deepEqual(first.candidates.map(x=>x.number),["13","22","14","55"]);
+  assert.equal(first.candidates.reduce((n,x)=>n+x.votes,0),200);
+  assert.equal(first.candidatesTotal,200);
+  assert.equal(first.registeredVoters,300);
+  assert.equal(first.turnoutVotes,220);
+  assert.equal(first.abstentionVotes,80);
+  assert.ok(Math.abs(first.turnoutPct-73.33333333333333)<1e-9);
+  assert.equal(second.candidates.length,0);
+  assert.ok(Math.abs(second.turnoutPct-200/260*100)<1e-9);
+  assert.equal(second.fullyCounted,false);
+ });
+});
+test("inconsistent candidate totals are rejected instead of creating invented transfers",async()=>{
+ const mock=url=>({ok:true,json:async()=>({
+  ele:url.includes("/6257/")?"6257":"6258",tpabr:"zona",cdabr:"0001",
+  s:{ts:"2",st:"2"},v:{vv:"100"},
+  carg:[{cd:"1",agr:[{par:[{cand:[candidate(22,88),candidate(13,55)]}]}]}]
+ })});
+ await withMock(mock,async()=>{
+  const r=res();await handler({query:{city:"3550308",mode:"batch",zones:"0001"}},r);
+  assert.equal(r.code,200);
+  assert.equal(r.body.results[0].first,null);
+  assert.equal(r.body.results[0].second,null);
+  assert.match(r.body.results[0].firstError,/Totalização não disponível/);
+ });
+});

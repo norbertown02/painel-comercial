@@ -103,7 +103,7 @@ for year in [2014,2018,2022]:
  r1=sum(x['turn1'] for x in zone)/apt1 if apt1 else None
  r2=sum(x['turn2'] for x in zone)/apt2 if apt2 else None
  avgM=statistics.mean(x['munMae'] for x in rows);avgZ=statistics.mean(x['zoneMae'] for x in rows)
- output['years'][str(year)]=dict(zones=len(zone),cities=len(set(x['city'] for x in zone)),mismatch=mismatch,truth=round(actual,5),attendance1=round(100*r1,3),attendance2=round(100*r2,3),abstentionDeltaPp=round(100*(r1-r2),3),MAE_municipal=round(avgM,4),MAE_zone=round(avgZ,4),zonalGainPct=round(100*(avgM-avgZ)/avgM,2),scenarios=rows)
+ output['years'][str(year)]=dict(zones=len(zone),cities=len(set(x['city'] for x in zone)),mismatch=mismatch,truth=round(actual,5),firstOtherCandidateVotes=sum(x['v1']-x['a1']-x['b1'] for x in zone),firstVotesA=sum(x['a1'] for x in zone),secondVotesA=sum(x['a2'] for x in zone),firstVotesB=sum(x['b1'] for x in zone),secondVotesB=sum(x['b2'] for x in zone),firstValid=sum(x['v1'] for x in zone),secondValid=sum(x['v2'] for x in zone),attendance1=round(100*r1,3),attendance2=round(100*r2,3),abstentionDeltaPp=round(100*(r1-r2),3),MAE_municipal=round(avgM,4),MAE_zone=round(avgZ,4),zonalGainPct=round(100*(avgM-avgZ)/avgM,2),scenarios=rows)
  print('RESULT',year,json.dumps({k:v for k,v in output['years'][str(year)].items() if k!='scenarios'}),flush=True)
 out_path=Path(__file__).resolve().parents[1]/'data'/'historical-zone-backtest-2014-2018-2022.json'
 with open(out_path,'w') as f:json.dump(output,f,ensure_ascii=False,indent=2)

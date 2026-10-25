@@ -138,3 +138,21 @@ test("live tally can be unavailable while first-round zone remains accessible",a
   assert.equal(count,1);
  });
 });
+
+
+test("zone registry includes official municipal first-round reconciliation target",async()=>{
+ const mock=url=>{
+  if(url.includes("/config/"))return {ok:true,json:async()=>({abr:[{cd:"sp",mu:[{cd:"71072",cdi:"3550308",z:["0001"]}]}]})};
+  if(url.includes("sp71072-c0001-e006257-u.json"))return {
+   ok:true,json:async()=>({ele:"6257",tpabr:"municipio",v:{vv:"6552820"},
+    carg:[{cd:"1",agr:[{par:[{cand:[candidate(22,2760747),candidate(13,2450000)]}]}]}]})
+  };
+  throw Error("Unexpected external URL "+url);
+ };
+ await withMock(mock,async()=>{
+  const r=res();await handler({query:{city:"3550308",mode:"list"}},r);
+  assert.equal(r.code,200);
+  assert.equal(r.body.firstMunicipal.validVotes,6552820);
+  assert.deepEqual(r.body.zones,["0001"]);
+ });
+});

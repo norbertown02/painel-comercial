@@ -1,0 +1,145 @@
+{
+  "report": "Auditoria de melhorias — Metodologia Norberto",
+  "date": "2026-10-25",
+  "status": "Pesquisa exploratória. Não é certificação de exatidão ou calibração de chance de vitória. Estimador principal preservado.",
+  "baseline": {
+    "version": "1.2.0",
+    "reference": "engine.js estimate() original, municipal observation sharing versus global shift"
+  },
+  "experiments": [
+    {
+      "id": "actual_2022_snapshots",
+      "type": "Four preserved actual 2022 second-round municipal partial snapshots, first-round baseline, final domestic official share as target",
+      "coverageVotersPct": [
+        6.5,
+        8.7,
+        25.1,
+        54.8
+      ],
+      "originalMaePp": 0.3770247960079711,
+      "municipalLocalMaePp": 0.232992558696548,
+      "blended25MaePp": 0.3123,
+      "localByStageErrorsPp": [
+        0.22983738756557415,
+        0.045184622552667975,
+        0.2562672470789735,
+        0.40068097758897636
+      ],
+      "originalByStageErrorsPp": [
+        0.2657640470177043,
+        0.43377903962910125,
+        0.46041739238253143,
+        0.3481387050025475
+      ],
+      "warning": "Challenger selected after observing historical 2022 final results; replay is exploratory, not independent holdout."
+    },
+    {
+      "id": "complete_city_2014_2018",
+      "type": "960 deterministic synthetic whole-municipality arrival paths across 2014/2018 balanced/regional scenarios at approx 5%, 10% and 25% of first-round valid votes",
+      "paths": 960,
+      "originalMaePp": 0.7067206119657218,
+      "municipalLocalMaePp": 0.7056034761695599,
+      "warning": "Full-city samples do not test prediction quality for partly-counted municipalities."
+    },
+    {
+      "id": "random_section_like_2014_2018",
+      "type": "600 simulated paths selecting approx independent sections from municipalities, varying within-municipality preference by sigma 2% and 8%",
+      "paths": 600,
+      "originalMaePp": 0.5618776506619648,
+      "municipalLocalMaePp": 0.4518050709165522,
+      "warning": "Unrealistically broad early geographic coverage: ~2,760–3,800 municipalities already sampled around 5% versus 1,434 in preserved 2022 6.5% vote snapshot. Do not treat this as external validation."
+    },
+    {
+      "id": "historical_2022_city_coverage_transposed_2014_2018",
+      "type": "Use actual 2022 snapshot set of municipality IDs and sectionsPct-by-city to partially reveal 2014/2018 votes, with synthetic within-city preference noise sigma 3 or 8 percentage points",
+      "paths": 400,
+      "stages": 4,
+      "originalMaePp": 0.4625,
+      "municipalLocalMaePp": 0.4861,
+      "breakdown": {
+        "2014": {
+          "original": 0.5004,
+          "local": 0.4811
+        },
+        "2018": {
+          "original": 0.4247,
+          "local": 0.4911
+        }
+      },
+      "warning": "Historic 2022 city arrival patterns are real, but 2014/2018 intra-city partials are artificial and no actual 2014/18 reporting times are available."
+    },
+    {
+      "id": "blended25_initial",
+      "type": "384 stage x sigma x year simulations with 2022 real city reporting coverage, 2014 and 2018 final votes, sigma 3 or 8 pp and 24 seeds per stage",
+      "paths": 384,
+      "blend": "75% current + 25% local challenger",
+      "oldMaePp": 0.4465,
+      "blendMaePp": 0.4228,
+      "byYear": {
+        "2014": {
+          "old": 0.5069,
+          "blend": 0.4882
+        },
+        "2018": {
+          "old": 0.3862,
+          "blend": 0.3574
+        }
+      },
+      "warning": "Weights selected after multiple experiments, apparent improvement has optimization bias."
+    },
+    {
+      "id": "blended25_retest_new_seeds",
+      "type": "880 new synthetic paths with same 2022 partial-municipality coverage pattern and sigma 3 or 8 pp",
+      "paths": 880,
+      "oldMaePp": 0.4431764337721782,
+      "blendMaePp": 0.41955970634176937,
+      "oldEarlyStageMaePp": 0.5402621152954976,
+      "blendEarlyStageMaePp": 0.5327215148967015,
+      "yearResults": {
+        "2014": {
+          "oldMaePp": 0.48367377161636393,
+          "blendMaePp": 0.47131535702029687,
+          "earlyOldMaePp": 0.6314499931433677,
+          "earlyBlendMaePp": 0.6126054814523032
+        },
+        "2018": {
+          "oldMaePp": 0.4026790959279923,
+          "blendMaePp": 0.36780405566324165,
+          "earlyOldMaePp": 0.44907423744762753,
+          "earlyBlendMaePp": 0.4528375483410997
+        }
+      },
+      "2018FirstStageBySigma": {
+        "sigma3pp": {
+          "old": 0.4022313615755371,
+          "blend": 0.5014553911355314
+        },
+        "sigma8pp": {
+          "old": 0.6375938824393055,
+          "blend": 0.6705577886902325
+        }
+      },
+      "warning": "New random seeds are not independent historical elections. Challenger still worsens specific earliest 2018 stage; not safe to promote as default solely from this."
+    }
+  ],
+  "liveProbabilityFix": {
+    "symptom": "Under unchanged Flavio official share of 53%, previously the early scenario chance rose solely with sectionsPct (5%=>23.23%;10%=>38.57%;15%=>52.23%;20%=>63.25%), even with no usable geography.",
+    "fix": "Removed square-root extrapolation from 5%-scenario chance. From 5% to 20%, unchanged national vote share and absent new usable geographic evidence produce unchanged indicative scenario chance (~23.23%). Beyond 20%, with no geographic forecast, abstain.",
+    "productionStatus": "Committed to engine.js and accompanying tests; normal Git/Vercel production deployment."
+  },
+  "priorityRecommendations": [
+    "Preserve current estimator as primary; run partial-municipality challenger silently in parallel and log its errors after outcome, rather than applying an unvalidated blend during the election.",
+    "Get precinct/zone-level first-round references and partially counted precinct coverage from TSE, instead of using only municipality average preference; focus capital and metro subregions.",
+    "Replay actual archived national, state and municipal snapshots in strictly chronological order, preserving what data was available at each point; do not backfill past predictions.",
+    "Assess 5-10% accuracy separately with nonrandom regional receipt and heterogeneity; report worst-case as well as pooled MAE.",
+    "Calibrate empirical win probabilities on independent election nights and report abstention rather than '99% guarantee' without a justified tail model."
+  ],
+  "sources": [
+    "https://dadosabertos.tse.jus.br/dataset/resultados-2022",
+    "https://dadosabertos.tse.jus.br/group/resultados",
+    "/data/replay2022.json",
+    "/data/replay2014.json",
+    "/data/validation2018.json",
+    "/data/model-validation.json"
+  ]
+}

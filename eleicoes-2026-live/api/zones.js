@@ -5,13 +5,19 @@ const cities=require("../data/metros-2026.json").cities;
 const allowed=new Map(cities.map(c=>[c.ibge,c]));
 const BASE="https://resultados.tse.jus.br/oficial/ele2026";
 const toInt=v=>Number(String(v??"0").replace(/\./g,"").replace(",","."))||0;
-function findCandidate(j,number){
+function extractCandidates(j){
+ const map=new Map();
  for(const cargo of j?.carg||[]){if(String(cargo.cd)!=="1")continue;
   for(const ag of cargo.agr||[])for(const pa of ag.par||[])for(const c of pa.cand||[]){
-   if(String(c.n)===String(number))return toInt(c.vap);
+   const number=String(c.n||"").trim(),votes=toInt(c.vap);
+   if(!/^\\d{1,3}$/.test(number)||votes<0)continue;
+   const prior=map.get(number);
+   // Multiple appearances must never cause an accidental double count.
+   if(prior){if(prior.votes!==votes)throw Error("Votação duplicada e divergente");continue;}
+   map.set(number,{number,name:String(c.nmu||c.nm||"Candidato "+number).slice(0,75),votes});
   }
  }
- return null;
+ return [...map.values()].sort((a,b)=>b.votes-a.votes);
 }
 async function fetchTse(url,timeout=7000){
  const ctrl=new AbortController(),id=setTimeout(()=>ctrl.abort(),timeout);
@@ -29,11 +35,25 @@ async function config(){
 function parseZone(j,turn,zone){
  if(String(j?.ele)!==String(turn===1?6257:6258))throw Error("Eleição diferente da solicitada");
  if(String(j?.tpabr||"").toLowerCase()!=="zona"||String(j?.cdabr||"").padStart(4,"0")!==zone)throw Error("Zona incompatível");
- const a=findCandidate(j,22),b=findCandidate(j,13);
- if(a===null||b===null)throw Error("Candidatos ausentes na zona");
+ const candidates=extractCandidates(j);
+ const fav=candidates.find(c=>c.number==="22"),lul=candidates.find(c=>c.number==="13");
+ if(!fav||!lul)throw Error("Candidatos ausentes na zona");
  const n=toInt(j?.v?.vv),sectionsTotal=toInt(j?.s?.ts),sectionsCounted=toInt(j?.s?.st);
- if(!Number.isFinite(n)||n<=0||a+b>n||sectionsCounted>sectionsTotal)throw Error("Totalização não disponível");
- return {validVotes:n,flavioVotes:a,lulaVotes:b,sectionsTotal,sectionsCounted,sectionsPct:sectionsTotal?100*sectionsCounted/sectionsTotal:0,
+ const voters=toInt(j?.e?.te),eligibleProcessed=toInt(j?.e?.esi),turnout=toInt(j?.e?.c),
+  abstentions=toInt(j?.e?.a),blank=toInt(j?.v?.vb),nullVotes=toInt(j?.v?.tvn);
+ const candidateSum=candidates.reduce((s,c)=>s+c.votes,0);
+ if(!Number.isFinite(n)||n<=0||fav.votes+lul.votes>n||candidateSum>n||
+  sectionsTotal<=0||sectionsCounted<=0||sectionsCounted>sectionsTotal)throw Error("Totalização não disponível");
+ const fullyCounted=sectionsCounted===sectionsTotal;
+ // Turnout denominators from processed sections, never from the full city when tally is partial.
+ const turnoutPct=eligibleProcessed>0&&turnout<=eligibleProcessed?100*turnout/eligibleProcessed:null;
+ const abstentionPct=eligibleProcessed>0&&abstentions<=eligibleProcessed?100*abstentions/eligibleProcessed:null;
+ return {validVotes:n,flavioVotes:fav.votes,lulaVotes:lul.votes,sectionsTotal,sectionsCounted,
+  sectionsPct:100*sectionsCounted/sectionsTotal,fullyCounted,
+  candidates:turn===1?candidates:[],
+  candidatesTotal:candidateSum,blankVotes:blank,nullVotes,
+  registeredVoters:voters,registeredProcessed:eligibleProcessed,turnoutVotes:turnout,
+  abstentionVotes:abstentions,turnoutPct,abstentionPct,
   generatedAt:[j.dg,j.hg].filter(Boolean).join(" "),idg:j.idg||null};
 }
 async function resultFor(city,z,turn){

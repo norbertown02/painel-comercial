@@ -208,7 +208,9 @@ async function loadMetroZones(force=false){
     if(list.length)groups.push(list);
    }
    const reports=await Promise.allSettled(groups.map(async group=>{
-    const r=await fetch("/api/zones?mode=batch&city="+encodeURIComponent(id)+"&zones="+group.join(","),{cache:"no-store"});
+    const turn=current?.national?.sectionsCounted===0?"first":
+     group.every(z=>!!state.rows[z]?.first)?"second":"both";
+    const r=await fetch("/api/zones?mode=batch&city="+encodeURIComponent(id)+"&zones="+group.join(",")+"&turn="+turn,{cache:"no-store"});
     const j=await r.json();if(!r.ok||!j.ok)throw Error(j.error||"Falha ao consultar zonas");
     return j.results||[];
    }));
@@ -264,10 +266,14 @@ function renderZoneParticipation(m,rows,known,verified){
  const eligibleSecond=second.reduce((s,z)=>s+z.second.registeredProcessed,0);
  const turnoutSecond=second.reduce((s,z)=>s+z.second.turnoutVotes,0);
  const secondTurnout=eligibleSecond>0?100*turnoutSecond/eligibleSecond:null;
+ const firstMatched=second.filter(z=>z.first?.registeredVoters>0);
+ const firstMatchedEligible=firstMatched.reduce((s,z)=>s+z.first.registeredVoters,0);
+ const firstMatchedTurnout=firstMatched.reduce((s,z)=>s+z.first.turnoutVotes,0);
+ const matchedFirstRate=firstMatchedEligible>0?100*firstMatchedTurnout/firstMatchedEligible:null;
  set("zoneTurnoutFirst",firstTurnout!=null?pf(firstTurnout)+" · "+nfmt(turnout)+" eleitores":"—");
  set("zoneAbstentionFirst",firstTurnout!=null?pf(100-firstTurnout)+" · "+nfmt(eligible-turnout)+" eleitores":"—");
  set("zoneTurnoutSecond",secondTurnout!=null?pf(secondTurnout)+" · "+second.length+" zonas com dados":"—");
- set("zoneTurnoutDelta",firstTurnout!=null&&secondTurnout!=null?pp(secondTurnout-firstTurnout):"—");
+ set("zoneTurnoutDelta",matchedFirstRate!=null&&secondTurnout!=null?pp(secondTurnout-matchedFirstRate):"—");
  const delta=Number($("zoneTurnoutAssumption")?.value||0),
   participation=Number($("zoneOtherParticipation")?.value||0);
  set("zoneTurnoutAssumptionValue",(delta>=0?"+":"")+delta.toFixed(1).replace(".",",")+" p.p.");

@@ -8,7 +8,7 @@ const clamp=(x,a=0.001,b=0.999)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
 let calibration=null,latestOutlook=null,latestChance=null,earlyReport=null,odds5Report=null,metroCities=[],historicalZoneStudy=null;
-const zoneCache=Object.create(null);let zoneBusy=false;
+const zoneCache=Object.create(null);let zoneBusy=false,metroScanIndex=0;
 let reference=null,replay=null,cities=[],cityByCode={},byUf={},firstByUf={},results22=[],current=null,selectedCity=null,stageSelected=1;
 let refreshBusy=false,batchBusy=false,archiveBusy=false,archiveReady=false,lastArchiveSync=0,clock=30,nextIndex=0,liveReadings=[],sampleOrder=[],citySamples={};
 const LS="eleicoes2026_observatorio_v4";
@@ -178,6 +178,50 @@ function drawEarlyStudy(){
 
 
 
+function renderMetroWinner(){
+ const data=window.MetroZoneEngine?.project?.({metros:metroCities,cache:zoneCache});
+ if(!data)return;
+ const scanned=metroCities.filter(m=>{
+  const st=zoneCache[m.ibge],rows=st?.zones?.map(z=>st.rows?.[z]?.first);
+  if(!rows?.length||rows.some(r=>!r?.validVotes))return false;
+  const total=rows.reduce((s,r)=>s+r.validVotes,0);
+  return total===(st.firstMunicipal?.validVotes||m.firstRoundValid);
+ }).length;
+ const knownZones=metroCities.reduce((s,m)=>{
+  const st=zoneCache[m.ibge];return s+(st?.zones||[]).filter(z=>st.rows?.[z]?.first?.validVotes>0).length;
+ },0);
+ const seenZones=metroCities.reduce((s,m)=>{
+  const st=zoneCache[m.ibge];return s+(st?.zones||[]).filter(z=>{
+   const r=st.rows?.[z]?.second;return r?.sectionsTotal>0&&r.sectionsCounted===r.sectionsTotal&&r.validVotes>0;
+  }).length;
+ },0);
+ const knownCityStatuses=metroCities.filter(m=>{
+  const st=zoneCache[m.ibge];return st?.zones?.some(z=>st.rows?.[z]?.second?.sectionsTotal>0&&
+    st.rows[z].second.sectionsCounted===st.rows[z].second.sectionsTotal);
+ }).length;
+ const label=data.ready?data.winner:"—";
+ set("metroWinner",label);set("metroWinnerZone",label);
+ for(const id of ["metroWinner","metroWinnerZone"]){
+  const el=$(id);if(el)el.className="n "+(data.ready&&data.winner==="Flávio Bolsonaro"?"blue":data.ready&&data.winner==="Lula"?"red":"green");
+ }
+ const percent=data.ready?"Flávio "+pf(data.flavioPct)+" · Lula "+pf(data.lulaPct):"Aguardando referência completa e cobertura ≥ 5%";
+ set("metroWinnerPct",percent);set("metroWinnerZonePct",percent);
+ set("metroWinnerZones",nfmt(seenZones)+" zonas");
+ set("metroWinnerCoverage",data.ready?pf(data.coveragePct):"Aguardando");
+ set("metroWinnerVerified",scanned+" / "+metroCities.length);
+ set("metroWinnerCityCoverage",knownCityStatuses+" / "+metroCities.length);
+ set("metroWinnerMargin",data.ready?(data.estimatedMargin>=0?"+":"−")+nfmt(Math.abs(data.estimatedMargin))+" votos para Flávio":"—");
+ const note=data.ready?"Projeção das 15 localidades · zonas totalmente apuradas · "+pf(data.coveragePct)+" da referência. Não prevê o Brasil.":
+  scanned+" / 15 localidades conciliadas · "+nfmt(knownZones)+" zonas do primeiro turno recebidas. "+data.reason;
+ set("metroWinnerStatus",note);set("metroWinnerZoneStatus",note);
+}
+async function backgroundMetroRefresh(){
+ if(zoneBusy||!metroCities.length||!reference||!current)return;
+ // Refresh the 15 selected localities in round-robin order; at most 16 zones
+ // per iteration so election-night requests never flood the TSE.
+ const metro=metroCities[metroScanIndex++%metroCities.length];
+ await loadMetroZones(false,metro.ibge);
+}
 function renderHistoricalZoneStudy(){
  const info=historicalZoneStudy?.years, fmt=x=>Number.isFinite(x)?x.toFixed(2).replace(".",","):"—";
  if(!info){set("zoneHistoricalRows","Estudo indisponível.");return;}
@@ -197,6 +241,20 @@ function renderHistoricalZoneStudy(){
    "<td>"+esc(names[1])+": "+signed(r.netCandidateBGain)+"</td>"+
    "<td>"+signed(r.netValidVoteChange)+"</td></tr>";
  }).join("");
+ const review=info["2022"];
+ if($("zoneWinnerReplay2022")){
+  const ordered=[5,10,25,50];
+  $("zoneWinnerReplay2022").innerHTML=ordered.map(p=>{
+   const sims=review?.scenarios?.filter(x=>x.coverage===p)||[];
+   const n=sims.reduce((sum,s)=>sum+s.n,0),
+    wrong=sims.reduce((sum,s)=>sum+(s.zoneWrongWinner||0),0),
+    err=sims.length?sims.reduce((sum,s)=>sum+s.zoneMae,0)/sims.length:null;
+   if(!n||!sims.every(x=>Number.isFinite(x.zoneWrongWinner)))return "";
+   return "<tr><td>"+p+"%</td><td>"+fmt(err)+" p.p.</td>"+
+    "<td class='green'>"+nfmt(n-wrong)+" / "+nfmt(n)+" ("+pf(100*(n-wrong)/n)+")</td>"+
+    "<td>"+nfmt(wrong)+"</td></tr>";
+  }).join("");
+ }
  const coverage=Number($("zoneHistoricalCoverage")?.value||5);
  if($("zoneHistoricalCoverageRows"))$("zoneHistoricalCoverageRows").innerHTML=order.map(year=>{
   const r=info[year],tests=r?.scenarios?.filter(x=>x.coverage===coverage)||[];
@@ -219,13 +277,13 @@ function setMetroCities(raw){
 }
 function zoneActive(){return $("metroSelect")?.value||"";}
 function pairPct(a,b){return a+b>0?100*a/(a+b):null;}
-async function loadMetroZones(force=false){
- const id=zoneActive();if(!id||zoneBusy)return;
+async function loadMetroZones(force=false,idOverride=null){
+ const id=idOverride||zoneActive();if(!id||zoneBusy)return;
  const metro=metroCities.find(c=>c.ibge===id);
  if(!metro)return;
  const state=zoneCache[id]||(zoneCache[id]={zones:[],rows:{},next:0,error:"",loaded:false});
  if(force)state.next=0;
- zoneBusy=true;set("zoneStatus","Consultando cadastro e resultados por zona no TSE...");
+ zoneBusy=true;if(id===zoneActive())set("zoneStatus","Consultando cadastro e resultados por zona no TSE...");
  try{
   if(!state.loaded){
    const r=await fetch("/api/zones?mode=list&city="+encodeURIComponent(id),{cache:"no-store"});
@@ -258,7 +316,7 @@ async function loadMetroZones(force=false){
   }
   state.error="";
  }catch(e){state.error=String(e?.message||e);}
- finally{zoneBusy=false;if(zoneActive()===id)renderMetroZones();else if(zoneActive())loadMetroZones();}
+ finally{zoneBusy=false;if(zoneActive()===id)renderMetroZones();renderMetroWinner();}
 }
 
 function renderZoneParticipation(m,rows,known,verified){
@@ -756,6 +814,7 @@ async function init(){
  $("metroSelect").addEventListener("change",()=>{renderMetroZones();loadMetroZones();});
  $("zoneRefreshBtn").addEventListener("click",()=>loadMetroZones(true));
  $("zoneHistoricalCoverage").addEventListener("change",renderHistoricalZoneStudy);
+ $("metroWinnerDetails").addEventListener("click",()=>changeView("zones"));
  $("zoneCandidateFilter").addEventListener("change",renderMetroZones);
  $("zoneTurnoutAssumption").addEventListener("input",renderMetroZones);
  $("zoneOtherParticipation").addEventListener("input",renderMetroZones);
@@ -768,13 +827,15 @@ async function init(){
    odds5Report=o?.ok?await o.json():null;
    setMetroCities(met?.ok?await met.json():null);
    historicalZoneStudy=zh?.ok?await zh.json():null;
-   renderHistoricalZoneStudy();if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
+   renderHistoricalZoneStudy();renderMetroWinner();if(!a.ok||!b.ok)throw Error("Base municipal indisponível: "+a.status+"/"+b.status);
   reference=await a.json();replay=await b.json();if(Object.keys(reference.cities||{}).length<5500||replay.stages?.length!==4)throw Error("A base municipal está incompleta.");
   initRecords();replayInit();renderCityResults();makeStateRows([]);initOdds5();renderEarlyStudy();renderOdds5();
   set("apiText","Bases carregadas • consultando TSE");
   await syncArchive();await refresh();
+  backgroundMetroRefresh();
  }catch(e){updateNotice("Erro ao carregar base eleitoral: "+String(e.message||e),true);set("apiText","Dados históricos indisponíveis");}
  setInterval(()=>{clock=Math.max(0,clock-1);set("refreshClock",clock+" s para atualização");if(clock===0)refresh();},1000);setInterval(()=>{if(reference&&Date.now()-lastArchiveSync>60000)syncArchive();},60000);
  setInterval(()=>{if($("view-zones")&&!$("view-zones").classList.contains("hide"))loadMetroZones();},30000);
+ setInterval(()=>{if(reference&&!zoneBusy)backgroundMetroRefresh();},8000);
 }
 init();

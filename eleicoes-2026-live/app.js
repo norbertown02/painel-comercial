@@ -260,6 +260,17 @@ function renderShadowComparison(record=false){
   scores.improved+" de "+scores.n+" fotografias · "+(scores.improvementPp>=0?"redução":"aumento")+" de "+
   Math.abs(scores.improvementPp).toFixed(3).replace(".",",")+" p.p. no erro médio":
   "Aguardando resultado final");
+ const ranges=[[5,10,"5–10%"],[10,25,"10–25%"],[25,50,"25–50%"],[50,99.995,"50–100%"]];
+ if($("shadowStageRows"))$("shadowStageRows").innerHTML=ranges.map(([start,end,label])=>{
+  const sample=scores.ready?scores.scores.filter(x=>x.sec>=start&&x.sec<end):[];
+  if(!sample.length)return "<tr><td>"+label+"</td><td>—</td><td>—</td><td>—</td><td>"+
+   (scores.ready?"Sem amostra":"Aguardando resultado final")+"</td></tr>";
+  const a=sample.reduce((s,x)=>s+x.baselineError,0)/sample.length,
+   b=sample.reduce((s,x)=>s+x.zonalError,0)/sample.length,
+   verdict=b<a-1e-9?"Melhorou":b>a+1e-9?"Piorou":"Equivalente";
+  return "<tr><td>"+label+"</td><td>"+sample.length+"</td><td>"+pf(a).replace("%"," p.p.")+"</td>"+
+   "<td>"+pf(b).replace("%"," p.p.")+"</td><td>"+verdict+"</td></tr>";
+ }).join("");
  const scored=new Map((scores.scores||[]).map(s=>[s.at,s]));
  const recent=shadowSnapshots.slice(-10).reverse();
  if($("shadowHistoryRows"))$("shadowHistoryRows").innerHTML=recent.length?recent.map(s=>{

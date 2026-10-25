@@ -37,6 +37,19 @@
   <div class="pair"><span class="muted">Dispersão entre modelos*</span><strong id="modelRange">—</strong></div>
   <p class="mini">*Dispersão entre modelos, não intervalo de confiança.</p></div></div>
 
+<div class="card full" id="metroWinnerOverview">
+ <div class="eyebrow">Indicador territorial · 15 localidades com mais de 1 milhão</div>
+ <div class="head" style="margin-top:7px;font-size:18px">Vencedor projetado nas grandes cidades</div>
+ <div class="tools" style="gap:24px;align-items:flex-end">
+  <div><div class="n green" style="font-size:32px;font-weight:760" id="metroWinner">—</div>
+  <div class="sub" id="metroWinnerPct">Aguardando cobertura por zonas</div></div>
+  <div style="flex:1;min-width:200px"><div class="pair"><span class="muted">Zonas completamente apuradas</span><strong id="metroWinnerZones">—</strong></div>
+  <div class="pair"><span class="muted">Cobertura das zonas no conjunto</span><strong id="metroWinnerCoverage">—</strong></div></div>
+ </div>
+ <p class="mini" id="metroWinnerStatus">A estimativa exige o primeiro turno validado das 15 localidades e pelo menos 5% de cobertura em zonas completamente apuradas.</p>
+ <button type="button" id="metroWinnerDetails" style="margin-top:5px">Ver análise por zonas</button>
+ <p class="mini">Este indicador prevê o vencedor apenas nessas 15 localidades. Não é uma previsão nacional nem uma probabilidade de vitória.</p>
+</div>
 <div class="card full victory-panel" id="victoryPanel">
   <div class="head">Radar de vitória · Flávio Bolsonaro</div>
   <p class="sub">Estimativa experimental · não é resultado oficial</p>
@@ -93,6 +106,20 @@
   <div class="card kpi"><div class="eyebrow">Zonas com dados do 2º turno</div><div class="n blue" id="zoneCounted">—</div><div class="detail">EA20 oficial · 6258</div></div>
   <div class="card kpi"><div class="eyebrow">Cobertura das zonas</div><div class="n" id="zoneCoverage">—</div><div class="detail">Seções totalizadas nas zonas verificadas</div></div>
   <div class="card kpi"><div class="eyebrow">Referência histórica validada</div><div class="n" id="zoneVerified">—</div><div class="detail">1º turno por zona × total municipal</div></div>
+  <div class="card full" id="metroWinnerZoneCard">
+   <div class="eyebrow">Modelo por zona · agregado das 15 localidades</div>
+   <div class="head">Vencedor projetado nas grandes cidades</div>
+   <div class="tools" style="gap:30px">
+    <div><div class="n green" style="font-size:31px;font-weight:760" id="metroWinnerZone">—</div><div class="sub" id="metroWinnerZonePct">Aguardando referência oficial</div></div>
+    <div style="flex:1;min-width:240px">
+     <div class="pair"><span class="muted">Localidades com referência conciliada</span><strong id="metroWinnerVerified">—</strong></div>
+     <div class="pair"><span class="muted">Cidades com alguma zona completa</span><strong id="metroWinnerCityCoverage">—</strong></div>
+     <div class="pair"><span class="muted">Diferença estimada entre finalistas</span><strong id="metroWinnerMargin">—</strong></div>
+    </div>
+   </div>
+   <p class="sub" id="metroWinnerZoneStatus">Carregando o cadastro das zonas das 15 localidades...</p>
+   <p class="mini">São usadas somente zonas com todas as seções totalizadas; zonas parciais não são tratadas como completas. Estimativa experimental da soma das grandes cidades, não do Brasil.</p>
+  </div>
   <div class="card full">
    <div class="head">Leitura territorial · primeiro e segundo turnos</div>
    <p class="sub" id="zoneSummary">Votos oficiais de cada zona eleitoral, sem somar novamente os totais municipais.</p>
@@ -148,6 +175,10 @@
     <div class="tbl"><table><thead><tr><th>Eleição</th><th>Votos em outros candidatos no 1º turno</th><th>Mudança líquida do finalista A</th><th>Mudança líquida do finalista B</th><th>Variação dos votos válidos</th></tr></thead>
     <tbody id="zoneHistoricalNetRows"><tr><td colspan="5">Carregando resultados oficiais...</td></tr></tbody></table></div>
    </details>
+   <div class="head" style="margin-top:18px">2022 · quem o modelo apontava como vencedor?</div>
+   <p class="sub">Lula venceu nessas 15 localidades com 50,24% dos votos entre os finalistas. Acertos e erros abaixo usam 200 ordens de divulgação simuladas por faixa.</p>
+   <div class="tbl"><table><thead><tr><th>Etapa</th><th>Erro médio por zona</th><th>Acertos do vencedor</th><th>Erros do vencedor</th></tr></thead>
+     <tbody id="zoneWinnerReplay2022"><tr><td colspan="4">Calculando estudo de 2022...</td></tr></tbody></table></div>
    <div class="tools" style="margin-top:12px"><label for="zoneHistoricalCoverage" class="mini">Amostra simulada</label>
     <select id="zoneHistoricalCoverage"><option value="5">5%</option><option value="10">10%</option><option value="25">25%</option><option value="50">50%</option></select></div>
    <div class="tbl"><table><thead><tr><th>Eleição</th><th>Erro municipal nessa etapa</th><th>Erro por zona</th><th>Ganho observado</th></tr></thead>
@@ -250,4 +281,4 @@
 <p><strong>Regra de apresentação:</strong> a dispersão entre modelos não é intervalo de confiança. Os limites de vitória calculam a parcial necessária com base na estimativa de votos ainda não apurados. O total de votos finais usa provisoriamente a referência de votos válidos do 1º turno, podendo mudar conforme comparecimento e votos do exterior. O indicador dinâmico começa a partir de 5% das seções e usa as chances condicionais do Estudo 5%, calculadas com cenários regionais e pesos assumidos. Quando os dados estaduais cobrem ao menos 90% dos votos nacionais e há oito UFs representadas, uma correção territorial atenuada pode ser aplicada. Enquanto não houver cobertura municipal suficiente, o percentual de seções apuradas, isoladamente, não aumenta a chance calculada: ela só muda com novos votos oficiais ou com correção territorial baseada em UFs efetivamente cobertas. A partir de 10%, com pelo menos 40 municípios observados em 12 UFs, a chance passa gradualmente à projeção territorial e a transição termina em 30% de seções. Se até 20% não houver cobertura municipal suficiente, a estimativa é suspensa em vez de continuar extrapolando o cenário inicial. Trata-se de probabilidade experimental, NÃO calibrada e sem garantia de 99%. Os limites mais exigentes do motor original continuam condicionados a 23 UFs, 100 municípios e 5% de cobertura municipal.</p>
 </div><div class="grid"><div class="card half"><h3>Fontes primárias</h3><ul class="list-compact"><li><a href="https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados" target="_blank" rel="noopener">TSE — Divulgação de resultados 2026</a>. Pleito 3221, eleição presidencial 6258.</li><li><a href="https://dadosabertos.tse.jus.br/" target="_blank" rel="noopener">TSE — Dados Abertos</a>: votos municipais e histórico.</li><li><a href="https://github.com/wcota/br_eleicoes_2022_2T" target="_blank" rel="noopener">Arquivo de fotografias municipais de 2022</a>, com versões históricas no Git.</li><li><a href="https://github.com/lsampaiorocha/brazil-votes-2026" target="_blank" rel="noopener">Consolidações municipais 2022/2026</a> e mapeamento de códigos.</li></ul></div><div class="card half"><h3>Regras analíticas</h3><ul class="list-compact"><li><b>Oficial:</b> sempre diretamente do TSE, com horário de leitura.</li><li><b>Referência municipal:</b> votos em Flávio divididos pela soma dos votos em Flávio e Lula no primeiro turno.</li><li><b>Projeção estadual:</b> média das parciais por UF ponderada pelos votos válidos do primeiro turno de 2026.</li><li><b>Projeção municipal:</b> usa votos já observados, referência territorial e deslocamento médio entre turnos nas cidades amostradas.</li><li><b>Sem votos novos:</b> nenhuma projeção final é produzida.</li></ul></div><div class="card full"><h3>Limitações e critérios de qualidade</h3><p>O modelo é <b>experimental</b>. A cobertura de cidades é amostral, não cobre necessariamente todas as zonas/seções em tempo real e pode sofrer viés de seleção. A probabilidade indicativa permanece oculta antes dos critérios mínimos de cobertura. Ainda não existe validação independente suficiente para chamar 99% de garantia. As parciais oficiais são armazenadas centralmente em tabelas dedicadas e protegidas. O histórico local é usado somente como redundância enquanto o serviço estiver indisponível. A coleta central é agendada apenas na janela eleitoral. A dispersão mostrada é o intervalo entre estimativas de modelos alternativos, não um intervalo de confiança nem uma probabilidade de vitória. A consulta do TSE é limitada a intervalos e não significa que haja nova divulgação a cada consulta.</p><p class="mini">Versão de estudo: 21/10/2026. Replay calculado com os dados que constavam de cada fotografia histórica, validado contra o resultado final doméstico somente para medição de erro. Corrigir pesos de comparecimento e reconstruir 2014/2018 continua no roteiro de pesquisa.</p></div></div></section>
 <footer><span><strong>Análise Preditiva</strong> · Metodologia <strong class="footer-author">NORBERTO</strong></span><span>Dados oficiais: TSE · Análise independente, sem vínculo com candidatos ou com o Tribunal Superior Eleitoral.</span></footer>
-</div><script src="/engine.js" defer></script><script src="/app.js" defer></script><script src="/replay2014.js" defer></script></body></html>
+</div><script src="/engine.js" defer></script><script src="/metro-engine.js" defer></script><script src="/app.js" defer></script><script src="/replay2014.js" defer></script></body></html>

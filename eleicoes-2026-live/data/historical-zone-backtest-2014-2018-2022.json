@@ -27,7 +27,13 @@
           "munMae": 2.9881,
           "zoneMae": 1.0415,
           "munP90": 5.5768,
-          "zoneP90": 1.9865
+          "zoneP90": 1.9865,
+          "munWrongWinner": 7,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.48475,
+          "zoneForecastMean": 54.50381,
+          "zoneForecastMin": 51.71219,
+          "zoneForecastMax": 57.27294
         },
         {
           "coverage": 5,
@@ -36,7 +42,13 @@
           "munMae": 2.9656,
           "zoneMae": 1.0618,
           "munP90": 6.3317,
-          "zoneP90": 2.0089
+          "zoneP90": 2.0089,
+          "munWrongWinner": 6,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.4338,
+          "zoneForecastMean": 54.20342,
+          "zoneForecastMin": 52.17494,
+          "zoneForecastMax": 56.48657
         },
         {
           "coverage": 5,
@@ -45,7 +57,13 @@
           "munMae": 5.6569,
           "zoneMae": 3.1461,
           "munP90": 8.9423,
-          "zoneP90": 4.0528
+          "zoneP90": 4.0528,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 60.53486,
+          "zoneForecastMean": 51.85242,
+          "zoneForecastMin": 50.32719,
+          "zoneForecastMax": 53.5727
         },
         {
           "coverage": 5,
@@ -54,7 +72,13 @@
           "munMae": 5.9718,
           "zoneMae": 3.0822,
           "munP90": 9.6138,
-          "zoneP90": 4.4005
+          "zoneP90": 4.4005,
+          "munWrongWinner": 29,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 49.06412,
+          "zoneForecastMean": 58.08075,
+          "zoneForecastMin": 55.74599,
+          "zoneForecastMax": 60.11359
         },
         {
           "coverage": 10,
@@ -63,7 +87,13 @@
           "munMae": 2.3208,
           "zoneMae": 0.7289,
           "munP90": 4.3916,
-          "zoneP90": 1.3758
+          "zoneP90": 1.3758,
+          "munWrongWinner": 2,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.75392,
+          "zoneForecastMean": 54.6793,
+          "zoneForecastMin": 52.20989,
+          "zoneForecastMax": 56.57814
         },
         {
           "coverage": 10,
@@ -72,7 +102,13 @@
           "munMae": 1.9455,
           "zoneMae": 0.7924,
           "munP90": 3.7035,
-          "zoneP90": 1.5144
+          "zoneP90": 1.5144,
+          "munWrongWinner": 3,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.16367,
+          "zoneForecastMean": 54.43509,
+          "zoneForecastMin": 52.84667,
+          "zoneForecastMax": 55.88157
         },
         {
           "coverage": 10,
@@ -81,7 +117,13 @@
           "munMae": 6.2711,
           "zoneMae": 3.2268,
           "munP90": 8.5274,
-          "zoneP90": 4.0885
+          "zoneP90": 4.0885,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 61.26967,
+          "zoneForecastMean": 51.77176,
+          "zoneForecastMin": 50.42276,
+          "zoneForecastMax": 53.1276
         },
         {
           "coverage": 10,
@@ -90,7 +132,13 @@
           "munMae": 5.159,
           "zoneMae": 2.7923,
           "munP90": 7.5629,
-          "zoneP90": 3.6719
+          "zoneP90": 3.6719,
+          "munWrongWinner": 28,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 49.83953,
+          "zoneForecastMean": 57.79084,
+          "zoneForecastMin": 55.94138,
+          "zoneForecastMax": 59.67915
         },
         {
           "coverage": 25,
@@ -99,7 +147,13 @@
           "munMae": 1.1307,
           "zoneMae": 0.2645,
           "munP90": 2.1882,
-          "zoneP90": 0.5534
+          "zoneP90": 0.5534,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.80759,
+          "zoneForecastMean": 54.87482,
+          "zoneForecastMin": 54.2453,
+          "zoneForecastMax": 55.78857
         },
         {
           "coverage": 25,
@@ -108,7 +162,13 @@
           "munMae": 1.0254,
           "zoneMae": 0.3967,
           "munP90": 2.0256,
-          "zoneP90": 0.8293
+          "zoneP90": 0.8293,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.86636,
+          "zoneForecastMean": 54.71717,
+          "zoneForecastMin": 53.7198,
+          "zoneForecastMax": 55.51631
         },
         {
           "coverage": 25,
@@ -117,7 +177,13 @@
           "munMae": 5.8813,
           "zoneMae": 2.5335,
           "munP90": 7.2216,
-          "zoneP90": 3.2006
+          "zoneP90": 3.2006,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 60.87983,
+          "zoneForecastMean": 52.46501,
+          "zoneForecastMin": 51.49194,
+          "zoneForecastMax": 53.45442
         },
         {
           "coverage": 25,
@@ -126,7 +192,13 @@
           "munMae": 5.3945,
           "zoneMae": 2.0063,
           "munP90": 6.8352,
-          "zoneP90": 2.6065
+          "zoneP90": 2.6065,
+          "munWrongWinner": 30,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 49.60405,
+          "zoneForecastMean": 57.00485,
+          "zoneForecastMin": 55.87751,
+          "zoneForecastMax": 58.1665
         },
         {
           "coverage": 50,
@@ -135,7 +207,13 @@
           "munMae": 0.5273,
           "zoneMae": 0.1554,
           "munP90": 0.9574,
-          "zoneP90": 0.311
+          "zoneP90": 0.311,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 55.01879,
+          "zoneForecastMean": 54.93972,
+          "zoneForecastMin": 54.57194,
+          "zoneForecastMax": 55.36348
         },
         {
           "coverage": 50,
@@ -144,7 +222,13 @@
           "munMae": 0.584,
           "zoneMae": 0.172,
           "munP90": 1.2772,
-          "zoneP90": 0.3163
+          "zoneP90": 0.3163,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 54.91674,
+          "zoneForecastMean": 54.91771,
+          "zoneForecastMin": 54.61833,
+          "zoneForecastMax": 55.31621
         },
         {
           "coverage": 50,
@@ -153,7 +237,13 @@
           "munMae": 4.7996,
           "zoneMae": 1.6007,
           "munP90": 5.8368,
-          "zoneP90": 1.9867
+          "zoneP90": 1.9867,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.79812,
+          "zoneForecastMean": 53.39781,
+          "zoneForecastMin": 52.61242,
+          "zoneForecastMax": 53.89012
         },
         {
           "coverage": 50,
@@ -162,12 +252,19 @@
           "munMae": 4.7523,
           "zoneMae": 1.2609,
           "munP90": 5.7421,
-          "zoneP90": 1.5171
+          "zoneP90": 1.5171,
+          "munWrongWinner": 18,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 50.24623,
+          "zoneForecastMean": 56.25941,
+          "zoneForecastMin": 55.86356,
+          "zoneForecastMax": 56.71533
         }
       ],
       "netCandidateAGain": 4384834,
       "netCandidateBGain": 3277987,
-      "netValidVoteChange": 294183
+      "netValidVoteChange": 294183,
+      "nSimulated": 800
     },
     "2018": {
       "zones": 263,
@@ -195,7 +292,13 @@
           "munMae": 1.8536,
           "zoneMae": 0.9251,
           "munP90": 3.6317,
-          "zoneP90": 1.8063
+          "zoneP90": 1.8063,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 60.08796,
+          "zoneForecastMean": 59.67561,
+          "zoneForecastMin": 57.16799,
+          "zoneForecastMax": 61.6099
         },
         {
           "coverage": 5,
@@ -204,7 +307,13 @@
           "munMae": 2.3142,
           "zoneMae": 0.8395,
           "munP90": 4.0143,
-          "zoneP90": 2.0266
+          "zoneP90": 2.0266,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.90707,
+          "zoneForecastMean": 60.13512,
+          "zoneForecastMin": 56.82732,
+          "zoneForecastMax": 63.68647
         },
         {
           "coverage": 5,
@@ -213,7 +322,13 @@
           "munMae": 2.9244,
           "zoneMae": 1.2228,
           "munP90": 4.8772,
-          "zoneP90": 2.3234
+          "zoneP90": 2.3234,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 62.44802,
+          "zoneForecastMean": 59.04751,
+          "zoneForecastMin": 56.69129,
+          "zoneForecastMax": 62.76776
         },
         {
           "coverage": 5,
@@ -222,7 +337,13 @@
           "munMae": 3.0909,
           "zoneMae": 2.9536,
           "munP90": 5.8827,
-          "zoneP90": 4.7163
+          "zoneP90": 4.7163,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 57.60403,
+          "zoneForecastMean": 62.91294,
+          "zoneForecastMin": 60.45521,
+          "zoneForecastMax": 66.21742
         },
         {
           "coverage": 10,
@@ -231,7 +352,13 @@
           "munMae": 1.2445,
           "zoneMae": 0.7481,
           "munP90": 2.4887,
-          "zoneP90": 1.4299
+          "zoneP90": 1.4299,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.54484,
+          "zoneForecastMean": 60.12825,
+          "zoneForecastMin": 58.56127,
+          "zoneForecastMax": 61.84575
         },
         {
           "coverage": 10,
@@ -240,7 +367,13 @@
           "munMae": 1.3734,
           "zoneMae": 0.6427,
           "munP90": 2.7928,
-          "zoneP90": 1.542
+          "zoneP90": 1.542,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.86717,
+          "zoneForecastMean": 60.00764,
+          "zoneForecastMin": 57.73547,
+          "zoneForecastMax": 61.65626
         },
         {
           "coverage": 10,
@@ -249,7 +382,13 @@
           "munMae": 2.5087,
           "zoneMae": 1.1152,
           "munP90": 4.2242,
-          "zoneP90": 1.9569
+          "zoneP90": 1.9569,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 62.45356,
+          "zoneForecastMean": 58.91652,
+          "zoneForecastMin": 56.85647,
+          "zoneForecastMax": 60.66292
         },
         {
           "coverage": 10,
@@ -258,7 +397,13 @@
           "munMae": 2.3807,
           "zoneMae": 1.9006,
           "munP90": 3.9733,
-          "zoneP90": 2.8009
+          "zoneP90": 2.8009,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 57.78207,
+          "zoneForecastMean": 61.8599,
+          "zoneForecastMin": 60.12276,
+          "zoneForecastMax": 63.92652
         },
         {
           "coverage": 25,
@@ -267,7 +412,13 @@
           "munMae": 0.7464,
           "zoneMae": 0.4313,
           "munP90": 1.3325,
-          "zoneP90": 0.7939
+          "zoneP90": 0.7939,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.82731,
+          "zoneForecastMean": 60.15908,
+          "zoneForecastMin": 58.85381,
+          "zoneForecastMax": 60.84414
         },
         {
           "coverage": 25,
@@ -276,7 +427,13 @@
           "munMae": 0.5259,
           "zoneMae": 0.2963,
           "munP90": 1.1188,
-          "zoneP90": 0.5737
+          "zoneP90": 0.5737,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.95848,
+          "zoneForecastMean": 60.03624,
+          "zoneForecastMin": 59.35344,
+          "zoneForecastMax": 60.72795
         },
         {
           "coverage": 25,
@@ -285,7 +442,13 @@
           "munMae": 2.0482,
           "zoneMae": 0.8443,
           "munP90": 3.0015,
-          "zoneP90": 1.384
+          "zoneP90": 1.384,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 62.00757,
+          "zoneForecastMean": 59.11501,
+          "zoneForecastMin": 58.16429,
+          "zoneForecastMax": 59.938
         },
         {
           "coverage": 25,
@@ -294,7 +457,13 @@
           "munMae": 2.4623,
           "zoneMae": 1.1622,
           "munP90": 3.3893,
-          "zoneP90": 1.5511
+          "zoneP90": 1.5511,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 57.497,
+          "zoneForecastMean": 61.12154,
+          "zoneForecastMin": 60.33557,
+          "zoneForecastMax": 61.94256
         },
         {
           "coverage": 50,
@@ -303,7 +472,13 @@
           "munMae": 0.3253,
           "zoneMae": 0.1795,
           "munP90": 0.7073,
-          "zoneP90": 0.3796
+          "zoneP90": 0.3796,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 59.97034,
+          "zoneForecastMean": 60.11244,
+          "zoneForecastMin": 59.74841,
+          "zoneForecastMax": 60.46579
         },
         {
           "coverage": 50,
@@ -312,7 +487,13 @@
           "munMae": 0.3469,
           "zoneMae": 0.186,
           "munP90": 0.7716,
-          "zoneP90": 0.3389
+          "zoneP90": 0.3389,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 60.13743,
+          "zoneForecastMean": 60.02979,
+          "zoneForecastMin": 59.47657,
+          "zoneForecastMax": 60.40168
         },
         {
           "coverage": 50,
@@ -321,7 +502,13 @@
           "munMae": 2.0084,
           "zoneMae": 0.6832,
           "munP90": 2.7285,
-          "zoneP90": 0.952
+          "zoneP90": 0.952,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 61.96773,
+          "zoneForecastMean": 59.27617,
+          "zoneForecastMin": 58.62218,
+          "zoneForecastMax": 59.79516
         },
         {
           "coverage": 50,
@@ -330,12 +517,19 @@
           "munMae": 1.7242,
           "zoneMae": 0.672,
           "munP90": 2.2588,
-          "zoneP90": 0.8913
+          "zoneP90": 0.8913,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 58.23511,
+          "zoneForecastMean": 60.6313,
+          "zoneForecastMin": 60.09944,
+          "zoneForecastMax": 61.03808
         }
       ],
       "netCandidateAGain": 2205814,
       "netCandidateBGain": 4416407,
-      "netValidVoteChange": -494879
+      "netValidVoteChange": -494879,
+      "nSimulated": 800
     },
     "2022": {
       "zones": 262,
@@ -363,7 +557,13 @@
           "munMae": 1.7729,
           "zoneMae": 0.2424,
           "munP90": 3.1078,
-          "zoneP90": 0.5069
+          "zoneP90": 0.5069,
+          "munWrongWinner": 19,
+          "zoneWrongWinner": 11,
+          "munForecastMean": 49.65579,
+          "zoneForecastMean": 49.76975,
+          "zoneForecastMin": 48.91218,
+          "zoneForecastMax": 50.34758
         },
         {
           "coverage": 5,
@@ -372,7 +572,13 @@
           "munMae": 1.6016,
           "zoneMae": 0.2251,
           "munP90": 2.9066,
-          "zoneP90": 0.4652
+          "zoneP90": 0.4652,
+          "munWrongWinner": 21,
+          "zoneWrongWinner": 14,
+          "munForecastMean": 49.74468,
+          "zoneForecastMean": 49.77736,
+          "zoneForecastMin": 49.16206,
+          "zoneForecastMax": 50.26686
         },
         {
           "coverage": 5,
@@ -381,7 +587,13 @@
           "munMae": 1.8152,
           "zoneMae": 0.3467,
           "munP90": 3.7628,
-          "zoneP90": 0.6392
+          "zoneP90": 0.6392,
+          "munWrongWinner": 38,
+          "zoneWrongWinner": 1,
+          "munForecastMean": 51.23059,
+          "zoneForecastMean": 49.44133,
+          "zoneForecastMin": 48.77571,
+          "zoneForecastMax": 50.01673
         },
         {
           "coverage": 5,
@@ -390,7 +602,13 @@
           "munMae": 2.5853,
           "zoneMae": 0.4742,
           "munP90": 4.7115,
-          "zoneP90": 0.8155
+          "zoneP90": 0.8155,
+          "munWrongWinner": 5,
+          "zoneWrongWinner": 37,
+          "munForecastMean": 47.51735,
+          "zoneForecastMean": 50.22698,
+          "zoneForecastMin": 49.61485,
+          "zoneForecastMax": 50.83006
         },
         {
           "coverage": 10,
@@ -399,7 +617,13 @@
           "munMae": 1.0937,
           "zoneMae": 0.1658,
           "munP90": 2.525,
-          "zoneP90": 0.3498
+          "zoneP90": 0.3498,
+          "munWrongWinner": 20,
+          "zoneWrongWinner": 6,
+          "munForecastMean": 49.5035,
+          "zoneForecastMean": 49.77707,
+          "zoneForecastMin": 49.30084,
+          "zoneForecastMax": 50.18812
         },
         {
           "coverage": 10,
@@ -408,7 +632,13 @@
           "munMae": 0.9005,
           "zoneMae": 0.1367,
           "munP90": 1.5716,
-          "zoneP90": 0.2905
+          "zoneP90": 0.2905,
+          "munWrongWinner": 27,
+          "zoneWrongWinner": 2,
+          "munForecastMean": 49.83871,
+          "zoneForecastMean": 49.74213,
+          "zoneForecastMin": 49.35561,
+          "zoneForecastMax": 50.13815
         },
         {
           "coverage": 10,
@@ -417,7 +647,13 @@
           "munMae": 1.8395,
           "zoneMae": 0.3316,
           "munP90": 3.2581,
-          "zoneP90": 0.5765
+          "zoneP90": 0.5765,
+          "munWrongWinner": 43,
+          "zoneWrongWinner": 1,
+          "munForecastMean": 51.49211,
+          "zoneForecastMean": 49.44383,
+          "zoneForecastMin": 49.02771,
+          "zoneForecastMax": 50.04505
         },
         {
           "coverage": 10,
@@ -426,7 +662,13 @@
           "munMae": 2.3305,
           "zoneMae": 0.3633,
           "munP90": 3.6471,
-          "zoneP90": 0.5434
+          "zoneP90": 0.5434,
+          "munWrongWinner": 1,
+          "zoneWrongWinner": 37,
+          "munForecastMean": 47.44358,
+          "zoneForecastMean": 50.12215,
+          "zoneForecastMin": 49.68472,
+          "zoneForecastMax": 50.51015
         },
         {
           "coverage": 25,
@@ -435,7 +677,13 @@
           "munMae": 0.772,
           "zoneMae": 0.0998,
           "munP90": 1.3347,
-          "zoneP90": 0.1959
+          "zoneP90": 0.1959,
+          "munWrongWinner": 26,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 49.91418,
+          "zoneForecastMean": 49.73803,
+          "zoneForecastMin": 49.54737,
+          "zoneForecastMax": 49.95935
         },
         {
           "coverage": 25,
@@ -444,7 +692,13 @@
           "munMae": 0.6053,
           "zoneMae": 0.1007,
           "munP90": 1.0788,
-          "zoneP90": 0.1907
+          "zoneP90": 0.1907,
+          "munWrongWinner": 22,
+          "zoneWrongWinner": 1,
+          "munForecastMean": 49.77811,
+          "zoneForecastMean": 49.77804,
+          "zoneForecastMin": 49.53137,
+          "zoneForecastMax": 50.00996
         },
         {
           "coverage": 25,
@@ -453,7 +707,13 @@
           "munMae": 1.657,
           "zoneMae": 0.2506,
           "munP90": 2.2848,
-          "zoneP90": 0.3662
+          "zoneP90": 0.3662,
+          "munWrongWinner": 50,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 51.42049,
+          "zoneForecastMean": 49.51291,
+          "zoneForecastMin": 49.18305,
+          "zoneForecastMax": 49.71983
         },
         {
           "coverage": 25,
@@ -462,7 +722,13 @@
           "munMae": 1.7703,
           "zoneMae": 0.2336,
           "munP90": 2.627,
-          "zoneP90": 0.3734
+          "zoneP90": 0.3734,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 24,
+          "munForecastMean": 47.9932,
+          "zoneForecastMean": 49.99706,
+          "zoneForecastMin": 49.77117,
+          "zoneForecastMax": 50.24288
         },
         {
           "coverage": 50,
@@ -471,7 +737,13 @@
           "munMae": 0.3669,
           "zoneMae": 0.052,
           "munP90": 0.7397,
-          "zoneP90": 0.1034
+          "zoneP90": 0.1034,
+          "munWrongWinner": 13,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 49.73121,
+          "zoneForecastMean": 49.76105,
+          "zoneForecastMin": 49.61613,
+          "zoneForecastMax": 49.914
         },
         {
           "coverage": 50,
@@ -480,7 +752,13 @@
           "munMae": 0.2481,
           "zoneMae": 0.0445,
           "munP90": 0.5581,
-          "zoneP90": 0.0855
+          "zoneP90": 0.0855,
+          "munWrongWinner": 15,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 49.79601,
+          "zoneForecastMean": 49.76118,
+          "zoneForecastMin": 49.64258,
+          "zoneForecastMax": 49.90404
         },
         {
           "coverage": 50,
@@ -489,7 +767,13 @@
           "munMae": 1.3308,
           "zoneMae": 0.1572,
           "munP90": 1.8135,
-          "zoneP90": 0.2314
+          "zoneP90": 0.2314,
+          "munWrongWinner": 50,
+          "zoneWrongWinner": 0,
+          "munForecastMean": 51.09426,
+          "zoneForecastMean": 49.60657,
+          "zoneForecastMin": 49.4441,
+          "zoneForecastMax": 49.77023
         },
         {
           "coverage": 50,
@@ -498,12 +782,19 @@
           "munMae": 1.416,
           "zoneMae": 0.1482,
           "munP90": 1.7776,
-          "zoneP90": 0.2077
+          "zoneP90": 0.2077,
+          "munWrongWinner": 0,
+          "zoneWrongWinner": 2,
+          "munForecastMean": 48.34742,
+          "zoneForecastMean": 49.91163,
+          "zoneForecastMin": 49.80027,
+          "zoneForecastMax": 50.05564
         }
       ],
       "netCandidateAGain": 1791689,
       "netCandidateBGain": 1091870,
-      "netValidVoteChange": 58910
+      "netValidVoteChange": 58910,
+      "nSimulated": 800
     }
   },
   "schema": "norberto-official-tse-zonal-backtest-2014-2018-2022-v1",
@@ -525,5 +816,6 @@
     "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2018.zip",
     "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2022.zip",
     "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2022.zip"
-  ]
+  ],
+  "winnerAccuracyScope": "Winner of aggregated two-candidate voting in the 15 selected localities only. Whole-zone arrivals were SIMULATED (not chronological TSE snapshots)."
 }

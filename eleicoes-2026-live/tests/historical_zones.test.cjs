@@ -21,7 +21,7 @@ test("official TSE historical zonal report covers 2014, 2018 and 2022",()=>{
 });
 test("zonal advantage is measured on identical pseudo-arrival samples, not mislabeled actual timestamps",()=>{
   assert.match(j.methodology,/hypothetical sequential zone reveal/i);
-  assert.ok(j.caveats.some(s=>/not.*chronological|chronological.*not/i.test(s)));
+  assert.ok(j.caveats.some(s=>/simulada.*n[ãa]o hist[oó]rica|not.*chronological|chronological.*not/i.test(s)));
   const types=new Set(["balanced","largest_city_first","first_A_strong_zone_first","first_B_strong_zone_first"]);
   for(const [year,r] of Object.entries(j.years)){
     for(const c of [5,10,25,50]){
@@ -36,8 +36,8 @@ test("zonal advantage is measured on identical pseudo-arrival samples, not misla
   }
 });
 test("do not use selected-metro retrospective results to claim Brazil-wide certainty",()=>{
-  assert.ok(j.caveats.some(c=>c.includes("not Brazil-wide")));
-  assert.ok(j.caveats.some(c=>/No inference of individual/.test(c)));
+  assert.ok(j.caveats.some(c=>/Brasil inteiro|not Brazil-wide/.test(c)));
+  assert.ok(j.caveats.some(c=>/identifica[cç][aã]o.*individua|No inference of individual/i.test(c)));
 });
 
 
